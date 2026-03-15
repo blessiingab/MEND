@@ -1,16 +1,16 @@
 :root {
-  --coral: #E85D4A;
-  --amber: #F5A623;
-  --sage: #4CAF7D;
-  --sky: #5B9BD5;
-  --cream: #FBF6EF;
-  --warm-white: #FEFCF9;
+  --coral: #c17f76;
+  --amber: #f2f0ed;
+  --sage: #053e21;
+  --sky: #1d2731;
+  --cream: #2b022d;
+  --warm-white: #352917;
   --charcoal: #1C1917;
-  --muted: #78716C;
-  --border: #E8E0D5;
+  --muted: #502506;
+  --border: #423a30;
   --sidebar-w: 260px;
   --radius: 16px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow: 0 4px 24px rgba(32, 11, 11, 0.08);
   --shadow-lg: 0 12px 48px rgba(0,0,0,0.14);
 }
 
@@ -33,7 +33,7 @@ h1,h2,h3 { font-family:'Playfair Display', serif; line-height:1.2; }
 .sidebar {
   width: var(--sidebar-w);
   background: var(--charcoal);
-  color: white;
+  color: rgb(117, 91, 108);
   position: fixed;
   left:0; top:0; bottom:0;
   display: none;
@@ -64,13 +64,13 @@ h1,h2,h3 { font-family:'Playfair Display', serif; line-height:1.2; }
 .sb-user-badge {
   display:inline-block; margin-top:6px;
   background:linear-gradient(135deg,var(--coral),var(--amber));
-  color:white; font-size:10px; font-weight:600;
+  color:rgb(185, 133, 133); font-size:10px; font-weight:600;
   padding:3px 10px; border-radius:20px;
   text-transform:uppercase; letter-spacing:0.8px;
 }
 .sb-label {
   font-size:10px; font-weight:600; letter-spacing:1.2px;
-  text-transform:uppercase; color:rgba(255,255,255,0.35);
+  text-transform:uppercase; color:rgba(232, 22, 22, 0.35);
   margin: 20px 8px 8px;
 }
 .sb-label.mt { margin-top:16px; }
