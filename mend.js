@@ -1,281 +1,405 @@
-let state = { loggedIn:false, user:null, type:null };
-const OWNER_CODE = 'mend2025';
+/* ══════════════════════════════════
+   MEND.JS — Mental Wellness for African Youth
+   All JavaScript logic for the MEND platform
+══════════════════════════════════ */
 
-// ── SCROLL TO SECTION ──
-function scrollToSection(id) {
-  // If not on landing page, go there first then scroll
-  if (!document.getElementById('landing').classList.contains('active')) {
-    goToPage('landing');
-    setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
-    }, 100);
-  } else {
+/* ── STATE ── */
+let currentUser  = null;
+let pendingType  = null;
+let signupType   = null;
+
+/* ── DEMO USERS (for login simulation) ── */
+const DEMO_USERS = {
+  'youth@mend.com':     { name: 'Amara K.',         role: 'youth',     password: 'password' },
+  'therapist@mend.com': { name: 'Dr. Amara Okonkwo', role: 'therapist', password: 'password' },
+  'mentor@mend.com':    { name: 'Kwame T.',           role: 'mentor',    password: 'password' },
+  'owner@mend.com':     { name: 'Platform Owner',     role: 'owner',     password: 'password' },
+};
+
+/* ── SIDEBAR NAVIGATION CONFIG ── */
+const NAV_CONFIG = {
+  youth: [
+    { icon: '📊', label: 'Dashboard',    page: 'p-dashboard'   },
+    { icon: '🧠', label: 'Assessment',   page: 'p-assessment'  },
+    { icon: '❤️', label: 'Therapy',      page: 'p-therapy'     },
+    { icon: '🎨', label: 'Creative Space', page: 'p-creative'  },
+    { icon: '👥', label: 'Community',    page: 'p-community'   },
+    { icon: '📈', label: 'Career',       page: 'p-career'      },
+    { icon: '📚', label: 'Resources',    page: 'p-resources'   },
+  ],
+  therapist: [
+    { icon: '📊', label: 'Dashboard',  page: 'p-therapist-dashboard' },
+    { icon: '👥', label: 'My Clients', page: 'p-therapist-clients'   },
+    { icon: '📅', label: 'Schedule',   page: 'p-therapist-schedule'  },
+  ],
+  mentor: [
+    { icon: '🌟', label: 'Dashboard',     page: 'p-mentor-dashboard' },
+    { icon: '👤', label: 'My Mentees',    page: 'p-mentor-mentees'   },
+    { icon: '📅', label: 'Sessions',      page: 'p-mentor-sessions'  },
+    { icon: '📈', label: 'Career Paths',  page: 'p-mentor-career'    },
+    { icon: '💼', label: 'Job Board',     page: 'p-mentor-jobs'      },
+    { icon: '🎯', label: 'Talent Tracker', page: 'p-mentor-talent'   },
+    { icon: '🎓', label: 'Workshops',     page: 'p-mentor-workshops' },
+  ],
+  owner: [
+    { icon: '🏠', label: 'Overview',        page: 'p-admin-dashboard' },
+    { icon: '👥', label: 'All Users',        page: 'p-admin-users'     },
+    { icon: '🔐', label: 'Roles & Access',   page: 'p-admin-roles'     },
+    { icon: '📝', label: 'Content Review',   page: 'p-admin-content'   },
+    { icon: '📊', label: 'Analytics',        page: 'p-admin-analytics' },
+    { icon: '📋', label: 'Reports',          page: 'p-admin-reports'   },
+    { icon: '⚙️', label: 'Settings',         page: 'p-admin-settings'  },
+  ],
+};
+
+/* ══════════════════════════════════
+   PUBLIC PAGE NAVIGATION
+══════════════════════════════════ */
+
+/**
+ * Switch between public pages (landing, userType, authPage, contact)
+ * @param {string} id - element id of the page to show
+ */
+function showPage(id) {
+  document.querySelectorAll('#publicView .page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById(id);
+  if (pg) pg.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/**
+ * Show the auth page and switch to a specific tab
+ * @param {'signin'|'signup'} tab
+ */
+function showAuthPage(tab) {
+  showPage('authPage');
+  switchTab(tab);
+}
+
+/**
+ * Scroll to a section on the landing page
+ * @param {string} id - section element id
+ */
+function scrollTo_(id) {
+  showPage('landing');
+  setTimeout(() => {
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+/* ══════════════════════════════════
+   USER TYPE SELECTION
+══════════════════════════════════ */
+
+/**
+ * Handle user clicking a type card (youth / therapist / mentor)
+ * Redirects to the auth page with signup pre-selected
+ * @param {'youth'|'therapist'|'mentor'} type
+ */
+function selectType(type) {
+  pendingType = type;
+  showPage('authPage');
+  switchTab('signup');
+  setTimeout(() => {
+    document.querySelectorAll('.signup-type-opt').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll('.signup-type-opt').forEach(o => {
+      if (o.getAttribute('onclick') && o.getAttribute('onclick').includes("'" + type + "'")) {
+        o.classList.add('selected');
+      }
+    });
+    signupType = type;
+  }, 50);
+}
+
+/** Toggle the owner access code box visibility */
+function toggleOwnerBox() {
+  document.getElementById('ownerBox').classList.toggle('hidden');
+}
+
+/** Verify the owner access code and log in as owner if correct */
+function checkOwnerCode() {
+  const code = document.getElementById('ownerCode').value.trim();
+  const err  = document.getElementById('ownerErr');
+  if (code === 'owner2025') {
+    err.classList.add('hidden');
+    loginAs({ name: 'Platform Owner', role: 'owner' });
+  } else {
+    err.classList.remove('hidden');
   }
 }
 
-// ── GO TO AUTH (with tab preset) ──
-function goToAuth(tab) {
-  goToPage('auth');
-  switchAuthTab(tab);
+/* ══════════════════════════════════
+   AUTH — SIGN IN / SIGN UP
+══════════════════════════════════ */
+
+/**
+ * Switch between sign-in and sign-up forms
+ * @param {'signin'|'signup'} tab
+ */
+function switchTab(tab) {
+  const isSignIn = tab === 'signin';
+  document.getElementById('formIn').classList.toggle('hidden', !isSignIn);
+  document.getElementById('formUp').classList.toggle('hidden',  isSignIn);
+  document.getElementById('tabIn').classList.toggle('active',   isSignIn);
+  document.getElementById('tabUp').classList.toggle('active',  !isSignIn);
 }
 
-// ── SHOW SIGN IN (direct to auth page in sign-in mode) ──
-function showSignIn() {
-  goToPage('auth');
-  switchAuthTab('signin');
-}
-
-// ── SELECT SIGNUP TYPE (inline selector) ──
-function selectSignupType(type, el) {
-  state.type = type;
-  document.querySelectorAll('#signupTypeGrid .signup-type-opt').forEach(o => o.classList.remove('selected'));
+/**
+ * Select user type during sign-up
+ * @param {'youth'|'therapist'|'mentor'} type
+ * @param {HTMLElement} el - the clicked element
+ */
+function pickSignupType(type, el) {
+  signupType = type;
+  document.querySelectorAll('.signup-type-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
 }
 
-// ── AUTH TAB SWITCHER ──
-function switchAuthTab(tab) {
-  const signInForm = document.getElementById('formSignIn');
-  const signUpForm = document.getElementById('formSignUp');
-  const tabSI = document.getElementById('tabSignIn');
-  const tabSU = document.getElementById('tabSignUp');
-  if (tab === 'signin') {
-    signInForm.style.display = 'block';
-    signUpForm.classList.add('form-signup-hidden');
-    tabSI.classList.add('active');
-    tabSU.classList.remove('active');
+/** Handle sign-in form submission */
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd   = document.getElementById('loginPwd').value;
+
+  if (!email) { alert('Please enter your email address.'); return; }
+
+  const user = DEMO_USERS[email];
+  if (user && user.password === pwd) {
+    loginAs(user);
   } else {
-    signInForm.style.display = 'none';
-    signUpForm.classList.remove('form-signup-hidden');
-    tabSI.classList.remove('active');
-    tabSU.classList.add('active');
+    // Flexible demo: infer role from email keywords
+    const role = email.includes('therapist') ? 'therapist'
+               : email.includes('mentor')    ? 'mentor'
+               : email.includes('owner')     ? 'owner'
+               : 'youth';
+    const name = email.split('@')[0] || 'User';
+    loginAs({ name: capitalize(name), role });
   }
 }
 
-// ── REGISTER (Sign Up) ──
-function register() {
-  const name    = document.getElementById('signupName').value.trim();
-  const email   = document.getElementById('signupEmail').value.trim();
-  const pass    = document.getElementById('signupPassword').value;
-  const confirm = document.getElementById('signupConfirm').value;
-  if (!name)              { alert('Please enter your full name.'); return; }
-  if (!email)             { alert('Please enter your email address.'); return; }
-  if (pass.length < 6)    { alert('Password must be at least 6 characters.'); return; }
-  if (pass !== confirm)   { alert('Passwords do not match. Please try again.'); return; }
-  if (!state.type)        { alert('Please select your account type above (Youth, Therapist, or Mentor).'); return; }
+/** Handle sign-up form submission */
+function doRegister() {
+  const name = document.getElementById('regName').value.trim()  || 'New User';
+  const email = document.getElementById('regEmail').value.trim();
+  const pwd   = document.getElementById('regPwd').value;
+  const conf  = document.getElementById('regConfirm').value;
 
-  // Treat registration same as login — log the user in
-  document.getElementById('email').value = email;
-  document.getElementById('password').value = pass;
-  login();
+  if (!email)            { alert('Please enter your email address.'); return; }
+  if (pwd.length < 6)    { alert('Password must be at least 6 characters.'); return; }
+  if (pwd !== conf)      { alert('Passwords do not match.'); return; }
+
+  const role = signupType || pendingType || 'youth';
+  loginAs({ name, role });
 }
 
-function toggleOwnerAccess() {
-  const box = document.getElementById('ownerAccessBox');
-  box.style.display = box.style.display === 'none' || box.style.display === '' ? 'block' : 'none';
-}
+/**
+ * Log a user into the dashboard
+ * @param {{ name: string, role: string }} user
+ */
+function loginAs(user) {
+  currentUser = user;
 
-function verifyOwnerCode() {
-  const code = document.getElementById('ownerCode').value;
-  const errEl = document.getElementById('ownerCodeError');
-  if (code === OWNER_CODE) {
-    errEl.style.display = 'none';
-    document.getElementById('ownerAccessBox').style.display = 'none';
-    selectUserType('admin');
-  } else {
-    errEl.style.display = 'block';
-    document.getElementById('ownerCode').value = '';
+  // Switch views
+  document.getElementById('publicView').style.display = 'none';
+  document.getElementById('appView').classList.remove('hidden');
+  document.getElementById('appView').style.display = 'block';
+
+  // Populate user info in sidebar and topbar
+  document.getElementById('sbName').textContent    = user.name;
+  document.getElementById('sbRole').textContent    = capitalize(user.role);
+  document.getElementById('topbarUser').textContent = user.name;
+
+  // Update role-specific welcome names
+  if (user.role === 'mentor') {
+    const el = document.getElementById('mentorName');
+    if (el) el.textContent = user.name;
   }
+  if (user.role === 'owner') {
+    const el = document.getElementById('ownerName');
+    if (el) el.textContent = user.name;
+  }
+
+  // Build the sidebar nav for this role
+  buildSidebar(user.role);
+
+  // Navigate to the first page for this role
+  const first = NAV_CONFIG[user.role][0];
+  navTo(first.page);
 }
 
-function goToPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = document.getElementById(id);
-  if (el) el.classList.add('active');
-  const titles = {
-    landing:'MEND Platform', auth:'Sign In', userTypeSelection:'Choose Account Type',
-    contact:'Contact Us',
-    dashboard:'Wellness Dashboard', assessment:'Assessment', therapy:'Therapy Sessions',
-    creative:'Creative Space', community:'Community Forum', career:'Career Guidance', resources:'Resource Library',
-    'therapist-dashboard':'Therapist Dashboard', 'therapist-clients':'My Clients', 'therapist-schedule':'Schedule',
-    'mentor-dashboard':'Career Mentor Dashboard', 'mentor-mentees':'My Mentees', 'mentor-sessions':'Sessions',
-    'mentor-career':'Career Paths', 'mentor-jobs':'Job Board', 'mentor-talent':'Talent Tracker',
-    'mentor-workshops':'Workshops', 'mentor-resources':'Resources', 'mentor-profile':'My Profile',
-    'admin-dashboard':'Owner Overview', 'admin-users':'All Users', 'admin-roles':'Roles & Access',
-    'admin-content':'Content Review', 'admin-analytics':'Analytics', 'admin-reports':'Reports',
-    'admin-settings':'Platform Settings'
-  };
-  document.getElementById('topbarTitle').textContent = titles[id] || 'MEND';
-  if (window.innerWidth <= 768) closeSidebar();
+/** Log out and return to the public landing page */
+function doLogout() {
+  currentUser = null;
+  document.getElementById('appView').style.display = 'none';
+  document.getElementById('publicView').style.display = 'block';
+  showPage('landing');
 }
 
-function nav(id, btn) {
-  goToPage(id);
+/* ══════════════════════════════════
+   APP — SIDEBAR & NAVIGATION
+══════════════════════════════════ */
+
+/**
+ * Dynamically build sidebar nav buttons for a given role
+ * @param {string} role
+ */
+function buildSidebar(role) {
+  const nav   = NAV_CONFIG[role] || [];
+  const sbNav = document.getElementById('sbNav');
+  sbNav.innerHTML = `<div class="sb-label">${capitalize(role)} Menu</div>`;
+
+  nav.forEach((item, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sb-btn' + (i === 0 ? ' active' : '');
+    btn.innerHTML = `<span class="icon">${item.icon}</span>${item.label}`;
+    btn.onclick = () => navTo(item.page, btn);
+    sbNav.appendChild(btn);
+  });
+}
+
+/**
+ * Navigate to an app page
+ * @param {string} pageId - id of the page div to show
+ * @param {HTMLElement} [btnEl] - the sidebar button that triggered this (optional)
+ */
+function navTo(pageId, btnEl) {
+  // Hide all app content pages
+  document.querySelectorAll('.app-content .page').forEach(p => p.classList.remove('active'));
+
+  // Show the target page
+  const pg = document.getElementById(pageId);
+  if (pg) pg.classList.add('active');
+
+  // Update active sidebar button
+  const btn = btnEl || document.querySelector(`.sb-btn[onclick*="${pageId}"]`);
   if (btn) {
     document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    document.getElementById('topbarTitle').textContent = btn.textContent.trim();
+  }
+
+  // Auto-close sidebar on mobile after navigation
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+/** Toggle the sidebar open/closed (desktop: collapse, mobile: slide) */
+function toggleSidebar() {
+  const shell   = document.getElementById('appShell');
+  const sidebar = document.getElementById('appSidebar');
+  const overlay = document.getElementById('appOverlay');
+
+  if (window.innerWidth <= 768) {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+  } else {
+    shell.classList.toggle('sidebar-hidden');
   }
 }
 
-function selectUserType(type) {
-  state.type = type;
-  const labels = { youth:'Youth', therapist:'Therapist', mentor:'Career Mentor', admin:'Platform Owner' };
-  document.getElementById('authTitle').textContent = labels[type] + ' Sign In';
-  document.getElementById('authSub').textContent = 'Welcome back to MEND';
-  goToPage('auth');
-}
-
-function login() {
-  const email = document.getElementById('email').value.trim();
-  const pass  = document.getElementById('password').value;
-  if (!email || pass.length < 6) { alert('Please enter a valid email and password (min 6 characters).'); return; }
-  if (!state.type) { state.type = 'youth'; } // default for direct sign-in
-
-  state.loggedIn = true;
-  state.user = email.split('@')[0];
-  const labels = { youth:'Youth', therapist:'Therapist', mentor:'Career Mentor', admin:'Owner' };
-
-  document.getElementById('sbName').textContent = state.user;
-  document.getElementById('sbBadge').textContent = labels[state.type];
-  document.getElementById('topbarUser').textContent = `${labels[state.type]} · ${state.user}`;
-  document.getElementById('topbarUser').style.display = 'block';
-  document.getElementById('sidebar').classList.add('active');
-  document.getElementById('main').classList.add('shifted');
-
-  ['navYouth','navTherapist','navMentor','navAdmin'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
-  const navMap = { youth:'navYouth', therapist:'navTherapist', mentor:'navMentor', admin:'navAdmin' };
-  document.getElementById(navMap[state.type]).style.display = 'block';
-
-  const landing = { youth:'dashboard', therapist:'therapist-dashboard', mentor:'mentor-dashboard', admin:'admin-dashboard' };
-  goToPage(landing[state.type]);
-
-  const mw = document.getElementById('mentorWelcomeName');
-  const mp = document.getElementById('mentorProfileName');
-  const ow = document.getElementById('ownerWelcomeName');
-  if (mw) mw.textContent = state.user;
-  if (mp) mp.textContent = state.user;
-  if (ow) ow.textContent = state.user;
-
-  // Switch header to dashboard mode
-  document.getElementById('headerPublic').style.display = 'none';
-  document.getElementById('headerAnnounce').style.display = 'none';
-  document.getElementById('headerMobileNav').classList.remove('open');
-  document.getElementById('headerDash').classList.add('active');
-  const chip = document.getElementById('topbarUser');
-  chip.textContent = labels[state.type] + ' · ' + state.user;
-  chip.style.display = 'block';
-}
-
-function logout() {
-  state = { loggedIn:false, user:null, type:null };
-  document.getElementById('sidebar').classList.remove('active');
-  document.getElementById('main').classList.remove('shifted');
-  document.getElementById('topbarUser').style.display = 'none';
-  document.getElementById('email').value = '';
-  document.getElementById('password').value = '';
-  ['navYouth','navTherapist','navMentor','navAdmin'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
-  // Restore public header
-  document.getElementById('headerPublic').style.display = 'flex';
-  document.getElementById('headerAnnounce').style.display = 'flex';
-  document.getElementById('headerDash').classList.remove('active');
-  goToPage('landing');
-}
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('active');
-  document.getElementById('overlay').classList.toggle('active');
-}
-
+/** Close the sidebar (mobile overlay close) */
 function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('active');
-  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('appSidebar').classList.remove('open');
+  document.getElementById('appOverlay').classList.remove('visible');
 }
 
-function toggleMobileMenu() {
-  document.getElementById('headerMobileNav').classList.toggle('open');
-}
+/* ══════════════════════════════════
+   CONTACT FORM
+══════════════════════════════════ */
+let selectedSubject = '';
 
-function closeMobileMenu() {
-  document.getElementById('headerMobileNav').classList.remove('open');
-}
-
-function scrollToFeatures() {
-  goToPage('landing');
-  setTimeout(() => {
-    const el = document.querySelector('#landing .section');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  }, 100);
-}
-
-function scrollToTestimonials() {
-  goToPage('landing');
-  setTimeout(() => {
-    const sections = document.querySelectorAll('#landing .section');
-    if (sections.length) sections[sections.length-1].scrollIntoView({ behavior: 'smooth' });
-  }, 100);
-}
-
-function toggleOpt(btn) {
-  btn.closest('.q-options').querySelectorAll('.q-opt').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-function likePost(el, base) {
-  if (el.dataset.liked) { el.textContent = `❤️ ${base}`; delete el.dataset.liked; }
-  else { el.textContent = `❤️ ${base + 1}`; el.dataset.liked = '1'; }
-}
-
-function filterUsers(type, btn) {
-  document.querySelectorAll('#admin-users .filter-tabs .btn').forEach(b => {
-    b.className = 'btn btn-secondary btn-sm';
-  });
-  btn.className = 'btn btn-primary btn-sm';
-}
-
-// ── CONTACT FORM ──
-function selectContactSubject(subject, el) {
-  document.querySelectorAll('#contactSubjectGrid .contact-subject-opt').forEach(o => o.classList.remove('selected'));
+/**
+ * Select a contact subject chip
+ * @param {string} subject
+ * @param {HTMLElement} el
+ */
+function pickSubject(subject, el) {
+  selectedSubject = subject;
+  document.querySelectorAll('.subject-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
-  document.getElementById('contactSubject').value = subject;
 }
 
-function submitContactForm() {
-  const first   = document.getElementById('contactFirstName').value.trim();
-  const last    = document.getElementById('contactLastName').value.trim();
-  const email   = document.getElementById('contactEmail').value.trim();
-  const subject = document.getElementById('contactSubject').value;
-  const message = document.getElementById('contactMessage').value.trim();
+/** Submit the contact form */
+function submitContact() {
+  const firstName = document.getElementById('cFirst').value.trim();
+  const email     = document.getElementById('cEmail').value.trim();
 
-  if (!first)   { alert('Please enter your first name.'); return; }
-  if (!last)    { alert('Please enter your last name.'); return; }
-  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
-  if (!subject) { alert('Please select a subject above.'); return; }
-  if (message.length < 10) { alert('Please enter a message (at least 10 characters).'); return; }
+  if (!firstName || !email) {
+    alert('Please fill in your name and email address.');
+    return;
+  }
 
+  // Show success state
   document.getElementById('contactFormWrap').style.display = 'none';
-  document.getElementById('contactSuccess').classList.add('show');
+  document.getElementById('contactSuccess').classList.remove('hidden');
 }
 
-function resetContactForm() {
-  document.getElementById('contactFirstName').value = '';
-  document.getElementById('contactLastName').value  = '';
-  document.getElementById('contactEmail').value     = '';
-  document.getElementById('contactMessage').value   = '';
-  document.getElementById('contactSubject').value   = '';
-  document.querySelectorAll('#contactSubjectGrid .contact-subject-opt').forEach(o => o.classList.remove('selected'));
+/** Reset the contact form back to its initial state */
+function resetContact() {
   document.getElementById('contactFormWrap').style.display = 'block';
-  document.getElementById('contactSuccess').classList.remove('show');
+  document.getElementById('contactSuccess').classList.add('hidden');
+  document.getElementById('cFirst').value = '';
+  document.getElementById('cLast').value  = '';
+  document.getElementById('cEmail').value = '';
+  document.getElementById('cMsg').value   = '';
+  document.querySelectorAll('.subject-opt').forEach(o => o.classList.remove('selected'));
+  selectedSubject = '';
 }
 
-// ── FAQ ACCORDION ──
-function toggleFaq(item) {
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
+/* ══════════════════════════════════
+   INTERACTIVE COMPONENTS
+══════════════════════════════════ */
+
+/**
+ * Handle assessment option selection (radio-style within a group)
+ * @param {HTMLElement} el - the clicked option button
+ */
+function pickOpt(el) {
+  const group = el.closest('.q-options');
+  group.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/**
+ * Increment the like count on a creative post
+ * @param {HTMLElement} el - the like span element
+ * @param {number} n - current like count
+ */
+function likePost(el, n) {
+  el.textContent = '❤️ ' + (n + 1);
+  el.style.color = 'var(--coral)';
+  el.onclick = null; // prevent multiple clicks
+}
+
+/**
+ * Handle filter tab selection (e.g., All Users / Youth / Therapist)
+ * @param {HTMLElement} el - the clicked tab button
+ */
+function filterTab(el) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/**
+ * Toggle a feature ON/OFF switch
+ * @param {HTMLElement} btn - the toggle button
+ */
+function toggleFeature(btn) {
+  const isOn = btn.classList.contains('on');
+  btn.classList.toggle('on',  !isOn);
+  btn.classList.toggle('off',  isOn);
+  btn.textContent = isOn ? 'OFF' : 'ON';
+}
+
+/* ══════════════════════════════════
+   UTILITIES
+══════════════════════════════════ */
+
+/**
+ * Capitalise the first letter of a string
+ * @param {string} str
+ * @returns {string}
+ */
+function capitalize(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
