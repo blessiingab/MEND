@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Therapy Booking — MEND</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<nav class="navbar" id="navbar"></nav>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">Book a Therapy Session</div>
+      <div class="page-sub">All therapists are certified, culturally competent, and confidential</div>
+    </div>
+
+    <div class="alert alert-info mb-24">
+      🔒 <strong>Confidential:</strong> All sessions are 100% private. Video, voice, or text-based sessions available. Your mental health data is encrypted.
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('therapists', this)">Find a Therapist</button>
+      <button class="tab-btn"       onclick="showTab('my-bookings', this)">My Bookings</button>
+    </div>
+
+    <!-- Therapists Tab -->
+    <div id="tab-therapists">
+      <div class="grid-auto" id="therapists-grid">
+        <div style="color:var(--muted)">Loading therapists…</div>
+      </div>
+    </div>
+
+    <!-- My Bookings Tab -->
+    <div id="tab-my-bookings" class="hidden">
+      <div id="my-bookings-list">
+        <div style="color:var(--muted)">Loading your bookings…</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Booking Modal -->
+<div id="booking-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h3 style="margin-bottom:6px" id="modal-therapist-name">Book Session</h3>
+    <p id="modal-therapist-spec" style="margin-bottom:24px;font-size:14px"></p>
+
+    <div class="form-group">
+      <label class="form-label">Select a Date</label>
+      <input id="book-date" type="date" class="form-input" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Select a Time Slot</label>
+      <div id="modal-slots" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Session Note (optional)</label>
+      <textarea id="book-note" class="form-textarea" placeholder="What would you like to discuss? (optional — helps the therapist prepare)" style="min-height:90px"></textarea>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px">
+      <button class="btn btn-primary" onclick="confirmBooking()">Confirm Booking →</button>
+      <button class="btn btn-ghost"   onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="/main.js"></script>
+<script>
+if (!requireAuth()) throw 0;
+buildNav("therapy");
+buildSidebar("therapy");
+
+let selectedTherapist = null;
+let selectedSlot      = null;
+let therapistsList    = [];
+
+function showTab(tab, btn) {
+  document.getElementById("tab-therapists").classList.toggle("hidden", tab !== "therapists");
+  document.getElementById("tab-my-bookings").classList.toggle("hidden", tab !== "my-bookings");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  if (tab === "my-bookings") loadMyBookings();
+}
+
+async function loadTherapists() {
+  try {
+    therapistsList = await GET("/therapists");
+    document.getElementById("therapists-grid").innerHTML = therapistsList.map(t => `
+      <div class="therapist-card">
+        <div style="font-size:48px;margin-bottom:12px">${t.emoji}</div>
+        <div style="font-size:17px;font-weight:700;color:var(--dark)">${escHtml(t.name)}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:3px">${escHtml(t.specialty)}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:13px;color:var(--gold);font-weight:600">
+          ⭐ ${t.rating} <span style="color:var(--muted);font-weight:400">· ${t.sessions} sessions</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+          ${t.slots.map(s => `<span class="badge badge-green">${s}</span>`).join("")}
+        </div>
+        <button class="btn btn-primary btn-full" style="margin-top:18px" onclick="openBooking(${t.id})">
+          Book Session →
+        </button>
+      </div>
+    `).join("");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+function openBooking(id) {
+  selectedTherapist = therapistsList.find(t => t.id === id);
+  selectedSlot = null;
+  document.getElementById("modal-therapist-name").textContent = selectedTherapist.name;
+  document.getElementById("modal-therapist-spec").textContent = selectedTherapist.specialty;
+
+  // Default date = tomorrow
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById("book-date").value = tomorrow.toISOString().split("T")[0];
+
+  document.getElementById("modal-slots").innerHTML = selectedTherapist.slots.map(s => `
+    <button class="slot-btn" onclick="pickSlot('${s}', this)">${s}</button>
+  `).join("");
+
+  document.getElementById("booking-modal").classList.remove("hidden");
+}
+
+function pickSlot(slot, el) {
+  selectedSlot = slot;
+  document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("booked"));
+  el.classList.add("booked");
+}
+
+function closeModal() {
+  document.getElementById("booking-modal").classList.add("hidden");
+}
+
+async function confirmBooking() {
+  if (!selectedSlot) { toast("Please select a time slot", "error"); return; }
+  const date = document.getElementById("book-date").value;
+  const note = document.getElementById("book-note").value;
+  if (!date)  { toast("Please select a date", "error"); return; }
+
+  try {
+    await POST("/bookings", { therapistId: selectedTherapist.id, date, slot: selectedSlot, note });
+    toast("Session booked with " + selectedTherapist.name + "! 💬");
+    closeModal();
+    loadMyBookings();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadMyBookings() {
+  try {
+    const bookings = await GET("/bookings");
+    const el = document.getElementById("my-bookings-list");
+    if (!bookings.length) {
+      el.innerHTML = `<div style="padding:32px;text-align:center;color:var(--muted)">No bookings yet. <a href="#" style="color:var(--terracotta);font-weight:600" onclick="showTab('therapists',document.querySelector('.tab-btn'))">Find a therapist →</a></div>`;
+      return;
+    }
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Therapist</th><th>Specialty</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${bookings.map(b => `
+        <tr>
+          <td>${b.therapist?.emoji || "👤"} <strong>${escHtml(b.therapist?.name || "—")}</strong></td>
+          <td style="color:var(--muted)">${escHtml(b.therapist?.specialty || "—")}</td>
+          <td>${b.date}</td>
+          <td>${b.slot}</td>
+          <td><span class="badge ${b.status === "confirmed" ? "badge-green" : "badge-orange"}">${b.status}</span></td>
+          <td>${b.status === "confirmed" ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking(${b.id})">Cancel</button>` : "—"}</td>
+        </tr>`).join("")}
+      </tbody></table></div>`;
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function cancelBooking(id) {
+  if (!confirm("Cancel this booking?")) return;
+  try {
+    await DELETE("/bookings/" + id);
+    toast("Booking cancelled.");
+    loadMyBookings();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+// Close modal on overlay click
+document.getElementById("booking-modal").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Set min date for booking
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("book-date").min = today;
+});
+
+loadTherapists();
+</script>
+</body>
+</html>

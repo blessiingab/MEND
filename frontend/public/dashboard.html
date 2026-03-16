@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — MEND</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<nav class="navbar" id="navbar"></nav>
+
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header" id="greeting">
+      <div class="page-title">Good morning 🌱</div>
+      <div class="page-sub">Here's your wellbeing overview for today</div>
+    </div>
+
+    <!-- Mood Check-in -->
+    <div class="card-flat mb-24" id="mood-section">
+      <div class="flex justify-between items-center mb-16">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--dark)">How are you feeling today?</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:3px">Check in daily to track your emotional journey</div>
+        </div>
+        <span id="mood-logged" class="badge badge-green hidden">✓ Logged</span>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="mood-btn" onclick="logMood('Thriving','🌟')"><div class="mood-emoji">🌟</div>Thriving</button>
+        <button class="mood-btn" onclick="logMood('Good','😊')"><div class="mood-emoji">😊</div>Good</button>
+        <button class="mood-btn" onclick="logMood('Okay','😐')"><div class="mood-emoji">😐</div>Okay</button>
+        <button class="mood-btn" onclick="logMood('Low','😔')"><div class="mood-emoji">😔</div>Low</button>
+        <button class="mood-btn" onclick="logMood('Struggling','😢')"><div class="mood-emoji">😢</div>Struggling</button>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row mb-24" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-num color-terra" id="stat-streak">—</div>
+        <div class="stat-label">🔥 Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num color-green" id="stat-sessions">—</div>
+        <div class="stat-label">💬 Sessions Booked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--gold)" id="stat-stories">—</div>
+        <div class="stat-label">✍️ Stories Shared</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num color-green" id="stat-score">—</div>
+        <div class="stat-label">💚 Wellness Score</div>
+      </div>
+    </div>
+
+    <!-- Progress + Quick Actions -->
+    <div class="grid-2 mb-24">
+      <div class="card-flat">
+        <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:20px">Wellbeing Progress</div>
+        <div id="progress-area">
+          <div style="color:var(--muted);font-size:14px">Complete an assessment to see your progress →</div>
+        </div>
+      </div>
+
+      <div class="card-flat">
+        <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">Quick Actions</div>
+        <a href="/assessment.html" class="quick-link">🧠 Take Mental Health Assessment</a>
+        <a href="/therapy.html"    class="quick-link">💬 Book a Therapy Session</a>
+        <a href="/creative.html"   class="quick-link">✍️ Share a Story</a>
+        <a href="/career.html"     class="quick-link">🚀 Explore Career Tools</a>
+        <a href="/resources.html"  class="quick-link">📚 Browse Resources</a>
+      </div>
+    </div>
+
+    <!-- Upcoming Bookings -->
+    <div class="card-flat mb-24">
+      <div class="flex justify-between items-center mb-16">
+        <div style="font-size:15px;font-weight:700;color:var(--dark)">Upcoming Sessions</div>
+        <a href="/therapy.html" class="btn-ghost">Book New →</a>
+      </div>
+      <div id="bookings-preview">
+        <div style="color:var(--muted);font-size:14px;padding:12px 0">No upcoming sessions. <a href="/therapy.html" style="color:var(--terracotta);font-weight:600">Book your first one →</a></div>
+      </div>
+    </div>
+
+    <!-- Recent Stories -->
+    <div class="card-flat">
+      <div class="flex justify-between items-center mb-16">
+        <div style="font-size:15px;font-weight:700;color:var(--dark)">Community Stories</div>
+        <a href="/creative.html" class="btn-ghost">See All →</a>
+      </div>
+      <div id="stories-preview"></div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+<style>
+  .quick-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; color: var(--dark);
+    margin-bottom: 6px; transition: all 0.2s;
+    background: var(--warm-white);
+  }
+  .quick-link:hover { background: var(--terracotta-dim); color: var(--terracotta); }
+</style>
+<script src="/main.js"></script>
+<script>
+  if (!requireAuth()) throw 0;
+  const user = getUser();
+
+  // Greeting
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+  document.getElementById("greeting").innerHTML = `
+    <div class="page-title">Good ${greet}, ${user.name.split(" ")[0]} 🌱</div>
+    <div class="page-sub">Here's your wellbeing overview for today</div>
+  `;
+
+  buildNav("dashboard");
+  buildSidebar("dashboard");
+
+  async function logMood(mood, emoji) {
+    document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("active"));
+    event.currentTarget.classList.add("active");
+    try {
+      await POST("/mood", { mood, emoji });
+      document.getElementById("mood-logged").classList.remove("hidden");
+      toast("Mood logged — " + emoji + " " + mood);
+      loadStats();
+    } catch (e) { toast(e.message, "error"); }
+  }
+
+  async function loadStats() {
+    try {
+      const [profile, bookings, myStories, assessments] = await Promise.all([
+        GET("/profile"),
+        GET("/bookings"),
+        GET("/stories"),
+        GET("/assessments")
+      ]);
+
+      document.getElementById("stat-streak").textContent   = (profile.streak || 0) + " Days";
+      document.getElementById("stat-sessions").textContent = bookings.filter(b => b.status === "confirmed").length;
+      document.getElementById("stat-score").textContent    = assessments.length
+        ? assessments[assessments.length - 1].totalScore + "%"
+        : "N/A";
+
+      // Count user's own stories (all stories for demo)
+      document.getElementById("stat-stories").textContent = myStories.length;
+
+      // Progress bars
+      if (assessments.length) {
+        const last = assessments[assessments.length - 1];
+        const s = last.scores;
+        document.getElementById("progress-area").innerHTML = [
+          ["Emotional Awareness", s.emotional, "var(--terracotta)"],
+          ["Energy Levels",       s.energy,    "var(--green)"],
+          ["Social Connection",   s.social,    "var(--gold)"],
+          ["Sleep Quality",       s.sleep,     "var(--brown)"],
+        ].map(([label, val, color]) => `
+          <div style="margin-bottom:16px">
+            <div class="flex justify-between mb-8">
+              <span style="font-size:13px">${label}</span>
+              <span style="font-size:13px;font-weight:700;color:${color}">${val}%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" style="width:${val}%;background:${color}"></div></div>
+          </div>
+        `).join("");
+      }
+
+      // Bookings preview
+      const active = bookings.filter(b => b.status === "confirmed").slice(0, 3);
+      if (active.length) {
+        document.getElementById("bookings-preview").innerHTML = active.map(b => `
+          <div style="display:flex;align-items:center;gap:14px;padding:12px;background:var(--cream);border-radius:10px;margin-bottom:8px">
+            <span style="font-size:22px">${b.therapist?.emoji || "👤"}</span>
+            <div>
+              <div style="font-size:14px;font-weight:700">${b.therapist?.name || "Therapist"}</div>
+              <div style="font-size:12px;color:var(--muted)">${b.date} at ${b.slot}</div>
+            </div>
+            <span class="badge badge-green" style="margin-left:auto">Confirmed</span>
+          </div>
+        `).join("");
+      }
+
+      // Stories preview (latest 3)
+      const stories = myStories.slice(0, 3);
+      document.getElementById("stories-preview").innerHTML = stories.map(s => `
+        <div style="padding:14px 0;border-bottom:1px solid var(--cream)">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+            <span style="font-size:20px">${s.emoji}</span>
+            <div>
+              <span style="font-size:14px;font-weight:700">${escHtml(s.author)}</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:8px">${timeAgo(s.createdAt)}</span>
+            </div>
+          </div>
+          <p style="font-size:14px;color:var(--dark);line-height:1.7">${escHtml(s.content.substring(0,140))}…</p>
+        </div>
+      `).join("");
+    } catch (e) {
+      toast(e.message, "error");
+    }
+  }
+
+  loadStats();
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — MEND</title>
+  <link rel="stylesheet" href="/frontend/mend.css" />
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-box">
+    <a href="/" class="auth-logo">M<span>END</span> 🌱</a>
+    <h2 class="auth-title">Create your account</h2>
+    <p class="auth-sub">Start your healing and growth journey today</p>
+
+    <div id="error-msg" class="alert alert-error hidden"></div>
+
+    <div class="form-group">
+      <label class="form-label">Full Name *</label>
+      <input id="name" class="form-input" type="text" placeholder="Your full name" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address *</label>
+      <input id="email" class="form-input" type="email" placeholder="you@example.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Age</label>
+      <input id="age" class="form-input" type="number" placeholder="15 – 30" min="13" max="35" />
+      <div class="form-hint">MEND is designed for youth aged 15–30</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password *</label>
+      <input id="password" class="form-input" type="password" placeholder="Minimum 6 characters" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Confirm Password *</label>
+      <input id="confirm" class="form-input" type="password" placeholder="Repeat your password" />
+    </div>
+
+    <div>
+      <input id="agree" type="checkbox">
+      <label for="agree" >
+        I agree to MEND's <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>. My mental health data is confidential and encrypted.
+      </label>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="submit-btn" onclick="doRegister()">
+      Create Account →
+    </button>
+
+    <div class="auth-divider"><span>or</span></div>
+    <div class="auth-switch">
+      Already have an account? <a href="/public/login.html">Sign in</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="/frontend/mend.js"></script>
+<script>
+  redirectIfLoggedIn();
+
+  async function doRegister() {
+    const name     = document.getElementById("name").value.trim();
+    const email    = document.getElementById("email").value.trim();
+    const age      = document.getElementById("age").value;
+    const password = document.getElementById("password").value;
+    const confirm  = document.getElementById("confirm").value;
+    const agree    = document.getElementById("agree").checked;
+    const errEl    = document.getElementById("error-msg");
+    const btn      = document.getElementById("submit-btn");
+
+    errEl.classList.add("hidden");
+
+    if (!name || !email || !password) {
+      errEl.textContent = "⚠ Please fill in all required fields.";
+      errEl.classList.remove("hidden"); return;
+    }
+    if (password.length < 6) {
+      errEl.textContent = "⚠ Password must be at least 6 characters.";
+      errEl.classList.remove("hidden"); return;
+    }
+    if (password !== confirm) {
+      errEl.textContent = "⚠ Passwords do not match.";
+      errEl.classList.remove("hidden"); return;
+    }
+    if (!agree) {
+      errEl.textContent = "⚠ Please agree to the terms to continue.";
+      errEl.classList.remove("hidden"); return;
+    }
+
+    btn.textContent = "Creating account…";
+    btn.disabled = true;
+
+    try {
+      const data = await POST("/auth/register", { name, email, password, age: age ? Number(age) : null });
+      setAuth(data.token, data.user);
+      toast("Welcome to MEND, " + data.user.name + "! 🌱");
+      setTimeout(() => window.location.href = "/dashboard.html", 800);
+    } catch (err) {
+      errEl.textContent = "⚠ " + err.message;
+      errEl.classList.remove("hidden");
+      btn.textContent = "Create Account →";
+      btn.disabled = false;
+    }
+  }
+
+  // Allow Enter key
+  document.addEventListener("keydown", e => { if (e.key === "Enter") doRegister(); });
+</script>
+</body>
+</html>

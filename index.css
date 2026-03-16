@@ -1,0 +1,243 @@
+/* ============================================================
+   MEND — Landing Page Styles  (index.css)
+   Extracted from index.html inline styles
+============================================================ */
+
+/* ── Nav logo spacing ── */
+.nav-logo {
+  margin-right: auto;
+}
+
+/* ── Hero orbs ── */
+.hero-orb-terracotta {
+  width: 500px;
+  height: 500px;
+  background: #C4622D;
+  top: -120px;
+  right: -80px;
+}
+
+.hero-orb-green {
+  width: 350px;
+  height: 350px;
+  background: #2D5016;
+  bottom: -80px;
+  left: 60px;
+}
+
+/* ── Hero visual elements ── */
+.hero-circle-emoji {
+  font-size: 72px;
+}
+
+.hero-circle-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--brown);
+  font-weight: 700;
+}
+
+/* ── Hero float badges ── */
+.hero-badge-therapy {
+  top: 20px;
+  right: -10px;
+}
+
+.hero-badge-therapy .badge-sub {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.hero-badge-community {
+  bottom: 40px;
+  left: -20px;
+}
+
+.hero-badge-community .badge-sub {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ── Stats band ── */
+.stats-band-num {
+  /* inherits from mend.css; no extra overrides */
+}
+
+/* ── Features section ── */
+.features-title {
+  margin-bottom: 14px;
+}
+
+.features-subtitle {
+  max-width: 520px;
+}
+
+/* ── Feature cards ── */
+.feature-card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.feature-icon-mental {
+  background: rgba(196, 98, 45, 0.12);
+}
+
+.feature-icon-creative {
+  background: rgba(122, 173, 74, 0.15);
+}
+
+.feature-icon-talent {
+  background: rgba(212, 168, 67, 0.15);
+}
+
+.feature-icon-career {
+  background: rgba(107, 61, 30, 0.10);
+}
+
+.feature-icon-peer {
+  background: rgba(196, 98, 45, 0.10);
+}
+
+.feature-icon-safe {
+  background: rgba(45, 80, 22, 0.12);
+}
+
+/* ── Community section ── */
+.community-section {
+  background: var(--cream);
+  padding: 80px 48px;
+}
+
+.community-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.community-stories-header {
+  margin-bottom: 48px;
+}
+
+.community-grid {
+  text-align: left;
+}
+
+/* ── Testimonial cards ── */
+.testimonial-icon {
+  font-size: 28px;
+  margin-bottom: 14px;
+}
+
+.testimonial-quote {
+  font-style: italic;
+  color: var(--dark);
+  margin-bottom: 16px;
+}
+
+.testimonial-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.testimonial-location {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ── About section ── */
+.about-section {
+  background: var(--warm-white);
+  padding: 80px 48px;
+}
+
+.about-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about-description {
+  margin-bottom: 16px;
+}
+
+.about-description-last {
+  margin-bottom: 28px;
+}
+
+.about-mission-box {
+  background: var(--cream);
+  border-radius: 24px;
+  padding: 36px;
+}
+
+.about-mission-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: var(--dark);
+}
+
+.about-mission-list {
+  list-style: none;
+}
+
+.about-mission-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.about-mission-item-last {
+  display: flex;
+  gap: 12px;
+  font-size: 15px;
+}
+
+/* ── CTA band ── */
+.cta-btn {
+  background: white;
+  color: var(--terracotta);
+  padding: 15px 36px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 32px;
+}
+
+/* ── Footer ── */
+.footer {
+  background: #1A1208;
+  padding: 40px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--terracotta);
+}
+
+.footer-copy {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 13px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 13px;
+}
+
+.footer-link {
+  cursor: pointer;
+}

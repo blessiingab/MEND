@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — MEND</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<nav class="navbar" id="navbar"></nav>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">⚙️ Admin Panel</div>
+      <div class="page-sub">Platform management and content moderation</div>
+    </div>
+
+    <div class="alert alert-warning mb-24">
+      ⚠️ <strong>Admin Only.</strong> Actions here affect all platform users. Use with care.
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row mb-24" id="admin-stats">
+      <div class="stat-card"><div class="stat-num color-terra" id="a-users">—</div><div class="stat-label">👥 Total Users</div></div>
+      <div class="stat-card"><div class="stat-num color-green" id="a-bookings">—</div><div class="stat-label">💬 Total Bookings</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--gold)" id="a-stories">—</div><div class="stat-label">✍️ Total Stories</div></div>
+      <div class="stat-card"><div class="stat-num color-green" id="a-assess">—</div><div class="stat-label">🧠 Assessments</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--brown)" id="a-moods">—</div><div class="stat-label">😊 Mood Logs</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('users',this)">👥 Users</button>
+      <button class="tab-btn"        onclick="showTab('stories',this)">✍️ Stories</button>
+      <button class="tab-btn"        onclick="showTab('bookings',this)">📅 Bookings</button>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:15px;font-weight:700;color:var(--dark)">Registered Users</div>
+        <input id="user-search" class="form-input" placeholder="Search users…" style="max-width:240px" oninput="filterUsers()" />
+      </div>
+      <div class="table-wrap" id="users-table">
+        <div style="padding:24px;color:var(--muted)">Loading users…</div>
+      </div>
+    </div>
+
+    <!-- STORIES TAB -->
+    <div id="tab-stories" class="hidden">
+      <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">All Community Stories</div>
+      <div id="admin-stories-list">
+        <div style="color:var(--muted)">Loading stories…</div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS TAB -->
+    <div id="tab-bookings" class="hidden">
+      <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">All Therapy Bookings</div>
+      <div class="table-wrap" id="admin-bookings-table">
+        <div style="padding:24px;color:var(--muted)">Loading bookings…</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+<script src="/main.js"></script>
+<script>
+if (!requireAuth()) throw 0;
+if (!requireAdmin()) throw 0;
+buildNav("admin");
+buildSidebar("admin");
+
+let allUsers = [];
+
+function showTab(tab, btn) {
+  ["users","stories","bookings"].forEach(t => document.getElementById("tab-"+t).classList.add("hidden"));
+  document.getElementById("tab-" + tab).classList.remove("hidden");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  if (tab === "stories")  loadAdminStories();
+  if (tab === "bookings") loadAdminBookings();
+}
+
+async function loadStats() {
+  try {
+    const s = await GET("/admin/stats");
+    document.getElementById("a-users").textContent    = s.totalUsers;
+    document.getElementById("a-bookings").textContent = s.totalBookings;
+    document.getElementById("a-stories").textContent  = s.totalStories;
+    document.getElementById("a-assess").textContent   = s.totalAssessments;
+    document.getElementById("a-moods").textContent    = s.totalMoodLogs;
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadUsers() {
+  try {
+    allUsers = await GET("/admin/users");
+    renderUsers(allUsers);
+  } catch (e) { toast(e.message, "error"); }
+}
+
+function filterUsers() {
+  const q = document.getElementById("user-search").value.toLowerCase();
+  renderUsers(q ? allUsers.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)) : allUsers);
+}
+
+function renderUsers(list) {
+  document.getElementById("users-table").innerHTML = `
+    <table>
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Age</th><th>Role</th><th>Streak</th><th>Joined</th><th>Action</th></tr></thead>
+      <tbody>
+        ${list.map(u => `
+          <tr>
+            <td style="color:var(--muted)">${u.id}</td>
+            <td><strong>${escHtml(u.name)}</strong></td>
+            <td style="color:var(--muted)">${escHtml(u.email)}</td>
+            <td>${u.age || "—"}</td>
+            <td><span class="badge ${u.role === "admin" ? "badge-orange" : "badge-green"}">${u.role}</span></td>
+            <td>🔥 ${u.streak || 0}</td>
+            <td style="color:var(--muted)">${new Date(u.createdAt).toLocaleDateString()}</td>
+            <td>
+              ${u.role !== "admin"
+                ? `<button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id},'${escHtml(u.name)}')">Delete</button>`
+                : `<span style="color:var(--muted);font-size:13px">Protected</span>`
+              }
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+async function deleteUser(id, name) {
+  if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+  try {
+    await DELETE("/admin/users/" + id);
+    toast("User deleted.");
+    allUsers = allUsers.filter(u => u.id !== id);
+    renderUsers(allUsers);
+    loadStats();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadAdminStories() {
+  try {
+    const stories = await GET("/admin/stories");
+    if (!stories.length) {
+      document.getElementById("admin-stories-list").innerHTML = "<div style='color:var(--muted)'>No stories yet.</div>";
+      return;
+    }
+    document.getElementById("admin-stories-list").innerHTML = stories.map(s => `
+      <div class="story-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div>
+            <span style="font-size:14px;font-weight:700">${escHtml(s.author)}</span>
+            <span style="font-size:12px;color:var(--muted);margin-left:8px">${timeAgo(s.createdAt)}</span>
+            ${s.tags?.length ? s.tags.map(t=>`<span class="badge badge-muted" style="margin-left:4px">#${t}</span>`).join("") : ""}
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteStory(${s.id})">Remove</button>
+        </div>
+        ${s.title ? `<div style="font-weight:700;margin-bottom:6px">${escHtml(s.title)}</div>` : ""}
+        <div style="font-size:14px;color:var(--dark);line-height:1.7">${escHtml(s.content.substring(0,200))}${s.content.length > 200 ? "…" : ""}</div>
+        <div style="display:flex;gap:12px;margin-top:12px;font-size:13px;color:var(--muted)">
+          <span>👏 ${s.likes}</span><span>❤️ ${s.hearts}</span>
+        </div>
+      </div>
+    `).join("");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function deleteStory(id) {
+  if (!confirm("Remove this story from the platform?")) return;
+  try {
+    await DELETE("/admin/stories/" + id);
+    toast("Story removed.");
+    loadAdminStories();
+    loadStats();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadAdminBookings() {
+  try {
+    const bookings = await GET("/admin/bookings");
+    if (!bookings.length) {
+      document.getElementById("admin-bookings-table").innerHTML = "<div style='padding:24px;color:var(--muted)'>No bookings yet.</div>";
+      return;
+    }
+    document.getElementById("admin-bookings-table").innerHTML = `
+      <table>
+        <thead><tr><th>#</th><th>User</th><th>Therapist</th><th>Date</th><th>Time</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody>
+          ${bookings.map(b => `
+            <tr>
+              <td style="color:var(--muted)">${b.id}</td>
+              <td><strong>${escHtml(b.user?.name || "Unknown")}</strong></td>
+              <td>${b.therapist?.emoji || "👤"} ${escHtml(b.therapist?.name || "—")}</td>
+              <td>${b.date}</td>
+              <td>${b.slot}</td>
+              <td><span class="badge ${b.status === "confirmed" ? "badge-green" : "badge-orange"}">${b.status}</span></td>
+              <td style="color:var(--muted);font-size:13px">${escHtml(b.note || "—")}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (e) { toast(e.message, "error"); }
+}
+
+loadStats();
+loadUsers();
+</script>
+</body>
+</html>

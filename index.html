@@ -1,693 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MEND — Mental Wellness for African Youth</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="mend.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEND  Mental &amp; Emotional Nurturing Digital</title>
+  <link rel="stylesheet" href="mend.css" />
+  <link rel="stylesheet" href="index.css" />
 </head>
 <body>
 
-<!-- ══════════════════════════════════
-     PUBLIC PAGES
-══════════════════════════════════ -->
-<div id="publicView">
+<!-- ── Landing Nav ── -->
+<nav class="landing-nav">
+  <a href="/" class="nav-logo">M<span>END</span></a>
+  <a href="#features" class="nav-link">Features</a>
+  <a href="#community" class="nav-link">Community</a>
+  <a href="#about" class="nav-link">About</a>
+  <a href="/frontend/public/login.html"    class="btn btn-ghost btn-sm">Sign In</a>
+  <a href="/frontend/public/register.html" class="btn btn-primary btn-sm">Get Started →</a>
+</nav>
 
-  <!-- NAV -->
-  <nav class="navbar">
-    <div class="nav-brand" onclick="showPage('landing')">
-      <span class="nav-brand-dot">♥</span> MEND
-    </div>
-    <div class="nav-links">
-      <button class="nav-link" onclick="showPage('landing')">Home</button>
-      <button class="nav-link" onclick="scrollTo_('features')">Features</button>
-      <button class="nav-link" onclick="scrollTo_('how')">How It Works</button>
-      <button class="nav-link" onclick="scrollTo_('who')">Who It's For</button>
-      <button class="nav-link" onclick="showPage('contact')">Contact</button>
-    </div>
-    <div class="nav-actions">
-      <button class="btn btn-ghost btn-sm" onclick="showAuthPage('signin')">Sign In</button>
-      <button class="btn btn-primary btn-sm" onclick="showPage('userType')">Get Started →</button>
-    </div>
-  </nav>
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-orb hero-orb-terracotta"></div>
+  <div class="hero-orb hero-orb-green"></div>
 
-  <!-- ── LANDING ── -->
-  <div id="landing" class="page active">
+  <div class="hero-content">
+    <div>
+      <div class="hero-tag animate">🌍 Built for African Youth</div>
+      <h1 class="hero-title animate-2">
+        Your <em>mind</em><br>deserves to be<br><em>nurtured</em>
+      </h1>
+      <p class="hero-sub animate-3">
+        MEND is a safe, culturally sensitive digital platform helping young Africans (ages 15–30) access mental health support, express themselves creatively, and grow their careers.
+      </p>
+      <div class="hero-actions animate-4">
+        <a href="/public/register.html" class="btn btn-primary">Begin Your Journey →</a>
+        <a href="#features"             class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
 
-    <div class="hero">
-      <div class="hero-text">
-        <h1>Mental Wellness<br>for <span>African Youth</span></h1>
-        <p>A safe, culturally-sensitive platform for mental health support, creative expression, talent nurturing, and career advancement.</p>
-        <div class="hero-btns">
-          <button class="btn btn-primary btn-lg" onclick="showPage('userType')">Get Started Free</button>
-          <button class="btn btn-secondary btn-lg" onclick="scrollTo_('how')">How It Works</button>
+    <div class="hero-visual animate-3">
+      <div class="hero-circle">
+        <div class="hero-circle-inner">
+          <div class="hero-circle-emoji">🌱</div>
+          <div class="hero-circle-label">MEND</div>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-card"><div class="hero-card-icon">🧠</div><div><div class="hero-card-title">Mental Health Support</div><div class="hero-card-sub">Connect with certified therapists</div></div></div>
-        <div class="hero-card"><div class="hero-card-icon">🎨</div><div><div class="hero-card-title">Creative Expression</div><div class="hero-card-sub">Share your story and art</div></div></div>
-        <div class="hero-card"><div class="hero-card-icon">📈</div><div><div class="hero-card-title">Career Guidance</div><div class="hero-card-sub">Mentors + opportunities</div></div></div>
-      </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <div class="section" id="features">
-      <div class="section-header"><h2>What MEND Offers</h2><p>Everything you need to thrive — in one place.</p></div>
-      <div class="grid-4">
-        <div class="card feat-card"><div class="feat-icon coral">🧠</div><div class="feat-title">Mental Health</div><div class="feat-desc">Self-assessments and access to qualified therapists for professional support.</div></div>
-        <div class="card feat-card"><div class="feat-icon amber">🎨</div><div class="feat-title">Creative Space</div><div class="feat-desc">Share stories, art, and creative work in a safe supportive community.</div></div>
-        <div class="card feat-card"><div class="feat-icon sage">⭐</div><div class="feat-title">Talent Nurturing</div><div class="feat-desc">Discover and develop your talents with mentor guidance.</div></div>
-        <div class="card feat-card"><div class="feat-icon sky">📈</div><div class="feat-title">Career Guidance</div><div class="feat-desc">Matched mentorship, job boards, and professional resources.</div></div>
-      </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <div class="section" id="how">
-      <div class="section-header"><h2>How MEND Works</h2><p>Three simple steps to start your journey.</p></div>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-title">Register</div><div class="step-desc">Create a free account. Choose your role: Youth, Therapist, or Mentor.</div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-title">Assess</div><div class="step-desc">Complete a well-being check-in to understand your emotional state.</div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-title">Connect &amp; Grow</div><div class="step-desc">Access therapists, mentors, resources, and a supportive community.</div></div>
-      </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <div class="section" id="who">
-      <div class="section-header"><h2>Who Uses MEND?</h2></div>
-      <div class="grid-4">
-        <div class="card who-card"><div class="who-icon">👨‍👩‍👧‍👦</div><div class="who-title">Youth (15–30)</div><div class="who-desc">Access mental health support, express creativity, and advance your career.</div></div>
-        <div class="card who-card"><div class="who-icon">👨‍⚕️</div><div class="who-title">Therapists</div><div class="who-desc">Provide professional services. Manage clients, schedules, and progress.</div></div>
-        <div class="card who-card"><div class="who-icon">🌟</div><div class="who-title">Career Mentors</div><div class="who-desc">Guide youth through career development and professional growth.</div></div>
-    </div>  
-
-    <div class="cta-strip">
-      <h2>Ready to Start Your Journey?</h2>
-      <p>Join thousands of African youth taking control of their mental health and career.</p>
-      <button class="btn btn-white btn-lg" onclick="showPage('userType')">Sign Up Free →</button>
-    </div>
-
-    <div class="footer">
-      <div class="footer-brand">♥ MEND</div>
-      <div class="footer-copy">© 2025 MEND Platform · Mental Wellness for African Youth</div>
-    </div>
-
-  </div><!-- /landing -->
-
-  <!-- ── USER TYPE SELECTION ── -->
-  <div id="userType" class="page">
-    <div class="type-page">
-      <button class="back-btn" onclick="showPage('landing')">← Back to Home</button>
-      <h2>Choose Your Account Type</h2>
-      <p>Select the option that best describes you</p>
-      <div class="type-grid">
-        <div class="type-card" onclick="selectType('youth')"><div class="icon">👨‍👩‍👧‍👦</div><div class="name">Youth</div><div class="desc">Mental health support, creative expression, and career guidance (Age 15–30)</div></div>
-        <div class="type-card" onclick="selectType('therapist')"><div class="icon">👨‍⚕️</div><div class="name">Therapist</div><div class="desc">A mental health professional ready to support young people</div></div>
-        <div class="type-card" onclick="selectType('mentor')"><div class="icon">🌟</div><div class="name">Career Mentor</div><div class="desc">A professional guiding youth through career development and growth</div></div>
-      </div>
-      <button class="owner-link" onclick="toggleOwnerBox()">Platform Owner Access</button>
-      <div class="owner-box hidden" id="ownerBox">
-        <div class="form-group">
-          <label class="form-label" for="ownerCode">Owner Access Code</label>
-          <input type="password" class="form-input" id="ownerCode" placeholder="Enter access code" title="Platform owner access code" onkeydown="if(event.key==='Enter')checkOwnerCode()">
+      <div class="hero-float-badge hero-badge-therapy">
+        <span>💬</span>
+        <div>
+          <div>Therapy Sessions</div>
+          <div class="badge-sub">Available Now</div>
         </div>
-        <button class="btn btn-primary btn-sm w-full mt-8" onclick="checkOwnerCode()">Enter</button>
-        <div class="owner-error hidden" id="ownerErr">Incorrect code. Try again.</div>
       </div>
-    </div>
-  </div>
-
-  <!-- ── AUTH ── -->
-  <div id="authPage" class="page">
-    <div class="auth-page">
-      <div>
-        <button class="auth-back" onclick="showPage('userType')">← Back</button>
-        <div class="auth-card">
-          <div class="auth-logo">♥ MEND</div>
-          <div class="auth-tabs">
-            <button class="auth-tab active" id="tabIn" onclick="switchTab('signin')">Sign In</button>
-            <button class="auth-tab" id="tabUp" onclick="switchTab('signup')">Sign Up Free</button>
-          </div>
-
-          <!-- SIGN IN -->
-          <div id="formIn">
-            <div class="auth-title">Welcome back</div>
-            <div class="auth-sub">Sign in to your MEND account</div>
-            <div class="flex-col gap-12">
-              <div class="form-group">
-                <label class="form-label" for="loginEmail">Email Address</label>
-                <input type="email" class="form-input" id="loginEmail" placeholder="your@email.com" title="Email address">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="loginPwd">Password</label>
-                <input type="password" class="form-input" id="loginPwd" placeholder="••••••••" title="Password" onkeydown="if(event.key==='Enter')doLogin()">
-              </div>
-              <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In →</button>
-            </div>
-            <p class="auth-hint">No account? <a onclick="switchTab('signup')">Create one free</a></p>
-          </div>
-
-          <!-- SIGN UP -->
-          <div id="formUp" class="hidden">
-            <div class="auth-title">Join MEND</div>
-            <div class="auth-sub">Free forever · No credit card needed</div>
-            <div class="signup-type-grid" role="group" aria-label="Select account type">
-              <div class="signup-type-opt" role="button" tabindex="0" aria-label="Youth" onclick="pickSignupType('youth',this)"><span class="t-icon">👨‍👩‍👧‍👦</span>Youth</div>
-              <div class="signup-type-opt" role="button" tabindex="0" aria-label="Therapist" onclick="pickSignupType('therapist',this)"><span class="t-icon">👨‍⚕️</span>Therapist</div>
-              <div class="signup-type-opt" role="button" tabindex="0" aria-label="Mentor" onclick="pickSignupType('mentor',this)"><span class="t-icon">🌟</span>Mentor</div>
-            </div>
-            <div class="flex-col gap-12">
-              <div class="form-group">
-                <label class="form-label" for="regName">Full Name</label>
-                <input type="text" class="form-input" id="regName" placeholder="Your name" title="Full name">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="regEmail">Email Address</label>
-                <input type="email" class="form-input" id="regEmail" placeholder="your@email.com" title="Email address">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="regPwd">Password</label>
-                <input type="password" class="form-input" id="regPwd" placeholder="Min. 6 characters" title="Password, minimum 6 characters">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="regConfirm">Confirm Password</label>
-                <input type="password" class="form-input" id="regConfirm" placeholder="Repeat password" title="Confirm your password" onkeydown="if(event.key==='Enter')doRegister()">
-              </div>
-              <button class="btn btn-primary btn-full" onclick="doRegister()">Create Account →</button>
-            </div>
-            <p class="auth-hint">Already have an account? <a onclick="switchTab('signin')">Sign In</a></p>
-          </div>
+      <div class="hero-float-badge hero-badge-community">
+        <span>✨</span>
+        <div>
+          <div>Community Stories</div>
+          <div class="badge-sub">2,400+ shared</div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- ── CONTACT ── -->
-  <div id="contact" class="page">
-    <div class="contact-layout">
-      <div class="contact-info">
-        <button class="back-btn" onclick="showPage('landing')">← Back to Home</button>
-        <h3>Get in Touch</h3>
-        <p>We'd love to hear from you. Reach us through any of the channels below.</p>
-        <div class="contact-channel">
-          <div class="contact-ch-icon contact-ch-coral">📧</div>
-          <div><div class="contact-ch-label">Email</div><div class="contact-ch-value">hello@mend-platform.org</div></div>
-        </div>
-        <div class="contact-channel">
-          <div class="contact-ch-icon contact-ch-sage">🩺</div>
-          <div><div class="contact-ch-label">Therapist Partnerships</div><div class="contact-ch-value">therapists@mend-platform.org</div></div>
-        </div>
-        <div class="contact-channel">
-          <div class="contact-ch-icon contact-ch-sky">🤝</div>
-          <div><div class="contact-ch-label">Partnerships &amp; Press</div><div class="contact-ch-value">partners@mend-platform.org</div></div>
-        </div>
-        <div class="contact-channel">
-          <div class="contact-ch-icon contact-ch-amber">🕐</div>
-          <div><div class="contact-ch-label">Response Time</div><div class="contact-ch-value">Within 24 hours · Mon–Fri</div></div>
-        </div>
+<!-- ── Features ── -->
+<section class="features-section" id="features">
+  <div class="features-inner">
+    <div class="features-header">
+      <div class="section-label">What We Offer</div>
+      <h2 class="features-title">Everything you need to thrive —<br>in one place</h2>
+      <p class="features-subtitle">From therapy to talent development, MEND supports every dimension of your wellbeing.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-mental">🧠</div>
+        <h3 class="feature-card-title">Mental Health Support</h3>
+        <p>Access self-assessments, therapy bookings, and psychoeducational resources designed for African youth.</p>
       </div>
-      <div class="contact-form-card">
-        <div id="contactFormWrap">
-          <div class="s-title">Send Us a Message</div>
-          <div class="flex-col gap-12">
-            <div class="grid-2">
-              <div class="form-group">
-                <label class="form-label" for="cFirst">First Name</label>
-                <input type="text" class="form-input" id="cFirst" placeholder="Amara" title="First name">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="cLast">Last Name</label>
-                <input type="text" class="form-input" id="cLast" placeholder="Osei" title="Last name">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="cEmail">Email Address</label>
-              <input type="email" class="form-input" id="cEmail" placeholder="your@email.com" title="Email address">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Subject</label>
-              <div class="subject-grid" role="group" aria-label="Select a subject">
-                <div class="subject-opt" role="button" tabindex="0" aria-label="General enquiry" onclick="pickSubject('General',this)"><span class="s-icon">💬</span>General</div>
-                <div class="subject-opt" role="button" tabindex="0" aria-label="Mental Health" onclick="pickSubject('Mental Health',this)"><span class="s-icon">🧠</span>Mental Health</div>
-                <div class="subject-opt" role="button" tabindex="0" aria-label="Mentorship" onclick="pickSubject('Mentorship',this)"><span class="s-icon">📈</span>Mentorship</div>
-                <div class="subject-opt" role="button" tabindex="0" aria-label="Therapist application" onclick="pickSubject('Therapist Apply',this)"><span class="s-icon">🩺</span>Apply</div>
-                <div class="subject-opt" role="button" tabindex="0" aria-label="Partnership" onclick="pickSubject('Partnership',this)"><span class="s-icon">🤝</span>Partnership</div>
-                <div class="subject-opt" role="button" tabindex="0" aria-label="Technical issue" onclick="pickSubject('Tech Issue',this)"><span class="s-icon">🛠️</span>Tech Issue</div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="cMsg">Message</label>
-              <textarea class="form-textarea" id="cMsg" placeholder="How can we help you?" title="Your message"></textarea>
-            </div>
-            <button class="btn btn-primary btn-full" onclick="submitContact()">Send Message →</button>
-          </div>
-        </div>
-        <div class="contact-success hidden" id="contactSuccess">
-          <div class="contact-success-icon">🎉</div>
-          <h3>Message Sent!</h3>
-          <p>We'll get back to you within 24 hours.</p>
-          <button class="btn btn-secondary" onclick="resetContact()">Send Another</button>
-        </div>
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-creative">🎨</div>
+        <h3 class="feature-card-title">Creative Expression</h3>
+        <p>Share stories, artwork, and reflections in a safe, moderated community that celebrates your voice.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-talent">🌟</div>
+        <h3 class="feature-card-title">Talent Nurturing</h3>
+        <p>Identify and develop your unique gifts through guided discovery tools and community showcases.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-career">💼</div>
+        <h3 class="feature-card-title">Career Guidance</h3>
+        <p>Connect with mentors, explore career paths, and access professional development resources tailored for you.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-peer">🤲</div>
+        <h3 class="feature-card-title">Peer Support</h3>
+        <p>Find community with others who understand your journey. React, comment, and grow together.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon feature-icon-safe">🔒</div>
+        <h3 class="feature-card-title">Safe &amp; Private</h3>
+        <p>Your data is encrypted and your identity protected. A culturally sensitive space where you can be yourself.</p>
       </div>
     </div>
   </div>
+</section>
 
-</div><!-- /publicView -->
 
-
-<!-- ══════════════════════════════════
-     APP SHELL
-══════════════════════════════════ -->
-<div id="appView" class="hidden">
-  <div class="shell" id="appShell">
-
-    <aside class="sidebar" id="appSidebar">
-      <div class="sb-top"><div class="sb-brand">♥ MEND</div></div>
-      <div class="sb-user">
-        <div class="sb-user-name" id="sbName">User</div>
-        <div class="sb-user-role" id="sbRole">Youth</div>
-      </div>
-      <div class="sb-nav" id="sbNav"></div>
-      <div class="sb-bottom">
-        <button class="sb-btn" onclick="doLogout()"><span class="icon">🚪</span>Log Out</button>
-      </div>
-    </aside>
-
-    <div class="overlay" id="appOverlay" onclick="closeSidebar()"></div>
-
-    <div class="app-main" id="appMain">
-      <div class="app-topbar">
-        <div class="topbar-left">
-          <button class="menu-toggle" aria-label="Toggle sidebar" onclick="toggleSidebar()">☰</button>
-          <div class="topbar-title" id="topbarTitle">Dashboard</div>
-        </div>
-        <div class="flex items-center gap-12">
-          <div class="topbar-user" id="topbarUser"></div>
-          <button class="btn btn-secondary btn-sm" onclick="doLogout()">Log Out</button>
-        </div>
-      </div>
-
-      <div class="app-content">
-
-        <!-- ─── YOUTH ─── -->
-
-        <div id="p-dashboard" class="page active">
-          <div class="checkin-card">
-            <h3>✨ How are you feeling today?</h3>
-            <p>Take an assessment to track your emotional state</p>
-            <button class="btn btn-primary" onclick="navTo('p-assessment')">Start Assessment</button>
-          </div>
-          <div class="s-title">Your Statistics</div>
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-icon">❤️</div><div class="stat-n">5</div><div class="stat-label">Therapy Sessions</div></div>
-            <div class="stat-card"><div class="stat-icon">🎨</div><div class="stat-n">3</div><div class="stat-label">Stories Shared</div></div>
-            <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-n">12</div><div class="stat-label">Days Engaged</div></div>
-          </div>
-        </div>
-
-        <div id="p-assessment" class="page">
-          <div class="page-header"><h2>Well-being Assessment</h2><p>Answer honestly to understand your current emotional state.</p></div>
-          <div class="flex-col gap-12">
-            <div class="q-card"><div class="q-text">How often do you feel anxious or nervous?</div><div class="q-options"><button class="q-opt" onclick="pickOpt(this)">Not at all</button><button class="q-opt" onclick="pickOpt(this)">Sometimes</button><button class="q-opt" onclick="pickOpt(this)">Often</button><button class="q-opt" onclick="pickOpt(this)">Always</button></div></div>
-            <div class="q-card"><div class="q-text">How often do you feel sad or hopeless?</div><div class="q-options"><button class="q-opt" onclick="pickOpt(this)">Not at all</button><button class="q-opt" onclick="pickOpt(this)">Sometimes</button><button class="q-opt" onclick="pickOpt(this)">Often</button><button class="q-opt" onclick="pickOpt(this)">Always</button></div></div>
-            <div class="q-card"><div class="q-text">How would you rate your overall mood this week?</div><div class="q-options"><button class="q-opt" onclick="pickOpt(this)">Very low</button><button class="q-opt" onclick="pickOpt(this)">Low</button><button class="q-opt" onclick="pickOpt(this)">Okay</button><button class="q-opt" onclick="pickOpt(this)">Good</button></div></div>
-            <div class="q-card"><div class="q-text">How often do you have trouble sleeping?</div><div class="q-options"><button class="q-opt" onclick="pickOpt(this)">Never</button><button class="q-opt" onclick="pickOpt(this)">Rarely</button><button class="q-opt" onclick="pickOpt(this)">Often</button><button class="q-opt" onclick="pickOpt(this)">Every night</button></div></div>
-            <button class="btn btn-primary btn-full" onclick="alert('Assessment submitted! A therapist will review your responses.')">Submit Assessment</button>
-          </div>
-        </div>
-
-        <div id="p-therapy" class="page">
-          <div class="page-header"><h2>Available Therapists</h2><p>Book a session with a certified mental health professional.</p></div>
-          <div class="grid-3">
-            <div class="card therapist-card"><div class="t-avatar">👩‍⚕️</div><div class="t-name">Dr. Amara Okonkwo</div><div class="t-spec">Depression &amp; Anxiety</div><div class="mb-12"><span class="badge badge-green">Available</span></div><button class="btn btn-primary btn-sm btn-full" onclick="alert('Session booked with Dr. Amara Okonkwo!')">Book Session</button></div>
-            <div class="card therapist-card"><div class="t-avatar">👨‍⚕️</div><div class="t-name">Dr. James Mensah</div><div class="t-spec">Trauma &amp; PTSD</div><div class="mb-12"><span class="badge badge-green">Available</span></div><button class="btn btn-primary btn-sm btn-full" onclick="alert('Session booked with Dr. James Mensah!')">Book Session</button></div>
-            <div class="card therapist-card"><div class="t-avatar">👩‍⚕️</div><div class="t-name">Dr. Zainab Ali</div><div class="t-spec">Teen Counseling</div><div class="mb-12"><span class="badge badge-amber">Next: Monday</span></div><button class="btn btn-primary btn-sm btn-full" onclick="alert('Session booked with Dr. Zainab Ali!')">Book Session</button></div>
-          </div>
-        </div>
-
-        <div id="p-creative" class="page">
-          <div class="page-header-row page-header"><div><h2>Creative Space</h2><p>Share your stories and artwork with the community.</p></div><button class="btn btn-primary btn-sm" onclick="alert('Story sharing form coming soon!')">+ Share Story</button></div>
-          <div class="grid-2">
-            <div class="card post-card"><div class="post-head"><div class="post-title">Finding My Voice</div><span>🎨</span></div><div class="post-by">by Amara</div><div class="post-excerpt">My journey to self-discovery was transformative. Through art and writing, I found the courage to speak my truth…</div><div class="post-actions"><span class="post-action" onclick="likePost(this,24)">❤️ 24</span><span class="post-action">💬 3 comments</span></div></div>
-            <div class="card post-card"><div class="post-head"><div class="post-title">Through the Storm</div><span>✍️</span></div><div class="post-by">by Kofi</div><div class="post-excerpt">A poem about resilience and finding strength in difficult moments. When the rain falls, the roots grow deeper…</div><div class="post-actions"><span class="post-action" onclick="likePost(this,18)">❤️ 18</span><span class="post-action">💬 2 comments</span></div></div>
-            <div class="card post-card"><div class="post-head"><div class="post-title">Colors of Hope</div><span>🖼️</span></div><div class="post-by">by Nkechi</div><div class="post-excerpt">A digital painting series exploring healing and identity through the lens of African youth experience…</div><div class="post-actions"><span class="post-action" onclick="likePost(this,31)">❤️ 31</span><span class="post-action">💬 7 comments</span></div></div>
-            <div class="card post-card"><div class="post-head"><div class="post-title">Letters to Myself</div><span>📝</span></div><div class="post-by">by Taiwo</div><div class="post-excerpt">A personal essay on self-compassion and the journey from self-criticism to self-love…</div><div class="post-actions"><span class="post-action" onclick="likePost(this,14)">❤️ 14</span><span class="post-action">💬 5 comments</span></div></div>
-          </div>
-        </div>
-
-        <div id="p-community" class="page">
-          <div class="page-header"><h2>Community Forum</h2><p>Connect, share, and support each other.</p></div>
-          <div class="compose-box">
-            <div class="form-group">
-              <label class="form-label" for="communityPost">Start a Conversation</label>
-              <textarea class="form-textarea" id="communityPost" placeholder="What's on your mind?" title="Your community post"></textarea>
-            </div>
-            <button class="btn btn-primary mt-12" onclick="alert('Post shared!')">📤 Post</button>
-          </div>
-          <div class="s-title">Community Posts</div>
-          <div class="card card-flush">
-            <div class="forum-item"><div class="forum-title">Tips for managing exam stress</div><div class="forum-meta"><span>by Zainab</span><span>12 replies · 2h ago</span></div></div>
-            <div class="forum-item"><div class="forum-title">Starting my mental health journey</div><div class="forum-meta"><span>by David</span><span>8 replies · 5h ago</span></div></div>
-            <div class="forum-item"><div class="forum-title">How do you practice self-care on a budget?</div><div class="forum-meta"><span>by Amara</span><span>23 replies · 1d ago</span></div></div>
-            <div class="forum-item"><div class="forum-title">My experience with therapy — honest review</div><div class="forum-meta"><span>by Emmanuel</span><span>15 replies · 2d ago</span></div></div>
-          </div>
-        </div>
-
-        <div id="p-career" class="page">
-          <div class="page-header"><h2>Career Guidance</h2><p>Get matched with mentors and access career resources.</p></div>
-          <div class="grid-2">
-            <div class="card career-card"><div class="career-track">Software Engineering</div><div class="career-sub">Tech Career Path</div><span class="mentor-chip">Mentor: Kwame T. · Senior Engineer</span><button class="btn btn-secondary btn-sm btn-full mt-8" onclick="alert('Scheduling...')">Schedule Meeting</button></div>
-            <div class="card career-card"><div class="career-track">Business Management</div><div class="career-sub">Entrepreneurship Path</div><span class="mentor-chip empty">No mentor matched yet</span><button class="btn btn-primary btn-sm btn-full mt-8" onclick="alert('Finding mentor...')">Find a Mentor</button></div>
-            <div class="card career-card"><div class="career-track">Healthcare</div><div class="career-sub">Medical &amp; Health Sciences</div><span class="mentor-chip empty">No mentor matched yet</span><button class="btn btn-primary btn-sm btn-full mt-8" onclick="alert('Finding mentor...')">Find a Mentor</button></div>
-            <div class="card career-card"><div class="career-track">Creative Arts</div><div class="career-sub">Design &amp; Media Path</div><span class="mentor-chip">Mentor: Abena M. · Art Director</span><button class="btn btn-secondary btn-sm btn-full mt-8" onclick="alert('Scheduling...')">Schedule Meeting</button></div>
-          </div>
-        </div>
-
-        <div id="p-resources" class="page">
-          <div class="page-header"><h2>Resource Library</h2><p>Educational content curated for African youth.</p></div>
-          <div class="grid-2">
-            <div class="card resource-card"><div class="resource-icon">📚</div><div class="resource-title">Understanding Anxiety</div><div class="resource-desc">A comprehensive guide on recognizing anxiety symptoms and practical management techniques.</div><button class="btn btn-secondary btn-sm" onclick="alert('Opening...')">Read Article</button></div>
-            <div class="card resource-card"><div class="resource-icon">🎥</div><div class="resource-title">Meditation for Beginners</div><div class="resource-desc">Learn simple meditation techniques to reduce stress and improve mental clarity.</div><button class="btn btn-secondary btn-sm" onclick="alert('Opening...')">Watch Video</button></div>
-            <div class="card resource-card"><div class="resource-icon">💬</div><div class="resource-title">Talking to Family About Mental Health</div><div class="resource-desc">A culturally-informed guide to opening conversations with family.</div><button class="btn btn-secondary btn-sm" onclick="alert('Opening...')">Read Article</button></div>
-            <div class="card resource-card"><div class="resource-icon">🌿</div><div class="resource-title">Building Resilience</div><div class="resource-desc">Practical tools and exercises to strengthen your resilience.</div><button class="btn btn-secondary btn-sm" onclick="alert('Opening...')">Watch Video</button></div>
-          </div>
-        </div>
-
-        <!-- ─── THERAPIST ─── -->
-
-        <div id="p-therapist-dashboard" class="page">
-          <div class="page-header"><h2>Therapist Dashboard</h2><p>Manage your clients and sessions.</p></div>
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-n">12</div><div class="stat-label">Active Clients</div></div>
-            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-n">8</div><div class="stat-label">Sessions This Week</div></div>
-            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-n">4.9</div><div class="stat-label">Client Rating</div></div>
-          </div>
-        </div>
-
-        <div id="p-therapist-clients" class="page">
-          <div class="page-header"><h2>My Clients</h2><p>View and manage your active client roster.</p></div>
-          <div class="grid-2">
-            <div class="card client-card"><div class="client-name">Amara K.</div><div class="client-issue">Depression &amp; Anxiety</div><div class="client-last">📅 Last session: 3 days ago</div><button class="btn btn-secondary btn-sm btn-full" onclick="alert('Opening notes...')">View Notes</button></div>
-            <div class="card client-card"><div class="client-name">David O.</div><div class="client-issue">Stress Management</div><div class="client-last">📅 Last session: 5 days ago</div><button class="btn btn-secondary btn-sm btn-full" onclick="alert('Opening notes...')">View Notes</button></div>
-            <div class="card client-card"><div class="client-name">Nkechi F.</div><div class="client-issue">Grief &amp; Loss</div><div class="client-last">📅 Last session: 1 day ago</div><button class="btn btn-secondary btn-sm btn-full" onclick="alert('Opening notes...')">View Notes</button></div>
-            <div class="card client-card"><div class="client-name">Emmanuel T.</div><div class="client-issue">Social Anxiety</div><div class="client-last">📅 Last session: 1 week ago</div><button class="btn btn-secondary btn-sm btn-full" onclick="alert('Opening notes...')">View Notes</button></div>
-          </div>
-        </div>
-
-        <div id="p-therapist-schedule" class="page">
-          <div class="page-header"><h2>Your Schedule</h2><p>Upcoming sessions this week.</p></div>
-          <div class="card card-flush">
-            <div class="sched-item"><div><div class="sched-time">Monday, March 10 · 10:00 AM</div><div class="sched-who">Amara K. — Depression &amp; Anxiety</div></div><span class="badge badge-sky">Upcoming</span></div>
-            <div class="sched-item"><div><div class="sched-time">Tuesday, March 11 · 2:00 PM</div><div class="sched-who">David O. — Stress Management</div></div><span class="badge badge-sky">Upcoming</span></div>
-            <div class="sched-item"><div><div class="sched-time">Wednesday, March 12 · 11:30 AM</div><div class="sched-who">Nkechi F. — Grief &amp; Loss</div></div><span class="badge badge-sky">Upcoming</span></div>
-            <div class="sched-item"><div><div class="sched-time">Friday, March 14 · 3:00 PM</div><div class="sched-who">Emmanuel T. — Social Anxiety</div></div><span class="badge badge-sky">Upcoming</span></div>
-          </div>
-        </div>
-
-        <!-- ─── MENTOR ─── -->
-
-        <div id="p-mentor-dashboard" class="page">
-          <div class="banner">
-            <div><div class="banner-meta">Mentor Dashboard</div><h2 id="mentorName">Kwame T.</h2><p>2 sessions this week · 1 mentee awaiting feedback</p></div>
-            <div class="banner-stats">
-              <div class="banner-stat"><div class="banner-stat-n">7</div><div class="banner-stat-l">Mentees</div></div>
-              <div class="banner-stat"><div class="banner-stat-n">24</div><div class="banner-stat-l">Sessions</div></div>
-              <div class="banner-stat"><div class="banner-stat-n">4.8★</div><div class="banner-stat-l">Rating</div></div>
-            </div>
-          </div>
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-n">7</div><div class="stat-label">Active Mentees</div></div>
-            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-n">2</div><div class="stat-label">Sessions This Week</div></div>
-            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-n">5</div><div class="stat-label">Goals Completed</div></div>
-          </div>
-          <div class="s-title">Upcoming Sessions</div>
-          <div class="card card-flush mb-24">
-            <div class="sched-item"><div><div class="sched-time">Monday, March 10 · 9:00 AM</div><div class="sched-who">Career Roadmap Review — Amara K.</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Joining...')">Join</button></div>
-            <div class="sched-item"><div><div class="sched-time">Wednesday, March 12 · 3:00 PM</div><div class="sched-who">Portfolio Feedback — David O.</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Joining...')">Join</button></div>
-          </div>
-          <div class="s-title">Awaiting Feedback</div>
-          <div class="card flex items-center justify-between gap-12">
-            <div><div class="font-600">Nkechi F. submitted a career plan</div><div class="text-sm text-muted">Submitted 2 days ago · Software Engineering</div></div>
-            <button class="btn btn-primary btn-sm" onclick="alert('Opening career plan...')">Review Now</button>
-          </div>
-        </div>
-
-        <div id="p-mentor-mentees" class="page">
-          <div class="page-header"><h2>My Mentees</h2><p>Track progress and support each mentee.</p></div>
-          <div class="grid-2">
-            <div class="card"><div class="mentee-header"><div><div class="mentee-name">Amara K.</div><div class="mentee-track">Software Engineering · Year 2</div></div><span class="badge badge-green">On Track</span></div><div class="goal-box">🎯 Land a junior developer internship by June 2025</div><div class="progress-row"><span>Goal Progress</span><span>70%</span></div><div class="progress-bar mb-12"><div class="progress-fill" style="width:70%"></div></div><div class="text-sm text-muted mb-12">📅 Last session: 3 days ago</div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button><button class="btn btn-primary btn-sm" onclick="alert('Scheduling...')">Schedule</button></div></div>
-            <div class="card"><div class="mentee-header"><div><div class="mentee-name">David O.</div><div class="mentee-track">Business Management · Year 1</div></div><span class="badge badge-amber">Needs Attention</span></div><div class="goal-box">🎯 Launch a small business plan by Q3 2025</div><div class="progress-row"><span>Goal Progress</span><span>35%</span></div><div class="progress-bar mb-12"><div class="progress-fill" style="width:35%"></div></div><div class="text-sm text-muted mb-12">📅 Last session: 10 days ago</div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button><button class="btn btn-primary btn-sm" onclick="alert('Scheduling...')">Schedule</button></div></div>
-            <div class="card"><div class="mentee-header"><div><div class="mentee-name">Nkechi F.</div><div class="mentee-track">Software Engineering · Year 3</div></div><span class="badge badge-green">On Track</span></div><div class="goal-box">🎯 Build a full-stack portfolio project</div><div class="progress-row"><span>Goal Progress</span><span>85%</span></div><div class="progress-bar mb-12"><div class="progress-fill" style="width:85%"></div></div><div class="text-sm text-muted mb-12">📅 Last session: 1 day ago</div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button><button class="btn btn-primary btn-sm" onclick="alert('Scheduling...')">Schedule</button></div></div>
-            <div class="card"><div class="mentee-header"><div><div class="mentee-name">Zainab H.</div><div class="mentee-track">Creative Arts · Year 2</div></div><span class="badge badge-green">On Track</span></div><div class="goal-box">🎯 Get first freelance design client</div><div class="progress-row"><span>Goal Progress</span><span>55%</span></div><div class="progress-bar mb-12"><div class="progress-fill" style="width:55%"></div></div><div class="text-sm text-muted mb-12">📅 Last session: 5 days ago</div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button><button class="btn btn-primary btn-sm" onclick="alert('Scheduling...')">Schedule</button></div></div>
-          </div>
-        </div>
-
-        <div id="p-mentor-sessions" class="page">
-          <div class="page-header-row page-header"><div><h2>Sessions</h2><p>Manage and schedule your mentoring sessions.</p></div><button class="btn btn-primary btn-sm" onclick="alert('Opening scheduler...')">+ New Session</button></div>
-          <div class="s-title">Upcoming</div>
-          <div class="card card-flush mb-24">
-            <div class="sched-item"><div><div class="sched-time">Monday, March 10 · 9:00 AM · 60 min</div><div class="sched-who">Career Roadmap — Amara K.</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Rescheduling...')">Reschedule</button><button class="btn btn-primary btn-sm" onclick="alert('Joining...')">Join</button></div></div>
-            <div class="sched-item"><div><div class="sched-time">Wednesday, March 12 · 3:00 PM · 45 min</div><div class="sched-who">Portfolio Feedback — David O.</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Rescheduling...')">Reschedule</button><button class="btn btn-primary btn-sm" onclick="alert('Joining...')">Join</button></div></div>
-          </div>
-          <div class="s-title">Past Sessions</div>
-          <div class="card card-flush">
-            <div class="sched-item"><div><div class="sched-time">March 6 · Goal Setting — Nkechi F.</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button></div>
-            <div class="sched-item"><div><div class="sched-time">March 4 · CV Review — Zainab H.</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button></div>
-            <div class="sched-item"><div><div class="sched-time">Feb 28 · Interview Prep — Amara K.</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Notes...')">Notes</button></div>
-          </div>
-        </div>
-
-        <div id="p-mentor-career" class="page">
-          <div class="page-header-row page-header"><div><h2>Career Paths</h2><p>Manage structured career roadmaps for your mentees.</p></div><button class="btn btn-primary btn-sm" onclick="alert('Creating...')">+ New Path</button></div>
-          <div class="grid-2">
-            <div class="card card-padded">
-              <div class="flex justify-between items-center mb-12"><div><span class="badge badge-red mb-4">Technology</span><div class="font-600 text-16">Software Engineering</div></div><span class="badge badge-green">Active</span></div>
-              <div class="text-sm text-ink2 mb-16">Full-stack development. Covers Python, JavaScript, React, and cloud services.</div>
-              <div class="milestone-list mb-16"><div class="milestone"><span class="m-done">✓</span> Complete Python basics</div><div class="milestone"><span class="m-done">✓</span> Build first web app</div><div class="milestone"><span class="m-current">◉</span> Deploy to cloud (In Progress)</div><div class="milestone"><span class="m-empty">○</span> Apply for internship</div></div>
-              <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Editing...')">Edit</button><button class="btn btn-primary btn-sm" onclick="alert('Assigning...')">Assign</button></div>
-            </div>
-            <div class="card card-padded">
-              <div class="flex justify-between items-center mb-12"><div><span class="badge badge-amber mb-4">Business</span><div class="font-600 text-16">Entrepreneurship</div></div><span class="badge badge-green">Active</span></div>
-              <div class="text-sm text-ink2 mb-16">Idea validation to launch. Covers market research, business modeling, and funding.</div>
-              <div class="milestone-list mb-16"><div class="milestone"><span class="m-done">✓</span> Validate business idea</div><div class="milestone"><span class="m-current">◉</span> Write business plan (In Progress)</div><div class="milestone"><span class="m-empty">○</span> Secure seed funding</div><div class="milestone"><span class="m-empty">○</span> Launch MVP</div></div>
-              <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Editing...')">Edit</button><button class="btn btn-primary btn-sm" onclick="alert('Assigning...')">Assign</button></div>
-            </div>
-            <div class="card card-dashed" onclick="alert('Creating new path...')">
-              <div class="placeholder-plus">+</div>
-              <div class="font-600">Create New Path</div>
-              <div class="text-sm text-muted">Design a structured roadmap</div>
-            </div>
-          </div>
-        </div>
-
-        <div id="p-mentor-jobs" class="page">
-          <div class="page-header-row page-header"><div><h2>Job Board</h2><p>Curate opportunities for your mentees.</p></div><button class="btn btn-primary btn-sm" onclick="alert('Adding...')">+ Post Opportunity</button></div>
-          <div class="flex-col gap-12">
-            <div class="card job-card"><div><div class="job-title">Junior Software Developer</div><div class="job-company">Andela · Nairobi, Kenya · Full-time</div><div class="job-meta">Posted 2 days ago · Closes March 30</div></div><div class="flex gap-8 items-center"><span class="badge badge-green">Open</span><button class="btn btn-secondary btn-sm" onclick="alert('Sharing...')">Share</button><button class="btn btn-primary btn-sm" onclick="alert('Viewing...')">View</button></div></div>
-            <div class="card job-card"><div><div class="job-title">Business Development Intern</div><div class="job-company">Jumia · Lagos, Nigeria · Internship</div><div class="job-meta">Posted 5 days ago · Closes April 10</div></div><div class="flex gap-8 items-center"><span class="badge badge-green">Open</span><button class="btn btn-secondary btn-sm" onclick="alert('Sharing...')">Share</button><button class="btn btn-primary btn-sm" onclick="alert('Viewing...')">View</button></div></div>
-            <div class="card job-card"><div><div class="job-title">UX Design Graduate Position</div><div class="job-company">Flutterwave · Remote · Full-time</div><div class="job-meta">Posted 10 days ago · Closes March 15</div></div><div class="flex gap-8 items-center"><span class="badge badge-amber">Closing Soon</span><button class="btn btn-secondary btn-sm" onclick="alert('Sharing...')">Share</button><button class="btn btn-primary btn-sm" onclick="alert('Viewing...')">View</button></div></div>
-          </div>
-        </div>
-
-        <div id="p-mentor-talent" class="page">
-          <div class="page-header"><h2>Talent Tracker</h2><p>Identify and nurture the talents of each mentee.</p></div>
-          <div class="grid-2">
-            <div class="card card-padded">
-              <div class="flex justify-between items-center mb-12"><div class="font-600">Amara K.</div><span class="badge badge-green">High Potential</span></div>
-              <div class="label-upper text-xs text-muted mb-8">Talents</div>
-              <div class="skill-tags mb-16"><span class="skill-tag coral">Problem Solving</span><span class="skill-tag sky">Analytical Thinking</span><span class="skill-tag sage">Leadership</span></div>
-              <div class="score-item"><div class="score-row"><span>Technical Skills</span><span class="val-coral">82%</span></div><div class="score-bar"><div class="score-fill" style="width:82%"></div></div></div>
-              <div class="score-item"><div class="score-row"><span>Communication</span><span class="val-coral">75%</span></div><div class="score-bar"><div class="score-fill" style="width:75%"></div></div></div>
-              <div class="score-item mb-12"><div class="score-row"><span>Initiative</span><span class="val-coral">90%</span></div><div class="score-bar"><div class="score-fill" style="width:90%"></div></div></div>
-              <button class="btn btn-secondary btn-sm btn-full" onclick="alert('Adding assessment...')">Add Assessment</button>
-            </div>
-            <div class="card card-padded">
-              <div class="flex justify-between items-center mb-12"><div class="font-600">David O.</div><span class="badge badge-amber">Developing</span></div>
-              <div class="label-upper text-xs text-muted mb-8">Talents</div>
-              <div class="skill-tags mb-16"><span class="skill-tag amber">Creativity</span><span class="skill-tag sage">Networking</span></div>
-              <div class="score-item"><div class="score-row"><span>Technical Skills</span><span class="val-coral">45%</span></div><div class="score-bar"><div class="score-fill" style="width:45%"></div></div></div>
-              <div class="score-item"><div class="score-row"><span>Communication</span><span class="val-coral">68%</span></div><div class="score-bar"><div class="score-fill" style="width:68%"></div></div></div>
-              <div class="score-item mb-12"><div class="score-row"><span>Initiative</span><span class="val-coral">55%</span></div><div class="score-bar"><div class="score-fill" style="width:55%"></div></div></div>
-              <button class="btn btn-secondary btn-sm btn-full" onclick="alert('Adding assessment...')">Add Assessment</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="p-mentor-workshops" class="page">
-          <div class="page-header-row page-header"><div><h2>Workshops</h2><p>Host and manage group skill-building sessions.</p></div><button class="btn btn-primary btn-sm" onclick="alert('Creating...')">+ Create</button></div>
-          <div class="s-title">Upcoming</div>
-          <div class="grid-2 mb-24">
-            <div class="card card-padded"><div class="workshop-thumb blue">💻</div><div class="font-600 mb-4">CV &amp; LinkedIn Masterclass</div><div class="text-sm text-muted mb-4">Thursday, March 13 · 3:00 PM · 90 min</div><div class="text-sm text-muted mb-12">12 registered · Max 20</div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Editing...')">Edit</button><button class="btn btn-primary btn-sm" onclick="alert('Inviting...')">Invite</button></div></div>
-            <div class="card card-padded"><div class="workshop-thumb amber">🎤</div><div class="font-600 mb-4">Interview Skills Bootcamp</div><div class="text-sm text-muted mb-4">Saturday, March 15 · 10:00 AM · 2 hrs</div><div class="text-sm text-muted mb-12">7 registered · Max 15</div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Editing...')">Edit</button><button class="btn btn-primary btn-sm" onclick="alert('Inviting...')">Invite</button></div></div>
-          </div>
-          <div class="s-title">Past Workshops</div>
-          <div class="card card-flush">
-            <div class="sched-item"><div><div class="sched-time">March 1 · Public Speaking &amp; Pitching</div><div class="sched-who">15 attendees · 4.7★</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Report...')">Report</button></div>
-            <div class="sched-item"><div><div class="sched-time">Feb 20 · Financial Literacy for Youth</div><div class="sched-who">22 attendees · 4.9★</div></div><button class="btn btn-secondary btn-sm" onclick="alert('Report...')">Report</button></div>
-          </div>
-        </div>
-
-        <!-- ─── ADMIN / OWNER ─── -->
-
-        <div id="p-admin-dashboard" class="page">
-          <div class="banner">
-            <div><div class="banner-meta">Platform Owner</div><h2 id="ownerName">Owner</h2><p>Full platform oversight · All systems operational</p></div>
-            <div class="banner-stats">
-              <div class="banner-stat"><div class="banner-stat-n">1.2K</div><div class="banner-stat-l">Users</div></div>
-              <div class="banner-stat"><div class="banner-stat-n">45</div><div class="banner-stat-l">Therapists</div></div>
-              <div class="banner-stat"><div class="banner-stat-n">99%</div><div class="banner-stat-l">Uptime</div></div>
-            </div>
-          </div>
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-n">1.2K</div><div class="stat-label">Total Users</div></div>
-            <div class="stat-card"><div class="stat-icon">👨‍⚕️</div><div class="stat-n">45</div><div class="stat-label">Active Therapists</div></div>
-            <div class="stat-card"><div class="stat-icon">🌟</div><div class="stat-n">12</div><div class="stat-label">Career Mentors</div></div>
-          </div>
-          <div class="grid-2">
-            <div class="card card-padded">
-              <div class="s-title mb-12">⚠️ Needs Attention</div>
-              <div class="alert-item alert-warn flex justify-between"><span>3 content items pending review</span><button class="btn btn-alert-warn" onclick="navTo('p-admin-content')">Review</button></div>
-              <div class="alert-item alert-danger flex justify-between"><span>2 therapist applications pending</span><button class="btn btn-alert-danger" onclick="navTo('p-admin-roles')">Review</button></div>
-            </div>
-            <div class="card card-padded">
-              <div class="s-title mb-12">📊 This Month</div>
-              <div class="activity-row"><span>New Registrations</span><strong class="val-sage">+287</strong></div>
-              <div class="activity-row"><span>Therapy Sessions</span><strong class="val-sage">342</strong></div>
-              <div class="activity-row"><span>Revenue</span><strong class="val-sage">$8,420</strong></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="p-admin-users" class="page">
-          <div class="page-header-row page-header"><div><h2>All Users</h2><p>Manage every account on MEND.</p></div><button class="btn btn-primary btn-sm" onclick="alert('Inviting...')">+ Invite User</button></div>
-          <div class="filter-tabs">
-            <button class="filter-tab active" onclick="filterTab(this)">All (1,247)</button>
-            <button class="filter-tab" onclick="filterTab(this)">Youth (1,181)</button>
-            <button class="filter-tab" onclick="filterTab(this)">Therapists (45)</button>
-            <button class="filter-tab" onclick="filterTab(this)">Mentors (12)</button>
-          </div>
-          <div class="card card-flush">
-            <div class="admin-row"><div><div class="admin-name">Amara K.</div><div class="admin-meta">Youth · Active · Joined Jan 2025</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Viewing...')">View</button><button class="btn btn-sm btn-danger" onclick="alert('Suspending...')">Suspend</button></div></div>
-            <div class="admin-row"><div><div class="admin-name">Dr. Amara Okonkwo</div><div class="admin-meta">Therapist · Active · Verified ✓</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Viewing...')">View</button><button class="btn btn-sm btn-danger" onclick="alert('Suspending...')">Suspend</button></div></div>
-            <div class="admin-row"><div><div class="admin-name">Kwame T.</div><div class="admin-meta">Career Mentor · Active · Verified ✓ · 7 mentees</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Viewing...')">View</button><button class="btn btn-sm btn-danger" onclick="alert('Suspending...')">Suspend</button></div></div>
-            <div class="admin-row"><div><div class="admin-name">Fatima B.</div><div class="admin-meta">Career Mentor · Pending Verification</div></div><div class="flex gap-8"><button class="btn btn-sm btn-success" onclick="alert('Fatima B. verified!')">✓ Verify</button><button class="btn btn-sm btn-danger" onclick="alert('Rejected.')">Reject</button></div></div>
-            <div class="admin-row"><div><div class="admin-name">Kofi M.</div><div class="admin-meta">Youth · Active · Joined Feb 2025</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Viewing...')">View</button><button class="btn btn-sm btn-danger" onclick="alert('Suspending...')">Suspend</button></div></div>
-          </div>
-        </div>
-
-        <div id="p-admin-roles" class="page">
-          <div class="page-header"><h2>Roles &amp; Access</h2><p>Define permissions and review role applications.</p></div>
-          <div class="s-title">Role Permissions</div>
-          <div class="card card-flush mb-24">
-            <table class="perm-table">
-              <thead><tr><th>Permission</th><th>Youth</th><th>Therapist</th><th>Mentor</th><th>Owner</th></tr></thead>
-              <tbody>
-                <tr><td>View Content</td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Post to Community</td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Book Therapy Sessions</td><td><span class="perm-yes">✓</span></td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Manage Client Sessions</td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Assign Career Paths</td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Moderate Content</td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Manage All Users</td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td></tr>
-                <tr><td>Access Analytics</td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-no">–</span></td><td><span class="perm-yes">✓</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="s-title">Pending Applications</div>
-          <div class="card card-flush">
-            <div class="admin-row"><div><div class="admin-name">Ife Balogun</div><div class="admin-meta">Therapist · 5 yrs experience · License #TH-0042</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Reviewing...')">Review</button><button class="btn btn-sm btn-success" onclick="alert('Approved!')">✓ Approve</button></div></div>
-            <div class="admin-row"><div><div class="admin-name">Abena M.</div><div class="admin-meta">Career Mentor · Art Director · 6 years</div></div><div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="alert('Reviewing...')">Review</button><button class="btn btn-sm btn-success" onclick="alert('Approved!')">✓ Approve</button></div></div>
-          </div>
-        </div>
-
-        <div id="p-admin-content" class="page">
-          <div class="page-header"><h2>Content Review</h2><p>Review and approve user-submitted content.</p></div>
-          <div class="card card-flush">
-            <div class="review-item"><div><div class="review-title">Story: Finding My Voice</div><div class="review-meta">by Amara K. · Creative Space · 2 hours ago</div></div><div class="flex gap-8"><button class="btn btn-sm btn-success" onclick="alert('Approved!')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="alert('Rejected.')">✗ Reject</button></div></div>
-            <div class="review-item"><div><div class="review-title">Forum Post: Managing Exam Stress</div><div class="review-meta">by Zainab H. · Community Forum · 5 hours ago</div></div><div class="flex gap-8"><button class="btn btn-sm btn-success" onclick="alert('Approved!')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="alert('Rejected.')">✗ Reject</button></div></div>
-            <div class="review-item"><div><div class="review-title">Workshop Resource: CV Template</div><div class="review-meta">by Kwame T. · Mentor Resources · 1 day ago</div></div><div class="flex gap-8"><button class="btn btn-sm btn-success" onclick="alert('Approved!')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="alert('Rejected.')">✗ Reject</button></div></div>
-          </div>
-        </div>
-
-        <div id="p-admin-analytics" class="page">
-          <div class="page-header"><h2>Platform Analytics</h2><p>Full visibility into usage, growth, and engagement.</p></div>
-          <div class="card card-padded mb-24">
-            <div class="s-title mb-12">User Growth (Monthly)</div>
-            <div class="analytics-bar-row">
-              <div class="analytics-bar"><div class="analytics-bar-n">250</div><div class="analytics-bar-l">Week 1</div></div>
-              <div class="analytics-bar"><div class="analytics-bar-n">380</div><div class="analytics-bar-l">Week 2</div></div>
-              <div class="analytics-bar"><div class="analytics-bar-n">520</div><div class="analytics-bar-l">Week 3</div></div>
-              <div class="analytics-bar"><div class="analytics-bar-n">1.2K</div><div class="analytics-bar-l">Week 4</div></div>
-            </div>
-          </div>
-          <div class="grid-2">
-            <div class="card card-padded">
-              <div class="s-title mb-12">Activity Breakdown</div>
-              <div class="activity-row"><span>Therapy Sessions</span><strong class="val-coral">342</strong></div>
-              <div class="activity-row"><span>Mentoring Sessions</span><strong class="val-coral">127</strong></div>
-              <div class="activity-row"><span>Assessment Completions</span><strong class="val-coral">891</strong></div>
-              <div class="activity-row"><span>Community Posts</span><strong class="val-coral">2.1K</strong></div>
-            </div>
-            <div class="card card-padded">
-              <div class="s-title mb-12">Platform Health</div>
-              <div class="activity-row"><span>Uptime</span><strong class="val-sage">99.1%</strong></div>
-              <div class="activity-row"><span>Avg. Load Time</span><strong class="val-sage">1.8s</strong></div>
-              <div class="activity-row"><span>Active Today</span><strong class="val-sage">284</strong></div>
-              <div class="activity-row"><span>Monthly Revenue</span><strong class="val-sage">$8,420</strong></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="p-admin-reports" class="page">
-          <div class="page-header"><h2>Reports</h2><p>Download detailed reports on platform activity.</p></div>
-          <div class="flex-col gap-12">
-            <div class="card report-item"><div class="report-left"><div class="report-icon">📊</div><div><div class="report-title">Monthly Platform Summary</div><div class="report-meta">March 2025 · All metrics</div></div></div><button class="btn btn-secondary btn-sm" onclick="alert('Downloading...')">⬇ Download</button></div>
-            <div class="card report-item"><div class="report-left"><div class="report-icon">👥</div><div><div class="report-title">User Acquisition Report</div><div class="report-meta">Registrations by type &amp; region</div></div></div><button class="btn btn-secondary btn-sm" onclick="alert('Downloading...')">⬇ Download</button></div>
-            <div class="card report-item"><div class="report-left"><div class="report-icon">❤️</div><div><div class="report-title">Therapy Outcomes Report</div><div class="report-meta">Session counts, ratings &amp; outcomes</div></div></div><button class="btn btn-secondary btn-sm" onclick="alert('Downloading...')">⬇ Download</button></div>
-            <div class="card report-item"><div class="report-left"><div class="report-icon">🌟</div><div><div class="report-title">Mentorship Impact Report</div><div class="report-meta">Career progress &amp; placements</div></div></div><button class="btn btn-secondary btn-sm" onclick="alert('Downloading...')">⬇ Download</button></div>
-          </div>
-        </div>
-
-        <div id="p-admin-settings" class="page">
-          <div class="page-header"><h2>Platform Settings</h2><p>Configure global settings for MEND.</p></div>
-          <div class="grid-2">
-            <div class="card card-padded">
-              <div class="s-title mb-12">General Settings</div>
-              <div class="flex-col gap-12">
-                <div class="form-group">
-                  <label class="form-label" for="settingName">Platform Name</label>
-                  <input type="text" class="form-input" id="settingName" value="MEND Platform" title="Platform name">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="settingEmail">Support Email</label>
-                  <input type="email" class="form-input" id="settingEmail" value="support@mend-platform.org" title="Support email address">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="settingLang">Default Language</label>
-                  <input type="text" class="form-input" id="settingLang" value="English" title="Default language">
-                </div>
-                <button class="btn btn-primary btn-full" onclick="alert('Settings saved!')">Save Changes</button>
-              </div>
-            </div>
-            <div class="card card-padded">
-              <div class="s-title mb-4">Feature Toggles</div>
-              <div class="toggle-row"><span class="toggle-label">Community Forum</span><button class="toggle on" aria-label="Toggle Community Forum" onclick="toggleFeature(this)">ON</button></div>
-              <div class="toggle-row"><span class="toggle-label">Creative Space</span><button class="toggle on" aria-label="Toggle Creative Space" onclick="toggleFeature(this)">ON</button></div>
-              <div class="toggle-row"><span class="toggle-label">Career Mentoring</span><button class="toggle on" aria-label="Toggle Career Mentoring" onclick="toggleFeature(this)">ON</button></div>
-              <div class="toggle-row"><span class="toggle-label">Notifications</span><button class="toggle on" aria-label="Toggle Notifications" onclick="toggleFeature(this)">ON</button></div>
-              <div class="toggle-row"><span class="toggle-label">Maintenance Mode</span><button class="toggle off" aria-label="Toggle Maintenance Mode" onclick="toggleFeature(this)">OFF</button></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+<!-- ── About ── -->
+<section id="about" class="about-section">
+  <div class="about-inner">
+    <div>
+      <div class="section-label">About MEND</div>
+      <h2>Built for Africa, by Africans</h2>
+      <p class="about-description">MEND (Mental and Emotional Nurturing Digital) is a youth empowerment platform developed at African Leadership University. We address the mental health crisis affecting young people across Africa by combining therapy, creativity, and career development.</p>
+      <p class="about-description-last">Our platform is built on the belief that mental wellbeing and personal growth are inseparable — and that every young African deserves access to both.</p>
+      <a href="/public/register.html" class="btn btn-primary">Join MEND Today →</a>
+    </div>
+    <div class="about-mission-box">
+      <div class="about-mission-title">Our Mission</div>
+      <ul class="about-mission-list">
+        <li class="about-mission-item"><span>🎯</span><span>Reduce mental health stigma among African youth</span></li>
+        <li class="about-mission-item"><span>🌍</span><span>Provide culturally sensitive digital mental health services</span></li>
+        <li class="about-mission-item"><span>💡</span><span>Foster creative self-expression and talent development</span></li>
+        <li class="about-mission-item about-mission-item-last"><span>🚀</span><span>Empower youth with career guidance and mentorship</span></li>
+      </ul>
     </div>
   </div>
+</section>
+
+<!-- ── CTA ── -->
+<div class="cta-band">
+  <h2>You are not alone in this journey</h2>
+  <p>Join thousands of African youth who are healing, creating, and growing with MEND.</p>
+  <a href="/public/register.html" class="btn cta-btn">Create Your Free Account →</a>
 </div>
 
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="footer-logo">MEND</div>
+  <div class="footer-copy">© 2026 MEND · African Leadership University · Built with ❤️ for African Youth</div>
+  <div class="footer-links">
+    <span class="footer-link">Privacy</span>
+    <span class="footer-link">Terms</span>
+    <span class="footer-link">Contact</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
 <script src="mend.js"></script>
+<script src="/frontend/index.js"></script>
 </body>
 </html>

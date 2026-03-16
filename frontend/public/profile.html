@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — MEND</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<nav class="navbar" id="navbar"></nav>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">My Profile</div>
+      <div class="page-sub">Manage your account and privacy settings</div>
+    </div>
+
+    <div class="grid-2">
+
+      <!-- Left: Profile Card -->
+      <div>
+        <div class="card-flat text-center" style="padding:40px 28px;margin-bottom:20px">
+          <div class="avatar avatar-xl" id="profile-avatar" style="margin:0 auto 16px">?</div>
+          <div id="profile-name" style="font-family:'Playfair Display',serif;font-size:22px;color:var(--dark)">—</div>
+          <div id="profile-email" style="font-size:14px;color:var(--muted);margin-top:4px">—</div>
+          <div id="profile-meta" style="margin-top:12px"></div>
+          <div style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap" id="profile-tags"></div>
+          <button class="btn btn-secondary btn-sm" onclick="toggleEdit()">Edit Profile</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="card-flat">
+          <div style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--dark)">My Journey Stats</div>
+          <div class="grid-3" style="gap:12px" id="profile-stats">
+            <div style="text-align:center;padding:14px;background:var(--cream);border-radius:12px">
+              <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--terracotta)" id="s-streak">—</div>
+              <div style="font-size:12px;color:var(--muted)">Day Streak</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--cream);border-radius:12px">
+              <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--green)" id="s-bookings">—</div>
+              <div style="font-size:12px;color:var(--muted)">Sessions</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--cream);border-radius:12px">
+              <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--gold)" id="s-stories">—</div>
+              <div style="font-size:12px;color:var(--muted)">Stories</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Edit Form + Settings -->
+      <div>
+        <!-- Edit Form (hidden by default) -->
+        <div class="card-flat mb-20 hidden" id="edit-form">
+          <div style="font-size:15px;font-weight:700;margin-bottom:20px;color:var(--dark)">Edit Profile</div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input id="edit-name" class="form-input" placeholder="Your name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input id="edit-age" class="form-input" type="number" placeholder="Your age" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input id="edit-location" class="form-input" placeholder="City, Country" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            <textarea id="edit-bio" class="form-textarea" placeholder="Tell the community about yourself…" style="min-height:80px"></textarea>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-primary btn-sm" onclick="saveProfile()">Save Changes</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleEdit()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Mood History -->
+        <div class="card-flat mb-20">
+          <div style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--dark)">Recent Mood Log</div>
+          <div id="mood-history"><div style="color:var(--muted);font-size:14px">No mood logs yet. Check in from your dashboard!</div></div>
+        </div>
+
+        <!-- Privacy Settings -->
+        <div class="card-flat mb-20">
+          <div style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--dark)">Privacy Settings</div>
+          <div id="privacy-settings">
+            <div class="setting-row">
+              <div>
+                <div style="font-size:14px;font-weight:600">Anonymous Mode</div>
+                <div style="font-size:12px;color:var(--muted)">Hide your name from the community</div>
+              </div>
+              <div class="toggle-switch" id="toggle-anon" onclick="toggleSetting('anon')" data-on="false"></div>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div style="font-size:14px;font-weight:600">Email Notifications</div>
+                <div style="font-size:12px;color:var(--muted)">Receive weekly wellbeing reminders</div>
+              </div>
+              <div class="toggle-switch" id="toggle-notif" onclick="toggleSetting('notif')" data-on="true" style="background:var(--green);justify-content:flex-end"></div>
+            </div>
+            <div class="setting-row" style="border-bottom:none">
+              <div>
+                <div style="font-size:14px;font-weight:600">Crisis Alerts</div>
+                <div style="font-size:12px;color:var(--muted)">Enable emergency support triggers</div>
+              </div>
+              <div class="toggle-switch" id="toggle-crisis" onclick="toggleSetting('crisis')" data-on="false"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card-flat" style="border:1px solid rgba(220,38,38,0.2)">
+          <div style="font-size:15px;font-weight:700;margin-bottom:8px;color:#dc2626">Danger Zone</div>
+          <p style="font-size:13px;margin-bottom:16px">Once you delete your account, all your data will be permanently removed.</p>
+          <button class="btn btn-danger btn-sm" onclick="deleteAccount()">Delete My Account</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+<style>
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-bottom: 1px solid var(--cream);
+  }
+  .toggle-switch {
+    width: 44px; height: 24px; border-radius: 12px;
+    background: var(--cream); cursor: pointer;
+    display: flex; align-items: center; padding: 0 3px;
+    transition: background 0.25s;
+  }
+  .toggle-switch div { width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); transition: transform 0.25s; }
+</style>
+<script src="/main.js"></script>
+<script>
+if (!requireAuth()) throw 0;
+buildNav("profile");
+buildSidebar("profile");
+
+let profileData = null;
+
+function toggleEdit() {
+  const form = document.getElementById("edit-form");
+  form.classList.toggle("hidden");
+  if (!form.classList.contains("hidden") && profileData) {
+    document.getElementById("edit-name").value     = profileData.name || "";
+    document.getElementById("edit-age").value      = profileData.age || "";
+    document.getElementById("edit-location").value = profileData.location || "";
+    document.getElementById("edit-bio").value      = profileData.bio || "";
+  }
+}
+
+async function saveProfile() {
+  const name     = document.getElementById("edit-name").value.trim();
+  const age      = document.getElementById("edit-age").value;
+  const location = document.getElementById("edit-location").value.trim();
+  const bio      = document.getElementById("edit-bio").value.trim();
+  if (!name) { toast("Name is required", "error"); return; }
+  try {
+    profileData = await PUT("/profile", { name, age: age ? Number(age) : null, location, bio });
+    // Update stored user name
+    const u = getUser(); u.name = name; setAuth(getToken(), u);
+    renderProfile();
+    document.getElementById("edit-form").classList.add("hidden");
+    toast("Profile updated successfully!");
+    buildNav("profile");
+    buildSidebar("profile");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+function renderProfile() {
+  if (!profileData) return;
+  document.getElementById("profile-avatar").textContent = profileData.name[0].toUpperCase();
+  document.getElementById("profile-name").textContent   = profileData.name;
+  document.getElementById("profile-email").textContent  = profileData.email;
+  document.getElementById("profile-meta").innerHTML     = `
+    ${profileData.age      ? `<span class="badge badge-muted">Age ${profileData.age}</span> ` : ""}
+    ${profileData.location ? `<span class="badge badge-muted">📍 ${escHtml(profileData.location)}</span>` : ""}
+    ${profileData.role === "admin" ? `<span class="badge badge-orange">⚙️ Admin</span>` : ""}
+  `;
+  document.getElementById("s-streak").textContent   = profileData.streak || 0;
+}
+
+async function loadProfile() {
+  try {
+    profileData = await GET("/profile");
+    renderProfile();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadStats() {
+  try {
+    const [bookings, stories] = await Promise.all([GET("/bookings"), GET("/stories")]);
+    document.getElementById("s-bookings").textContent = bookings.length;
+    document.getElementById("s-stories").textContent  = stories.length;
+  } catch {}
+}
+
+async function loadMoodHistory() {
+  try {
+    const logs = await GET("/mood");
+    if (!logs.length) return;
+    document.getElementById("mood-history").innerHTML = logs.slice(-7).reverse().map(m => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--cream)">
+        <span style="font-size:20px">${m.emoji}</span>
+        <div>
+          <span style="font-size:14px;font-weight:600">${escHtml(m.mood)}</span>
+          ${m.note ? `<span style="font-size:12px;color:var(--muted);margin-left:6px">${escHtml(m.note)}</span>` : ""}
+        </div>
+        <span style="margin-left:auto;font-size:12px;color:var(--muted)">${timeAgo(m.createdAt)}</span>
+      </div>
+    `).join("");
+  } catch {}
+}
+
+function toggleSetting(key) {
+  const el = document.getElementById("toggle-" + key);
+  const isOn = el.dataset.on === "true";
+  el.dataset.on = !isOn;
+  el.style.background = !isOn ? "var(--green)" : "var(--cream)";
+  el.style.justifyContent = !isOn ? "flex-end" : "flex-start";
+  toast("Setting updated!");
+}
+
+function deleteAccount() {
+  if (confirm("Are you sure? This action cannot be undone. All your data will be deleted permanently.")) {
+    clearAuth();
+    toast("Account deleted. Redirecting…");
+    setTimeout(() => window.location.href = "/index.html", 1500);
+  }
+}
+
+loadProfile();
+loadStats();
+loadMoodHistory();
+</script>
+</body>
+</html>

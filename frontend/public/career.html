@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career Guidance — MEND</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<nav class="navbar" id="navbar"></nav>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">Career Guidance</div>
+      <div class="page-sub">Your future starts with clarity. Let's explore your path together.</div>
+    </div>
+
+    <!-- Career Score Banner -->
+    <div style="background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:24px;padding:32px 40px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px">
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.65);margin-bottom:8px">Career Readiness Score</div>
+        <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:var(--gold)">63<span style="font-size:28px">%</span></div>
+        <div style="color:rgba(255,255,255,0.75);margin-top:4px">+12% from last month · Keep growing!</div>
+      </div>
+      <button class="btn btn-primary" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4)" onclick="startCareerAssessment()">
+        Take Full Assessment →
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('tools',this)">🛠️ Tools & Resources</button>
+      <button class="tab-btn"        onclick="showTab('mentors',this)">🤝 Find a Mentor</button>
+      <button class="tab-btn"        onclick="showTab('jobs',this)">💼 Job Board</button>
+      <button class="tab-btn"        onclick="showTab('quiz',this)">🧭 Career Quiz</button>
+    </div>
+
+    <!-- TOOLS TAB -->
+    <div id="tab-tools">
+      <div class="grid-auto">
+        <div class="card" onclick="toast('Opening Career Compass…')" style="cursor:pointer;border-top:4px solid var(--green)">
+          <div style="font-size:40px;width:60px;height:60px;background:var(--green-dim);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">🧭</div>
+          <h3 style="font-size:17px;margin-bottom:8px">Career Compass</h3>
+          <p style="font-size:14px">Discover your strengths and ideal career paths through our AI-powered assessment.</p>
+          <div style="margin-top:16px;color:var(--green-mid);font-weight:700;font-size:14px">Explore →</div>
+        </div>
+        <div class="card" onclick="showTab('mentors',document.querySelectorAll('.tab-btn')[1])" style="cursor:pointer;border-top:4px solid var(--terracotta)">
+          <div style="font-size:40px;width:60px;height:60px;background:var(--terracotta-dim);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">🤝</div>
+          <h3 style="font-size:17px;margin-bottom:8px">Mentor Match</h3>
+          <p style="font-size:14px">Connect with professionals across Africa who've walked your path.</p>
+          <div style="margin-top:16px;color:var(--terracotta);font-weight:700;font-size:14px">Find Mentor →</div>
+        </div>
+        <div class="card" onclick="toast('Opening Skill Library…')" style="cursor:pointer;border-top:4px solid var(--gold)">
+          <div style="font-size:40px;width:60px;height:60px;background:rgba(212,168,67,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">📚</div>
+          <h3 style="font-size:17px;margin-bottom:8px">Skill Library</h3>
+          <p style="font-size:14px">Access curated courses and resources tailored for African youth.</p>
+          <div style="margin-top:16px;color:#B8902A;font-weight:700;font-size:14px">Browse →</div>
+        </div>
+        <div class="card" onclick="openCVBuilder()" style="cursor:pointer;border-top:4px solid var(--brown)">
+          <div style="font-size:40px;width:60px;height:60px;background:rgba(107,61,30,0.10);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">✍️</div>
+          <h3 style="font-size:17px;margin-bottom:8px">CV Builder</h3>
+          <p style="font-size:14px">Create a professional CV with guidance from career experts.</p>
+          <div style="margin-top:16px;color:var(--brown);font-weight:700;font-size:14px">Build CV →</div>
+        </div>
+        <div class="card" onclick="showTab('jobs',document.querySelectorAll('.tab-btn')[2])" style="cursor:pointer;border-top:4px solid var(--muted)">
+          <div style="font-size:40px;width:60px;height:60px;background:rgba(138,117,96,0.12);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">💼</div>
+          <h3 style="font-size:17px;margin-bottom:8px">Job Board</h3>
+          <p style="font-size:14px">Discover opportunities from companies that value emotional intelligence.</p>
+          <div style="margin-top:16px;color:var(--muted);font-weight:700;font-size:14px">View Jobs →</div>
+        </div>
+        <div class="card" onclick="toast('Goal Tracker opening soon!')" style="cursor:pointer;border-top:4px solid var(--green-light)">
+          <div style="font-size:40px;width:60px;height:60px;background:rgba(122,173,74,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px">🎯</div>
+          <h3 style="font-size:17px;margin-bottom:8px">Goal Tracker</h3>
+          <p style="font-size:14px">Set career milestones and track your progress with weekly check-ins.</p>
+          <div style="margin-top:16px;color:var(--green-mid);font-weight:700;font-size:14px">Set Goals →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENTORS TAB -->
+    <div id="tab-mentors" class="hidden">
+      <div class="grid-auto">
+        <div class="card" style="display:flex;gap:16px;align-items:flex-start">
+          <div class="avatar avatar-md">C</div>
+          <div>
+            <div style="font-size:16px;font-weight:700">Chisom Nwachukwu</div>
+            <div style="font-size:13px;color:var(--muted)">Software Engineer · Lagos, Nigeria</div>
+            <span class="badge badge-green" style="margin-top:8px">Tech & Entrepreneurship</span>
+            <p style="font-size:13px;margin-top:10px">5+ years in software engineering. Loves helping young coders find their first job.</p>
+            <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="requestMentor('Chisom')">Request Mentorship</button>
+          </div>
+        </div>
+        <div class="card" style="display:flex;gap:16px;align-items:flex-start">
+          <div class="avatar avatar-md">A</div>
+          <div>
+            <div style="font-size:16px;font-weight:700">Dr. Amina Hassan</div>
+            <div style="font-size:13px;color:var(--muted)">Public Health Specialist · Nairobi, Kenya</div>
+            <span class="badge badge-orange" style="margin-top:8px">Healthcare Leadership</span>
+            <p style="font-size:13px;margin-top:10px">PhD in Public Health. Passionate about mentoring future health leaders.</p>
+            <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="requestMentor('Dr. Amina')">Request Mentorship</button>
+          </div>
+        </div>
+        <div class="card" style="display:flex;gap:16px;align-items:flex-start">
+          <div class="avatar avatar-md" style="background:linear-gradient(135deg,var(--gold),var(--brown))">K</div>
+          <div>
+            <div style="font-size:16px;font-weight:700">Kofi Asante</div>
+            <div style="font-size:13px;color:var(--muted)">Creative Director · Accra, Ghana</div>
+            <span class="badge badge-gold" style="margin-top:8px">Creative Industries</span>
+            <p style="font-size:13px;margin-top:10px">Award-winning designer and storyteller. Helps creatives monetize their art.</p>
+            <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="requestMentor('Kofi')">Request Mentorship</button>
+          </div>
+        </div>
+        <div class="card" style="display:flex;gap:16px;align-items:flex-start">
+          <div class="avatar avatar-md" style="background:linear-gradient(135deg,var(--green),var(--green-mid))">Z</div>
+          <div>
+            <div style="font-size:16px;font-weight:700">Zainab Kamara</div>
+            <div style="font-size:13px;color:var(--muted)">Finance Manager · Dakar, Senegal</div>
+            <span class="badge badge-green" style="margin-top:8px">Finance & Business</span>
+            <p style="font-size:13px;margin-top:10px">MBA from London. Guides youth into finance, entrepreneurship, and wealth management.</p>
+            <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="requestMentor('Zainab')">Request Mentorship</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOBS TAB -->
+    <div id="tab-jobs" class="hidden">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card-flat" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:16px;font-weight:700">Junior Software Developer</div>
+            <div style="font-size:13px;color:var(--muted)">TechAfrica Ltd · Nairobi, Kenya · Remote</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <span class="badge badge-green">Full-Time</span>
+            <span class="badge badge-muted">KES 50K-80K/mo</span>
+            <button class="btn btn-primary btn-sm" onclick="toast('Application submitted!')">Apply Now</button>
+          </div>
+        </div>
+        <div class="card-flat" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:16px;font-weight:700">Community Health Worker</div>
+            <div style="font-size:13px;color:var(--muted)">HealthPlus · Lagos, Nigeria · On-site</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <span class="badge badge-green">Contract</span>
+            <span class="badge badge-muted">NGN 80K-120K/mo</span>
+            <button class="btn btn-primary btn-sm" onclick="toast('Application submitted!')">Apply Now</button>
+          </div>
+        </div>
+        <div class="card-flat" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:16px;font-weight:700">Creative Content Writer</div>
+            <div style="font-size:13px;color:var(--muted)">AfroMedia · Accra, Ghana · Remote</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <span class="badge badge-gold">Part-Time</span>
+            <span class="badge badge-muted">GHS 2,000-4,000/mo</span>
+            <button class="btn btn-primary btn-sm" onclick="toast('Application submitted!')">Apply Now</button>
+          </div>
+        </div>
+        <div class="card-flat" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:16px;font-weight:700">Youth Programme Coordinator</div>
+            <div style="font-size:13px;color:var(--muted)">UNICEF Africa · Kigali, Rwanda · On-site</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <span class="badge badge-green">Full-Time</span>
+            <span class="badge badge-muted">USD 900-1,200/mo</span>
+            <button class="btn btn-primary btn-sm" onclick="toast('Application submitted!')">Apply Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ TAB -->
+    <div id="tab-quiz" class="hidden">
+      <div class="card-flat animate" style="max-width:600px">
+        <h3 style="margin-bottom:8px">🧭 Career Discovery Quiz</h3>
+        <p style="margin-bottom:24px">Answer 5 quick questions to discover career paths aligned with your personality.</p>
+        <div id="quiz-q">
+          <div style="font-weight:600;font-size:17px;margin-bottom:18px" id="cq-text">What energises you most?</div>
+          <div id="cq-options" style="display:flex;flex-direction:column;gap:10px">
+            <button class="q-opt" onclick="cqAnswer('Creative')">🎨 Expressing creativity and making beautiful things</button>
+            <button class="q-opt" onclick="cqAnswer('Helping')">🤝 Helping and supporting other people</button>
+            <button class="q-opt" onclick="cqAnswer('Problem-solving')">🧠 Solving complex problems and puzzles</button>
+            <button class="q-opt" onclick="cqAnswer('Leading')">🚀 Leading teams and driving results</button>
+          </div>
+        </div>
+        <div id="quiz-result" class="hidden" style="text-align:center;padding:24px 0">
+          <div style="font-size:48px;margin-bottom:16px" id="res-emoji"></div>
+          <h3 id="res-title" style="margin-bottom:8px"></h3>
+          <p id="res-desc"></p>
+          <button class="btn btn-secondary" style="margin-top:20px" onclick="resetCareerQuiz()">Retake Quiz</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- CV Builder Modal -->
+<div id="cv-modal" class="modal-overlay hidden">
+  <div class="modal-box" style="max-width:560px">
+    <div class="flex justify-between items-center mb-24">
+      <h3>✍️ CV Builder</h3>
+      <button class="btn-ghost" onclick="document.getElementById('cv-modal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="cv-name" placeholder="Your name" /></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="cv-email" type="email" placeholder="email@example.com" /></div>
+    <div class="form-group"><label class="form-label">Profession / Target Role</label><input class="form-input" id="cv-role" placeholder="e.g. Software Developer" /></div>
+    <div class="form-group"><label class="form-label">Skills (comma-separated)</label><input class="form-input" id="cv-skills" placeholder="Python, Leadership, Communication…" /></div>
+    <div class="form-group"><label class="form-label">Summary</label><textarea class="form-textarea" id="cv-summary" placeholder="A brief summary about yourself…" style="min-height:80px"></textarea></div>
+    <button class="btn btn-primary btn-full" onclick="generateCV()">Generate CV Preview →</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+<style>
+  .q-opt {
+    padding: 13px 18px; border-radius: 12px; border: 2px solid var(--cream);
+    background: var(--white); cursor: pointer; text-align: left;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--dark);
+    transition: all 0.2s;
+  }
+  .q-opt:hover { border-color: var(--terracotta); background: var(--terracotta-dim); }
+</style>
+<script src="/main.js"></script>
+<script>
+if (!requireAuth()) throw 0;
+buildNav("career");
+buildSidebar("career");
+
+function showTab(tab, btn) {
+  ["tools","mentors","jobs","quiz"].forEach(t => document.getElementById("tab-"+t).classList.add("hidden"));
+  document.getElementById("tab-" + tab).classList.remove("hidden");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function requestMentor(name) {
+  toast("Mentorship request sent to " + name + "! They will respond within 48 hours.");
+}
+
+function startCareerAssessment() {
+  showTab("quiz", document.querySelectorAll(".tab-btn")[3]);
+  toast("Career Discovery Quiz started!");
+}
+
+function openCVBuilder() {
+  const user = getUser();
+  if (user) document.getElementById("cv-name").value = user.name;
+  document.getElementById("cv-modal").classList.remove("hidden");
+}
+
+function generateCV() {
+  const name    = document.getElementById("cv-name").value;
+  const email   = document.getElementById("cv-email").value;
+  const role    = document.getElementById("cv-role").value;
+  const skills  = document.getElementById("cv-skills").value;
+  const summary = document.getElementById("cv-summary").value;
+  if (!name || !role) { toast("Please fill in name and target role", "error"); return; }
+  toast("CV generated! Download feature coming soon. 📄");
+  document.getElementById("cv-modal").classList.add("hidden");
+}
+
+const careerMap = {
+  "Creative":        { emoji: "🎨", title: "Creative Professional", desc: "You thrive in design, art, content creation, advertising, or filmmaking. Your creativity is your superpower." },
+  "Helping":         { emoji: "🤝", title: "Care & Community Leader", desc: "Roles in social work, healthcare, counselling, teaching, or NGO management align with your heart." },
+  "Problem-solving": { emoji: "🧠", title: "Tech & Analytical Thinker", desc: "Engineering, data science, research, or finance leverage your analytical mind best." },
+  "Leading":         { emoji: "🚀", title: "Entrepreneur & Leader", desc: "Business management, entrepreneurship, politics, or project management are where you shine." },
+};
+
+function cqAnswer(answer) {
+  const result = careerMap[answer];
+  document.getElementById("quiz-q").classList.add("hidden");
+  document.getElementById("quiz-result").classList.remove("hidden");
+  document.getElementById("res-emoji").textContent = result.emoji;
+  document.getElementById("res-title").textContent = result.title;
+  document.getElementById("res-desc").textContent  = result.desc;
+}
+
+function resetCareerQuiz() {
+  document.getElementById("quiz-q").classList.remove("hidden");
+  document.getElementById("quiz-result").classList.add("hidden");
+}
+
+document.getElementById("cv-modal").addEventListener("click", function(e) {
+  if (e.target === this) this.classList.add("hidden");
+});
+</script>
+</body>
+</html>

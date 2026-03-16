@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Space — MEND</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<nav class="navbar" id="navbar"></nav>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">Creative Space</div>
+      <div class="page-sub">Express yourself. Your story has power. Your art heals.</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('feed', this)">📖 Community Feed</button>
+      <button class="tab-btn"       onclick="showTab('write', this)">✍️ Share Story</button>
+      <button class="tab-btn"       onclick="showTab('art', this)">🎨 Art Gallery</button>
+    </div>
+
+    <!-- FEED TAB -->
+    <div id="tab-feed">
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap" id="tag-filters">
+        <button class="btn btn-sm btn-primary" onclick="filterTag('', this)">All</button>
+        <button class="btn btn-sm btn-ghost" onclick="filterTag('mentalhealth', this)">#mentalhealth</button>
+        <button class="btn btn-sm btn-ghost" onclick="filterTag('career', this)">#career</button>
+        <button class="btn btn-sm btn-ghost" onclick="filterTag('healing', this)">#healing</button>
+        <button class="btn btn-sm btn-ghost" onclick="filterTag('art', this)">#art</button>
+        <button class="btn btn-sm btn-ghost" onclick="filterTag('family', this)">#family</button>
+      </div>
+      <div id="stories-feed"><div style="color:var(--muted);padding:32px;text-align:center">Loading stories…</div></div>
+    </div>
+
+    <!-- WRITE TAB -->
+    <div id="tab-write" class="hidden">
+      <div class="card-flat animate" style="max-width:660px">
+        <h3 style="margin-bottom:6px">Share Your Story</h3>
+        <p style="margin-bottom:24px;font-size:14px">This is a safe, moderated space. Your words can heal others.</p>
+
+        <div class="form-group">
+          <label class="form-label">Title (optional)</label>
+          <input id="story-title" class="form-input" placeholder="Give your story a title…" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Story *</label>
+          <textarea id="story-content" class="form-textarea" rows="6" placeholder="Write what's on your heart… Share your experience, your healing, your growth…"></textarea>
+          <div class="form-hint"><span id="char-count">0</span> characters</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Emoji (optional)</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap" id="emoji-picker">
+            <button class="emoji-pick active" onclick="pickEmoji('✍️',this)">✍️</button>
+            <button class="emoji-pick" onclick="pickEmoji('🌱',this)">🌱</button>
+            <button class="emoji-pick" onclick="pickEmoji('🌟',this)">🌟</button>
+            <button class="emoji-pick" onclick="pickEmoji('💪',this)">💪</button>
+            <button class="emoji-pick" onclick="pickEmoji('🎨',this)">🎨</button>
+            <button class="emoji-pick" onclick="pickEmoji('💚',this)">💚</button>
+            <button class="emoji-pick" onclick="pickEmoji('🌊',this)">🌊</button>
+            <button class="emoji-pick" onclick="pickEmoji('🦋',this)">🦋</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="tag-picker">
+            <button class="tag-pick" onclick="toggleTag('mentalhealth',this)">#mentalhealth</button>
+            <button class="tag-pick" onclick="toggleTag('healing',this)">#healing</button>
+            <button class="tag-pick" onclick="toggleTag('career',this)">#career</button>
+            <button class="tag-pick" onclick="toggleTag('art',this)">#art</button>
+            <button class="tag-pick" onclick="toggleTag('family',this)">#family</button>
+            <button class="tag-pick" onclick="toggleTag('growth',this)">#growth</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+          <input type="checkbox" id="anon-check" />
+          <label for="anon-check" style="font-size:14px;cursor:pointer">Post anonymously (your name will be hidden)</label>
+        </div>
+        <button class="btn btn-primary" onclick="submitStory()">Share with Community →</button>
+      </div>
+    </div>
+
+    <!-- ART TAB -->
+    <div id="tab-art" class="hidden">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+        <div style="background:#FFF3E0;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size:64px;margin-bottom:12px">🌅</div>
+          <div style="font-size:15px;font-weight:700">Hope at Dawn</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Nomsa B.</div>
+          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        </div>
+        <div style="background:#E3F2FD;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size:64px;margin-bottom:12px">🌊</div>
+          <div style="font-size:15px;font-weight:700">The Weight of Water</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Kwame A.</div>
+          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        </div>
+        <div style="background:#FCE4EC;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size:64px;margin-bottom:12px">🌺</div>
+          <div style="font-size:15px;font-weight:700">Resilience in Bloom</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Zola M.</div>
+          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        </div>
+        <div style="background:#F3E5F5;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size:64px;margin-bottom:12px">🦋</div>
+          <div style="font-size:15px;font-weight:700">Becoming</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Amara D.</div>
+          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        </div>
+        <div style="background:#E8F5E9;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size:64px;margin-bottom:12px">⛰️</div>
+          <div style="font-size:15px;font-weight:700">Steady Ground</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Tunde O.</div>
+          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        </div>
+        <div style="background:#EDE7F6;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size:64px;margin-bottom:12px">🌙</div>
+          <div style="font-size:15px;font-weight:700">Night Thoughts</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Layla K.</div>
+          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        </div>
+      </div>
+      <div style="margin-top:28px">
+        <button class="btn btn-secondary" onclick="toast('Art upload coming soon! For now, share your story in text.')">+ Upload Your Artwork</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+<style>
+  .emoji-pick, .tag-pick {
+    padding: 8px 14px; border-radius: 20px; border: 2px solid var(--cream);
+    cursor: pointer; font-size: 14px; background: var(--cream);
+    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .emoji-pick.active, .tag-pick.active {
+    border-color: var(--terracotta); background: var(--terracotta-dim); color: var(--terracotta);
+  }
+</style>
+<script src="/main.js"></script>
+<script>
+if (!requireAuth()) throw 0;
+buildNav("creative");
+buildSidebar("creative");
+
+let allStories = [];
+let selectedEmoji = "✍️";
+const selectedTags = new Set();
+let activeFilter = "";
+
+function showTab(tab, btn) {
+  ["feed","write","art"].forEach(t => document.getElementById("tab-"+t).classList.add("hidden"));
+  document.getElementById("tab-" + tab).classList.remove("hidden");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  if (tab === "feed") loadStories();
+}
+
+function filterTag(tag, btn) {
+  activeFilter = tag;
+  document.querySelectorAll("#tag-filters button").forEach(b => { b.classList.remove("btn-primary"); b.classList.add("btn-ghost"); });
+  btn.classList.remove("btn-ghost"); btn.classList.add("btn-primary");
+  renderFeed();
+}
+
+function renderFeed() {
+  const filtered = activeFilter
+    ? allStories.filter(s => s.tags && s.tags.includes(activeFilter))
+    : allStories;
+
+  if (!filtered.length) {
+    document.getElementById("stories-feed").innerHTML = `<div style="text-align:center;padding:48px;color:var(--muted)">No stories yet. Be the first to share!</div>`;
+    return;
+  }
+  document.getElementById("stories-feed").innerHTML = filtered.map(s => `
+    <div class="story-card">
+      <div class="story-author">
+        <div class="avatar avatar-sm" style="background:linear-gradient(135deg,var(--terracotta-lt),var(--brown))">${s.emoji || "✍"}</div>
+        <div>
+          <span style="font-size:14px;font-weight:700">${escHtml(s.author)}</span>
+          <span style="font-size:12px;color:var(--muted);margin-left:8px">${timeAgo(s.createdAt)}</span>
+        </div>
+        ${s.tags?.length ? `<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">${s.tags.map(t=>`<span class="badge badge-muted">#${t}</span>`).join("")}</div>` : ""}
+      </div>
+      ${s.title ? `<div style="font-weight:700;font-size:16px;margin-bottom:8px">${escHtml(s.title)}</div>` : ""}
+      <div class="story-text">"${escHtml(s.content)}"</div>
+      <div class="story-reactions">
+        <button class="reaction-btn" onclick="react(${s.id},'like',this)">👏 <span>${s.likes}</span></button>
+        <button class="reaction-btn" onclick="react(${s.id},'heart',this)">❤️ <span>${s.hearts}</span></button>
+        <button class="reaction-btn" onclick="react(${s.id},'strong',this)">💪 <span>0</span></button>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function react(id, type, btn) {
+  try {
+    const updated = await POST("/stories/" + id + "/like", { type });
+    const span = btn.querySelector("span");
+    if (span) span.textContent = type === "heart" ? updated.hearts : updated.likes;
+    toast("Reaction sent!");
+    // Update local
+    const s = allStories.find(s => s.id === id);
+    if (s) { s.likes = updated.likes; s.hearts = updated.hearts; }
+  } catch (e) { toast(e.message, "error"); }
+}
+
+async function loadStories() {
+  try {
+    allStories = await GET("/stories");
+    renderFeed();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+function pickEmoji(emoji, el) {
+  selectedEmoji = emoji;
+  document.querySelectorAll(".emoji-pick").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+}
+
+function toggleTag(tag, el) {
+  if (selectedTags.has(tag)) { selectedTags.delete(tag); el.classList.remove("active"); }
+  else                       { selectedTags.add(tag);    el.classList.add("active"); }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const ta = document.getElementById("story-content");
+  if (ta) ta.addEventListener("input", () => {
+    document.getElementById("char-count").textContent = ta.value.length;
+  });
+});
+
+async function submitStory() {
+  const title   = document.getElementById("story-title").value.trim();
+  const content = document.getElementById("story-content").value.trim();
+  const anon    = document.getElementById("anon-check").checked;
+
+  if (!content || content.length < 20) {
+    toast("Please write at least 20 characters.", "error"); return;
+  }
+
+  try {
+    await POST("/stories", {
+      title, content,
+      emoji: selectedEmoji,
+      tags: [...selectedTags],
+      anonymous: anon
+    });
+    toast("Your story has been shared with the community! 🌱");
+    document.getElementById("story-title").value   = "";
+    document.getElementById("story-content").value = "";
+    document.getElementById("char-count").textContent = "0";
+    selectedTags.clear();
+    document.querySelectorAll(".tag-pick").forEach(b => b.classList.remove("active"));
+    // Switch to feed
+    document.querySelectorAll(".tab-btn")[0].click();
+    loadStories();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+loadStories();
+</script>
+</body>
+</html>
