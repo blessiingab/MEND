@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assessment — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
   <style>
     .q-option {
       padding: 15px 20px; border-radius: 12px;
@@ -38,13 +38,13 @@
     <!-- Quiz area -->
     <div id="quiz-area">
       <!-- Progress bar -->
-      <div style="display:flex;gap:8px;margin-bottom:32px" id="progress-dots"></div>
+      <div class="progress-dots" id="progress-dots"></div>
 
-      <div class="card-flat animate" id="question-card" style="max-width:620px">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:6px" id="q-counter">Question 1 of 8</div>
-        <h3 id="q-text" style="font-size:19px;margin-bottom:26px;line-height:1.5"></h3>
+      <div class="card-flat animate question-card" id="question-card">
+        <div class="q-counter" id="q-counter">Question 1 of 8</div>
+        <h3 id="q-text" class="q-text"></h3>
         <div id="q-options"></div>
-        <div style="margin-top:24px;font-size:13px;color:var(--muted)">
+        <div class="q-note">
           🔒 Your answers are encrypted. They are never shared without your consent.
         </div>
       </div>
@@ -52,30 +52,30 @@
 
     <!-- Results area (hidden until done) -->
     <div id="results-area" class="hidden">
-      <div class="card-flat animate" style="max-width:640px;text-align:center;padding:40px">
-        <div style="font-size:72px;margin-bottom:16px">🌱</div>
-        <h2 style="margin-bottom:8px">Your Wellbeing Report</h2>
-        <p style="margin-bottom:32px">Based on your responses today. Remember, this is a supportive tool — not a medical diagnosis.</p>
+      <div class="card-flat animate results-card">
+        <div class="results-emoji">🌱</div>
+        <h2 class="results-title">Your Wellbeing Report</h2>
+        <p class="results-desc">Based on your responses today. Remember, this is a supportive tool — not a medical diagnosis.</p>
       </div>
-      <div style="max-width:640px;margin-top:20px" id="score-cards"></div>
-      <div style="max-width:640px;margin-top:20px" id="recommendations"></div>
-      <div style="max-width:640px;margin-top:20px">
-        <button class="btn btn-primary" onclick="restartQuiz()">Retake Assessment</button>
-        <a href="/therapy.html" class="btn btn-secondary" style="margin-left:12px">Book a Therapist →</a>
+      <div class="score-cards" id="score-cards"></div>
+      <div class="recommendations" id="recommendations"></div>
+      <div class="restart-section">
+        <button class="btn btn-secondary" onclick="restartQuiz()">Take Assessment Again</button>
+        <a href="/therapy.html" class="btn btn-secondary book-btn">Book a Therapist →</a>
       </div>
     </div>
 
     <!-- History -->
-    <div class="card-flat mt-24" style="max-width:640px" id="history-section">
-      <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">Assessment History</div>
-      <div id="history-list"><div style="color:var(--muted);font-size:14px">No previous assessments yet.</div></div>
+    <div class="card-flat mt-24 history-section" id="history-section">
+      <div class="history-title">Assessment History</div>
+      <div id="history-list"><div class="history-empty">No previous assessments yet.</div></div>
     </div>
 
   </main>
 </div>
 
 <div id="toast"></div>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
 if (!requireAuth()) throw 0;
 buildNav("assessment");

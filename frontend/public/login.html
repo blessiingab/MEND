@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In — MEND</title>
-  <link rel="stylesheet" href="mend.css" >
+  <link rel="stylesheet" href="/mend.css" >
 </head>
 <body>
 <div class="auth-wrap"> 
@@ -16,7 +16,7 @@
     <div id="error-msg" class="alert alert-error hidden"></div>
 
     <!-- Demo credentials hint -->
-    <div class="alert alert-info" style="margin-bottom:20px">
+    <div class="alert alert-info mb-20">
       💡 <strong>Demo:</strong> admin@mend.com / admin123
     </div>
 
@@ -29,30 +29,30 @@
       <input id="password" class="form-input" type="password" placeholder="••••••••" value="admin123" />
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+    <div class="flex justify-between items-center mb-24">
+      <label class="flex items-center gap-8 text-sm cursor-pointer">
         <input type="checkbox" checked /> Remember me
       </label>
-      <a style="font-size:13px;color:var(--terracotta);cursor:pointer">Forgot password?</a>
+      <a class="text-sm color-terra cursor-pointer">Forgot password?</a>
     </div>
 
     <button class="btn btn-primary btn-full" id="submit-btn" onclick="doLogin()">
       Sign In →
     </button>
 
-    <div class="auth-divider" style="margin-top:20px"><span>or</span></div>
+    <div class="auth-divider mt-20"><span>or</span></div>
     <div class="auth-switch">
       Don't have an account? <a href="/register.html">Sign up free</a>
     </div>
 
-    <div style="margin-top:28px;padding:18px;background:var(--cream);border-radius:14px;font-size:13px;color:var(--muted);line-height:1.6">
+    <div class="auth-privacy">
       🔒 <strong>Your privacy matters.</strong> MEND uses industry-standard encryption to protect your mental health data. We never share your information without your consent.
     </div>
   </div>
 </div>
 
 <div id="toast"></div>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
   redirectIfLoggedIn();
 
@@ -84,97 +84,6 @@
     }
   }
 
-  document.addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign In — MEND</title>
-  <link rel="stylesheet" href="/frontend/mend.css" />
-</head>
-<body>
-<div class="auth-wrap">
-  <div class="auth-box">
-    <a href="/" class="auth-logo">M<span>END</span> 🌱</a>
-    <h2 class="auth-title">Welcome back</h2>
-    <p class="auth-sub">Sign in to continue your journey</p>
-
-    <div id="error-msg" class="alert alert-error hidden"></div>
-
-    <!-- Demo credentials hint -->
-    <div class="alert alert-info" style="margin-bottom:20px">
-      💡 <strong>Demo:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d2c292024230d20282329632e2220">[email&#160;protected]</a> / admin123
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Email Address</label>
-      <input id="email" class="form-input" type="email" placeholder="you@example.com" value="admin@mend.com" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input id="password" class="form-input" type="password" placeholder="••••••••" value="admin123" />
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
-        <input type="checkbox" checked /> Remember me
-      </label>
-      <a style="font-size:13px;color:var(--terracotta);cursor:pointer">Forgot password?</a>
-    </div>
-
-    <button class="btn btn-primary btn-full" id="submit-btn" onclick="doLogin()">
-      Sign In →
-    </button>
-
-    <div class="auth-divider" style="margin-top:20px"><span>or</span></div>
-    <div class="auth-switch">
-      Don't have an account? <a href="/public/register.html">Sign up free</a>
-    </div>
-
-    <div style="margin-top:28px;padding:18px;background:var(--cream);border-radius:14px;font-size:13px;color:var(--muted);line-height:1.6">
-      🔒 <strong>Your privacy matters.</strong> MEND uses industry-standard encryption to protect your mental health data. We never share your information without your consent.
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/frontend/mend.js"></script>
-<script>
-  redirectIfLoggedIn();
-
-  async function doLogin() {
-    const email    = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const errEl    = document.getElementById("error-msg");
-    const btn      = document.getElementById("submit-btn");
-
-    errEl.classList.add("hidden");
-    if (!email || !password) {
-      errEl.textContent = "⚠ Please enter your email and password.";
-      errEl.classList.remove("hidden"); return;
-    }
-
-    btn.textContent = "Signing in…";
-    btn.disabled = true;
-
-    try {
-      const data = await POST("/auth/login", { email, password });
-      setAuth(data.token, data.user);
-      toast("Welcome back, " + data.user.name + "! 🌱");
-      setTimeout(() => window.location.href = "/dashboard.html", 700);
-    } catch (err) {
-      errEl.textContent = "⚠ " + err.message;
-      errEl.classList.remove("hidden");
-      btn.textContent = "Sign In →";
-      btn.disabled = false;
-    }
-  }     
-
-  document.addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
 </script>
 </body>
 </html>

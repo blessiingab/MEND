@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Space — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
 </head>
 <body>
 <nav class="navbar" id="navbar"></nav>
@@ -25,7 +25,7 @@
 
     <!-- FEED TAB -->
     <div id="tab-feed">
-      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap" id="tag-filters">
+      <div class="tag-filters" id="tag-filters">
         <button class="btn btn-sm btn-primary" onclick="filterTag('', this)">All</button>
         <button class="btn btn-sm btn-ghost" onclick="filterTag('mentalhealth', this)">#mentalhealth</button>
         <button class="btn btn-sm btn-ghost" onclick="filterTag('career', this)">#career</button>
@@ -33,14 +33,14 @@
         <button class="btn btn-sm btn-ghost" onclick="filterTag('art', this)">#art</button>
         <button class="btn btn-sm btn-ghost" onclick="filterTag('family', this)">#family</button>
       </div>
-      <div id="stories-feed"><div style="color:var(--muted);padding:32px;text-align:center">Loading stories…</div></div>
+      <div id="stories-feed"><div class="loading-stories">Loading stories…</div></div>
     </div>
 
     <!-- WRITE TAB -->
     <div id="tab-write" class="hidden">
-      <div class="card-flat animate" style="max-width:660px">
-        <h3 style="margin-bottom:6px">Share Your Story</h3>
-        <p style="margin-bottom:24px;font-size:14px">This is a safe, moderated space. Your words can heal others.</p>
+      <div class="card-flat animate write-card">
+        <h3 class="write-title">Share Your Story</h3>
+        <p class="write-desc">This is a safe, moderated space. Your words can heal others.</p>
 
         <div class="form-group">
           <label class="form-label">Title (optional)</label>
@@ -53,7 +53,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Emoji (optional)</label>
-          <div style="display:flex;gap:10px;flex-wrap:wrap" id="emoji-picker">
+          <div class="emoji-picker" id="emoji-picker">
             <button class="emoji-pick active" onclick="pickEmoji('✍️',this)">✍️</button>
             <button class="emoji-pick" onclick="pickEmoji('🌱',this)">🌱</button>
             <button class="emoji-pick" onclick="pickEmoji('🌟',this)">🌟</button>
@@ -66,7 +66,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Tags</label>
-          <div style="display:flex;gap:8px;flex-wrap:wrap" id="tag-picker">
+          <div class="tag-picker" id="tag-picker">
             <button class="tag-pick" onclick="toggleTag('mentalhealth',this)">#mentalhealth</button>
             <button class="tag-pick" onclick="toggleTag('healing',this)">#healing</button>
             <button class="tag-pick" onclick="toggleTag('career',this)">#career</button>
@@ -75,9 +75,9 @@
             <button class="tag-pick" onclick="toggleTag('growth',this)">#growth</button>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <div class="anon-section">
           <input type="checkbox" id="anon-check" />
-          <label for="anon-check" style="font-size:14px;cursor:pointer">Post anonymously (your name will be hidden)</label>
+          <label for="anon-check" class="anon-label">Post anonymously (your name will be hidden)</label>
         </div>
         <button class="btn btn-primary" onclick="submitStory()">Share with Community →</button>
       </div>
@@ -85,45 +85,45 @@
 
     <!-- ART TAB -->
     <div id="tab-art" class="hidden">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
-        <div style="background:#FFF3E0;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="font-size:64px;margin-bottom:12px">🌅</div>
-          <div style="font-size:15px;font-weight:700">Hope at Dawn</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Nomsa B.</div>
-          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+      <div class="art-grid">
+        <div class="art-card art-card-1">
+          <div class="art-emoji">🌅</div>
+          <div class="art-title">Hope at Dawn</div>
+          <div class="art-author">by Nomsa B.</div>
+          <button class="reaction-btn art-appreciate" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
         </div>
-        <div style="background:#E3F2FD;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="font-size:64px;margin-bottom:12px">🌊</div>
-          <div style="font-size:15px;font-weight:700">The Weight of Water</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Kwame A.</div>
-          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        <div class="art-card art-card-2">
+          <div class="art-emoji">🌊</div>
+          <div class="art-title">The Weight of Water</div>
+          <div class="art-author">by Kwame A.</div>
+          <button class="reaction-btn art-appreciate" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
         </div>
-        <div style="background:#FCE4EC;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="font-size:64px;margin-bottom:12px">🌺</div>
-          <div style="font-size:15px;font-weight:700">Resilience in Bloom</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Zola M.</div>
-          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        <div class="art-card art-card-3">
+          <div class="art-emoji">🌺</div>
+          <div class="art-title">Resilience in Bloom</div>
+          <div class="art-author">by Zola M.</div>
+          <button class="reaction-btn art-appreciate" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
         </div>
-        <div style="background:#F3E5F5;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="font-size:64px;margin-bottom:12px">🦋</div>
-          <div style="font-size:15px;font-weight:700">Becoming</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Amara D.</div>
-          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        <div class="art-card art-card-4">
+          <div class="art-emoji">🦋</div>
+          <div class="art-title">Becoming</div>
+          <div class="art-author">by Amara D.</div>
+          <button class="reaction-btn art-appreciate" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
         </div>
-        <div style="background:#E8F5E9;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="font-size:64px;margin-bottom:12px">⛰️</div>
-          <div style="font-size:15px;font-weight:700">Steady Ground</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Tunde O.</div>
-          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        <div class="art-card art-card-5">
+          <div class="art-emoji">⛰️</div>
+          <div class="art-title">Steady Ground</div>
+          <div class="art-author">by Tunde O.</div>
+          <button class="reaction-btn art-appreciate" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
         </div>
-        <div style="background:#EDE7F6;border-radius:20px;padding:40px 24px 24px;text-align:center;cursor:pointer" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="font-size:64px;margin-bottom:12px">🌙</div>
-          <div style="font-size:15px;font-weight:700">Night Thoughts</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">by Layla K.</div>
-          <button class="reaction-btn" style="margin:12px auto 0;display:flex" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
+        <div class="art-card art-card-6">
+          <div class="art-emoji">🌙</div>
+          <div class="art-title">Night Thoughts</div>
+          <div class="art-author">by Layla K.</div>
+          <button class="reaction-btn art-appreciate" onclick="toast('Appreciated! ❤️')">❤️ Appreciate</button>
         </div>
       </div>
-      <div style="margin-top:28px">
+      <div class="art-upload-section">
         <button class="btn btn-secondary" onclick="toast('Art upload coming soon! For now, share your story in text.')">+ Upload Your Artwork</button>
       </div>
     </div>
@@ -132,17 +132,7 @@
 </div>
 
 <div id="toast"></div>
-<style>
-  .emoji-pick, .tag-pick {
-    padding: 8px 14px; border-radius: 20px; border: 2px solid var(--cream);
-    cursor: pointer; font-size: 14px; background: var(--cream);
-    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-  }
-  .emoji-pick.active, .tag-pick.active {
-    border-color: var(--terracotta); background: var(--terracotta-dim); color: var(--terracotta);
-  }
-</style>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
 if (!requireAuth()) throw 0;
 buildNav("creative");
@@ -174,20 +164,20 @@ function renderFeed() {
     : allStories;
 
   if (!filtered.length) {
-    document.getElementById("stories-feed").innerHTML = `<div style="text-align:center;padding:48px;color:var(--muted)">No stories yet. Be the first to share!</div>`;
+    document.getElementById("stories-feed").innerHTML = `<div class="no-stories">No stories yet. Be the first to share!</div>`;
     return;
   }
   document.getElementById("stories-feed").innerHTML = filtered.map(s => `
     <div class="story-card">
       <div class="story-author">
-        <div class="avatar avatar-sm" style="background:linear-gradient(135deg,var(--terracotta-lt),var(--brown))">${s.emoji || "✍"}</div>
+        <div class="avatar avatar-sm story-avatar">${s.emoji || "✍"}</div>
         <div>
-          <span style="font-size:14px;font-weight:700">${escHtml(s.author)}</span>
-          <span style="font-size:12px;color:var(--muted);margin-left:8px">${timeAgo(s.createdAt)}</span>
+          <span class="story-author-name">${escHtml(s.author)}</span>
+          <span class="story-time">${timeAgo(s.createdAt)}</span>
         </div>
-        ${s.tags?.length ? `<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">${s.tags.map(t=>`<span class="badge badge-muted">#${t}</span>`).join("")}</div>` : ""}
+        ${s.tags?.length ? `<div class="story-tags">${s.tags.map(t=>`<span class="badge badge-muted">#${t}</span>`).join("")}</div>` : ""}
       </div>
-      ${s.title ? `<div style="font-weight:700;font-size:16px;margin-bottom:8px">${escHtml(s.title)}</div>` : ""}
+      ${s.title ? `<div class="story-title">${escHtml(s.title)}</div>` : ""}
       <div class="story-text">"${escHtml(s.content)}"</div>
       <div class="story-reactions">
         <button class="reaction-btn" onclick="react(${s.id},'like',this)">👏 <span>${s.likes}</span></button>

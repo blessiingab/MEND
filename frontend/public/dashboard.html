@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
 </head>
 <body>
 <nav class="navbar" id="navbar"></nav>
@@ -24,12 +24,12 @@
     <div class="card-flat mb-24" id="mood-section">
       <div class="flex justify-between items-center mb-16">
         <div>
-          <div style="font-size:16px;font-weight:700;color:var(--dark)">How are you feeling today?</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:3px">Check in daily to track your emotional journey</div>
+          <div class="mood-title">How are you feeling today?</div>
+          <div class="mood-sub">Check in daily to track your emotional journey</div>
         </div>
         <span id="mood-logged" class="badge badge-green hidden">✓ Logged</span>
       </div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div class="mood-buttons">
         <button class="mood-btn" onclick="logMood('Thriving','🌟')"><div class="mood-emoji">🌟</div>Thriving</button>
         <button class="mood-btn" onclick="logMood('Good','😊')"><div class="mood-emoji">😊</div>Good</button>
         <button class="mood-btn" onclick="logMood('Okay','😐')"><div class="mood-emoji">😐</div>Okay</button>
@@ -49,7 +49,7 @@
         <div class="stat-label">💬 Sessions Booked</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num" style="color:var(--gold)" id="stat-stories">—</div>
+        <div class="stat-num color-gold" id="stat-stories">—</div>
         <div class="stat-label">✍️ Stories Shared</div>
       </div>
       <div class="stat-card">
@@ -61,14 +61,14 @@
     <!-- Progress + Quick Actions -->
     <div class="grid-2 mb-24">
       <div class="card-flat">
-        <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:20px">Wellbeing Progress</div>
+        <div class="progress-title">Wellbeing Progress</div>
         <div id="progress-area">
-          <div style="color:var(--muted);font-size:14px">Complete an assessment to see your progress →</div>
+          <div class="text-muted text-sm">Complete an assessment to see your progress →</div>
         </div>
       </div>
 
       <div class="card-flat">
-        <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">Quick Actions</div>
+        <div class="quick-title">Quick Actions</div>
         <a href="/assessment.html" class="quick-link">🧠 Take Mental Health Assessment</a>
         <a href="/therapy.html"    class="quick-link">💬 Book a Therapy Session</a>
         <a href="/creative.html"   class="quick-link">✍️ Share a Story</a>
@@ -80,18 +80,18 @@
     <!-- Upcoming Bookings -->
     <div class="card-flat mb-24">
       <div class="flex justify-between items-center mb-16">
-        <div style="font-size:15px;font-weight:700;color:var(--dark)">Upcoming Sessions</div>
+        <div class="bookings-title">Upcoming Sessions</div>
         <a href="/therapy.html" class="btn-ghost">Book New →</a>
       </div>
       <div id="bookings-preview">
-        <div style="color:var(--muted);font-size:14px;padding:12px 0">No upcoming sessions. <a href="/therapy.html" style="color:var(--terracotta);font-weight:600">Book your first one →</a></div>
+        <div class="no-bookings">No upcoming sessions. <a href="/therapy.html">Book your first one →</a></div>
       </div>
     </div>
 
     <!-- Recent Stories -->
     <div class="card-flat">
       <div class="flex justify-between items-center mb-16">
-        <div style="font-size:15px;font-weight:700;color:var(--dark)">Community Stories</div>
+        <div class="stories-title">Community Stories</div>
         <a href="/creative.html" class="btn-ghost">See All →</a>
       </div>
       <div id="stories-preview"></div>
@@ -111,7 +111,7 @@
   }
   .quick-link:hover { background: var(--terracotta-dim); color: var(--terracotta); }
 </style>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
   if (!requireAuth()) throw 0;
   const user = getUser();

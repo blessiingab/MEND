@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Therapy Booking — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
 </head>
 <body>
 <nav class="navbar" id="navbar"></nav>
@@ -18,7 +18,7 @@
     </div>
 
     <div class="alert alert-info mb-24">
-      🔒 <strong>Confidential:</strong> All sessions are 100% private. Video, voice, or text-based sessions available. Your mental health data is encrypted.
+       <strong>Confidential:</strong> All sessions are 100% private. Video, voice, or text-based sessions available. Your mental health data is encrypted.
     </div>
 
     <!-- Tabs -->
@@ -30,14 +30,14 @@
     <!-- Therapists Tab -->
     <div id="tab-therapists">
       <div class="grid-auto" id="therapists-grid">
-        <div style="color:var(--muted)">Loading therapists…</div>
+        <div class="text-muted">Loading therapists…</div>
       </div>
     </div>
 
     <!-- My Bookings Tab -->
     <div id="tab-my-bookings" class="hidden">
       <div id="my-bookings-list">
-        <div style="color:var(--muted)">Loading your bookings…</div>
+        <div class="text-muted">Loading your bookings…</div>
       </div>
     </div>
 
@@ -47,22 +47,22 @@
 <!-- Booking Modal -->
 <div id="booking-modal" class="modal-overlay hidden">
   <div class="modal-box">
-    <h3 style="margin-bottom:6px" id="modal-therapist-name">Book Session</h3>
-    <p id="modal-therapist-spec" style="margin-bottom:24px;font-size:14px"></p>
+    <h3 class="mb-6" id="modal-therapist-name">Book Session</h3>
+    <p id="modal-therapist-spec" class="mb-24 text-sm"></p>
 
     <div class="form-group">
       <label class="form-label">Select a Date</label>
-      <input id="book-date" type="date" class="form-input" />
+      <input id="book-date" type="date" class="form-input" placeholder="Select a date" />
     </div>
     <div class="form-group">
       <label class="form-label">Select a Time Slot</label>
-      <div id="modal-slots" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div id="modal-slots" class="flex gap-8 flex-wrap"></div>
     </div>
     <div class="form-group">
       <label class="form-label">Session Note (optional)</label>
-      <textarea id="book-note" class="form-textarea" placeholder="What would you like to discuss? (optional — helps the therapist prepare)" style="min-height:90px"></textarea>
+      <textarea id="book-note" class="form-textarea min-h-90" placeholder="What would you like to discuss? (optional — helps the therapist prepare)"></textarea>
     </div>
-    <div style="display:flex;gap:12px;margin-top:8px">
+    <div class="flex gap-12 mt-8">
       <button class="btn btn-primary" onclick="confirmBooking()">Confirm Booking →</button>
       <button class="btn btn-ghost"   onclick="closeModal()">Cancel</button>
     </div>
@@ -70,7 +70,7 @@
 </div>
 
 <div id="toast"></div>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
 if (!requireAuth()) throw 0;
 buildNav("therapy");

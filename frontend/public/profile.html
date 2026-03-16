@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Profile — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
 </head>
 <body>
 <nav class="navbar" id="navbar"></nav>
@@ -21,30 +21,30 @@
 
       <!-- Left: Profile Card -->
       <div>
-        <div class="card-flat text-center" style="padding:40px 28px;margin-bottom:20px">
-          <div class="avatar avatar-xl" id="profile-avatar" style="margin:0 auto 16px">?</div>
-          <div id="profile-name" style="font-family:'Playfair Display',serif;font-size:22px;color:var(--dark)">—</div>
-          <div id="profile-email" style="font-size:14px;color:var(--muted);margin-top:4px">—</div>
-          <div id="profile-meta" style="margin-top:12px"></div>
-          <div style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap" id="profile-tags"></div>
+        <div class="card-flat text-center profile-card">
+          <div class="avatar avatar-xl" id="profile-avatar">?</div>
+          <div id="profile-name" class="profile-name">—</div>
+          <div id="profile-email" class="profile-email">—</div>
+          <div id="profile-meta" class="profile-meta"></div>
+          <div class="profile-tags" id="profile-tags"></div>
           <button class="btn btn-secondary btn-sm" onclick="toggleEdit()">Edit Profile</button>
         </div>
 
         <!-- Stats -->
         <div class="card-flat">
-          <div style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--dark)">My Journey Stats</div>
-          <div class="grid-3" style="gap:12px" id="profile-stats">
-            <div style="text-align:center;padding:14px;background:var(--cream);border-radius:12px">
-              <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--terracotta)" id="s-streak">—</div>
-              <div style="font-size:12px;color:var(--muted)">Day Streak</div>
+          <div class="stats-title">My Journey Stats</div>
+          <div class="grid-3 gap-12" id="profile-stats">
+            <div class="stat-card">
+              <div class="stat-num color-terra" id="s-streak">—</div>
+              <div class="stat-label">Day Streak</div>
             </div>
-            <div style="text-align:center;padding:14px;background:var(--cream);border-radius:12px">
-              <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--green)" id="s-bookings">—</div>
-              <div style="font-size:12px;color:var(--muted)">Sessions</div>
+            <div class="stat-card">
+              <div class="stat-num color-green" id="s-bookings">—</div>
+              <div class="stat-label">Sessions</div>
             </div>
-            <div style="text-align:center;padding:14px;background:var(--cream);border-radius:12px">
-              <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--gold)" id="s-stories">—</div>
-              <div style="font-size:12px;color:var(--muted)">Stories</div>
+            <div class="stat-card">
+              <div class="stat-num color-gold" id="s-stories">—</div>
+              <div class="stat-label">Stories</div>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
       <div>
         <!-- Edit Form (hidden by default) -->
         <div class="card-flat mb-20 hidden" id="edit-form">
-          <div style="font-size:15px;font-weight:700;margin-bottom:20px;color:var(--dark)">Edit Profile</div>
+          <div class="edit-title">Edit Profile</div>
           <div class="form-group">
             <label class="form-label">Full Name</label>
             <input id="edit-name" class="form-input" placeholder="Your name" />
@@ -69,9 +69,9 @@
           </div>
           <div class="form-group">
             <label class="form-label">Bio</label>
-            <textarea id="edit-bio" class="form-textarea" placeholder="Tell the community about yourself…" style="min-height:80px"></textarea>
+            <textarea id="edit-bio" class="form-textarea min-h-80" placeholder="Tell the community about yourself…"></textarea>
           </div>
-          <div style="display:flex;gap:10px">
+          <div class="flex-gap-10">
             <button class="btn btn-primary btn-sm" onclick="saveProfile()">Save Changes</button>
             <button class="btn btn-ghost btn-sm" onclick="toggleEdit()">Cancel</button>
           </div>
@@ -79,32 +79,32 @@
 
         <!-- Mood History -->
         <div class="card-flat mb-20">
-          <div style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--dark)">Recent Mood Log</div>
-          <div id="mood-history"><div style="color:var(--muted);font-size:14px">No mood logs yet. Check in from your dashboard!</div></div>
+          <div class="mood-title">Recent Mood Log</div>
+          <div id="mood-history"><div class="text-muted text-sm">No mood logs yet. Check in from your dashboard!</div></div>
         </div>
 
         <!-- Privacy Settings -->
         <div class="card-flat mb-20">
-          <div style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--dark)">Privacy Settings</div>
+          <div class="privacy-title">Privacy Settings</div>
           <div id="privacy-settings">
             <div class="setting-row">
               <div>
-                <div style="font-size:14px;font-weight:600">Anonymous Mode</div>
-                <div style="font-size:12px;color:var(--muted)">Hide your name from the community</div>
+                <div class="setting-title">Anonymous Mode</div>
+                <div class="setting-desc">Hide your name from the community</div>
               </div>
               <div class="toggle-switch" id="toggle-anon" onclick="toggleSetting('anon')" data-on="false"></div>
             </div>
             <div class="setting-row">
               <div>
-                <div style="font-size:14px;font-weight:600">Email Notifications</div>
-                <div style="font-size:12px;color:var(--muted)">Receive weekly wellbeing reminders</div>
+                <div class="setting-title">Email Notifications</div>
+                <div class="setting-desc">Receive weekly wellbeing reminders</div>
               </div>
-              <div class="toggle-switch" id="toggle-notif" onclick="toggleSetting('notif')" data-on="true" style="background:var(--green);justify-content:flex-end"></div>
+              <div class="toggle-switch toggle-on" id="toggle-notif" onclick="toggleSetting('notif')" data-on="true"></div>
             </div>
-            <div class="setting-row" style="border-bottom:none">
+            <div class="setting-row border-none">
               <div>
-                <div style="font-size:14px;font-weight:600">Crisis Alerts</div>
-                <div style="font-size:12px;color:var(--muted)">Enable emergency support triggers</div>
+                <div class="setting-title">Crisis Alerts</div>
+                <div class="setting-desc">Enable emergency support triggers</div>
               </div>
               <div class="toggle-switch" id="toggle-crisis" onclick="toggleSetting('crisis')" data-on="false"></div>
             </div>
@@ -112,9 +112,9 @@
         </div>
 
         <!-- Danger Zone -->
-        <div class="card-flat" style="border:1px solid rgba(220,38,38,0.2)">
-          <div style="font-size:15px;font-weight:700;margin-bottom:8px;color:#dc2626">Danger Zone</div>
-          <p style="font-size:13px;margin-bottom:16px">Once you delete your account, all your data will be permanently removed.</p>
+        <div class="card-flat danger-card">
+          <div class="danger-title">Danger Zone</div>
+          <p class="danger-p">Once you delete your account, all your data will be permanently removed.</p>
           <button class="btn btn-danger btn-sm" onclick="deleteAccount()">Delete My Account</button>
         </div>
 
@@ -138,7 +138,7 @@
   }
   .toggle-switch div { width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); transition: transform 0.25s; }
 </style>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
 if (!requireAuth()) throw 0;
 buildNav("profile");
@@ -224,8 +224,11 @@ function toggleSetting(key) {
   const el = document.getElementById("toggle-" + key);
   const isOn = el.dataset.on === "true";
   el.dataset.on = !isOn;
-  el.style.background = !isOn ? "var(--green)" : "var(--cream)";
-  el.style.justifyContent = !isOn ? "flex-end" : "flex-start";
+  if (!isOn) {
+    el.classList.add("toggle-on");
+  } else {
+    el.classList.remove("toggle-on");
+  }
   toast("Setting updated!");
 }
 

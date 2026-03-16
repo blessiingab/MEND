@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
 </head>
 <body>
 <nav class="navbar" id="navbar"></nav>
@@ -25,9 +25,9 @@
     <div class="stats-row mb-24" id="admin-stats">
       <div class="stat-card"><div class="stat-num color-terra" id="a-users">—</div><div class="stat-label">👥 Total Users</div></div>
       <div class="stat-card"><div class="stat-num color-green" id="a-bookings">—</div><div class="stat-label">💬 Total Bookings</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--gold)" id="a-stories">—</div><div class="stat-label">✍️ Total Stories</div></div>
+      <div class="stat-card"><div class="stat-num stat-num-gold" id="a-stories">—</div><div class="stat-label">✍️ Total Stories</div></div>
       <div class="stat-card"><div class="stat-num color-green" id="a-assess">—</div><div class="stat-label">🧠 Assessments</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--brown)" id="a-moods">—</div><div class="stat-label">😊 Mood Logs</div></div>
+      <div class="stat-card"><div class="stat-num stat-num-brown" id="a-moods">—</div><div class="stat-label">😊 Mood Logs</div></div>
     </div>
 
     <!-- Tabs -->
@@ -39,28 +39,28 @@
 
     <!-- USERS TAB -->
     <div id="tab-users">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div style="font-size:15px;font-weight:700;color:var(--dark)">Registered Users</div>
-        <input id="user-search" class="form-input" placeholder="Search users…" style="max-width:240px" oninput="filterUsers()" />
+      <div class="flex justify-between items-center mb-16">
+        <div class="admin-title">Registered Users</div>
+        <input id="user-search" class="form-input user-search" placeholder="Search users…" oninput="filterUsers()" />
       </div>
       <div class="table-wrap" id="users-table">
-        <div style="padding:24px;color:var(--muted)">Loading users…</div>
+        <div class="loading">Loading users…</div>
       </div>
     </div>
 
     <!-- STORIES TAB -->
     <div id="tab-stories" class="hidden">
-      <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">All Community Stories</div>
+      <div class="admin-title mb-16">All Community Stories</div>
       <div id="admin-stories-list">
-        <div style="color:var(--muted)">Loading stories…</div>
+        <div class="loading">Loading stories…</div>
       </div>
     </div>
 
     <!-- BOOKINGS TAB -->
     <div id="tab-bookings" class="hidden">
-      <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:16px">All Therapy Bookings</div>
+      <div class="admin-title mb-16">All Therapy Bookings</div>
       <div class="table-wrap" id="admin-bookings-table">
-        <div style="padding:24px;color:var(--muted)">Loading bookings…</div>
+        <div class="loading">Loading bookings…</div>
       </div>
     </div>
 
@@ -68,7 +68,7 @@
 </div>
 
 <div id="toast"></div>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
 if (!requireAuth()) throw 0;
 if (!requireAdmin()) throw 0;

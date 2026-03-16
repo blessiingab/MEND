@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resources — MEND</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/mend.css" />
 </head>
 <body>
 <nav class="navbar" id="navbar"></nav>
@@ -18,9 +18,9 @@
     </div>
 
     <!-- Search -->
-    <div style="position:relative;max-width:480px;margin-bottom:28px">
-      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px">🔍</span>
-      <input id="search-box" class="form-input" placeholder="Search articles…" style="padding-left:44px" oninput="filterResources()" />
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input id="search-box" class="form-input search-input" placeholder="Search articles…" oninput="filterResources()" />
     </div>
 
     <!-- Category Filters -->
@@ -35,19 +35,19 @@
 
     <!-- Resources Grid -->
     <div class="grid-auto" id="resources-grid">
-      <div style="color:var(--muted)">Loading resources…</div>
+      <div class="loading-text">Loading resources…</div>
     </div>
 
     <!-- Article Reader Modal -->
     <div id="article-modal" class="modal-overlay hidden">
-      <div class="modal-box" style="max-width:640px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div class="modal-box modal-box-wide">
+        <div class="article-header">
           <span class="badge badge-orange" id="article-cat"></span>
           <button class="btn-ghost" onclick="closeArticle()">✕ Close</button>
         </div>
-        <h3 id="article-title" style="margin-bottom:16px;line-height:1.4"></h3>
-        <div id="article-body" style="font-size:15px;line-height:1.8;color:var(--dark)"></div>
-        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--cream);display:flex;gap:12px">
+        <h3 id="article-title" class="article-title"></h3>
+        <div id="article-body" class="article-body"></div>
+        <div class="article-footer">
           <button class="btn btn-primary btn-sm" onclick="toast('Saved to your library!')">📌 Save Article</button>
           <button class="btn btn-ghost btn-sm" onclick="closeArticle()">Close</button>
         </div>
@@ -58,7 +58,7 @@
 </div>
 
 <div id="toast"></div>
-<script src="/main.js"></script>
+<script src="/mend.js"></script>
 <script>
 if (!requireAuth()) throw 0;
 buildNav("resources");
