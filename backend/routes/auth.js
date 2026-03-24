@@ -20,7 +20,7 @@ const findUserByEmail = (email) => {
 // Register endpoint
 router.post('/signup', async (req, res) => {
   try {
-    const { email, password, name, userType } = req.body;
+    const { email, password, name, role, userType, age, license, expertise } = req.body;
 
     // Validation
     if (!email || !password || !name) {
@@ -35,14 +35,19 @@ router.post('/signup', async (req, res) => {
     // Hash password
     const hashedPassword = await bcryptjs.hash(password, 10);
 
-    // Create user
+    // Create user (handle both 'role' and 'userType' for flexibility)
     const userId = Date.now().toString();
+    const finalUserType = userType || role || 'youth';
+    
     users[userId] = {
       id: userId,
       email,
       password: hashedPassword,
       name,
-      userType: userType || 'youth',
+      userType: finalUserType,
+      age: age ? parseInt(age) : null,
+      license: license || null,
+      expertise: expertise || null,
       createdAt: new Date()
     };
 
@@ -59,10 +64,12 @@ router.post('/signup', async (req, res) => {
         id: userId,
         email,
         name,
-        userType: userType || 'youth'
+        userType: finalUserType,
+        age: age ? parseInt(age) : null
       }
     });
   } catch (error) {
+    console.error('Signup error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -102,22 +109,103 @@ router.post('/signin', async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.userType
+        userType: user.userType,
+        age: user.age
       }
     });
   } catch (error) {
+    console.error('Signin error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 // Login endpoint (alias for signin)
 router.post('/login', async (req, res) => {
-  return router.post('/signin');
+  const { email, password } = req.body;
+  try {
+    // Find user
+    const user = findUserByEmail(email);
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Generate token
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      SECRET_KEY,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        userType: user.userType,
+        age: user.age
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Register endpoint (alias for signup)
 router.post('/register', async (req, res) => {
-  return router.post('/signup');
+  const { email, password, name, role, userType, age, license, expertise } = req.body;
+  try {
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: 'Email, password, and name are required' });
+    }
+
+    if (findUserByEmail(email)) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    const userId = Date.now().toString();
+    const finalUserType = userType || role || 'youth';
+    
+    users[userId] = {
+      id: userId,
+      email,
+      password: hashedPassword,
+      name,
+      userType: finalUserType,
+      age: age ? parseInt(age) : null,
+      license: license || null,
+      expertise: expertise || null,
+      createdAt: new Date()
+    };
+
+    const token = jwt.sign(
+      { id: userId, email },
+      SECRET_KEY,
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      token,
+      user: {
+        id: userId,
+        email,
+        name,
+        userType: finalUserType,
+        age: age ? parseInt(age) : null
+      }
+    });
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get current user
