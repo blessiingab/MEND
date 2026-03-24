@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const authRoutes = require('./routes/auth');
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -15,14 +17,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Backend is running', timestamp: new Date() });
 });
 
-// Auth endpoints placeholder
-app.post('/api/auth/register', (req, res) => {
-  res.json({ message: 'Register endpoint', data: req.body });
-});
-
-app.post('/api/auth/login', (req, res) => {
-  res.json({ message: 'Login endpoint', token: 'placeholder' });
-});
+// Auth routes
+app.use('/api/auth', authRoutes);
 
 // Assessment endpoints placeholder
 app.get('/api/assessments', (req, res) => {
