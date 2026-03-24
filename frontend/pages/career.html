@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career Guidance — MEND</title>
+  <link rel="stylesheet" href="../css/mend.css" />
+</head>
+<body>
+<div id="main-navbar"></div>
+<div class="app-layout">
+  <aside class="mend-sidebar" id="main-sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">Career Guidance 💼</div>
+      <div class="page-sub">Your future starts with clarity. Let's explore your path together.</div>
+    </div>
+
+    <!-- Career Banner -->
+    <div class="mend-card mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <div class="font-12 font-weight-700 text-uppercase letter-spacing-2 text-white-70 margin-bottom-6">Career Readiness</div>
+          <div class="font-52 font-weight-900 text-playfair line-height-1">63<span class="font-24">%</span></div>
+          <div class="font-13 text-white-80 margin-top-4">+12% from last month · Keep growing!</div>
+        </div>
+        <button class="btn btn-assessment btn-lg" onclick="showTab('quiz',document.querySelectorAll('.mend-tab')[3])">Take Full Assessment →</button>
+      </div>
+    </div>
+
+    <div class="mend-tabs">
+      <button class="mend-tab active" onclick="showTab('tools',this)">🛠️ Tools & Resources</button>
+      <button class="mend-tab" onclick="showTab('mentors',this)">🤝 Find a Mentor</button>
+      <button class="mend-tab" onclick="showTab('jobs',this)">💼 Job Board</button>
+      <button class="mend-tab" onclick="showTab('quiz',this)">🧭 Career Quiz</button>
+    </div>
+
+    <!-- Tools Tab -->
+    <div id="tab-tools">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat cursor-pointer" onclick="showTab('quiz',document.querySelectorAll('.mend-tab')[3])"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div class="font-40 margin-bottom-12">🧭</div>
+            <h4>Career Compass</h4>
+            <p class="color-muted font-13">Discover your strengths and ideal career paths through our AI-powered assessment.</p>
+            <div class="color-green font-weight-600 font-13 margin-top-12">Explore →</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat cursor-pointer" onclick="showTab('mentors',document.querySelectorAll('.mend-tab')[1])"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div class="font-40 margin-bottom-12">🤝</div>
+            <h4>Mentorship</h4>
+            <p class="color-muted font-13">Connect with industry professionals who've walked the path you're exploring.</p>
+            <div class="color-terra font-weight-600 font-13 margin-top-12">Find a Mentor →</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat cursor-pointer" onclick="showToast('CV Builder coming soon!','')"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div class="font-40 margin-bottom-12">📄</div>
+            <h4>CV Builder</h4>
+            <p class="color-muted font-13">Create a professional resume tailored for African employers and international companies.</p>
+            <div class="color-terra font-weight-600 font-13 margin-top-12">Build CV →</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat cursor-pointer" onclick="showToast('Interview Prep coming soon!','')"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div class="font-40 margin-bottom-12">🎤</div>
+            <h4>Interview Prep</h4>
+            <p class="color-muted font-13">Practice common interview questions and get feedback to boost your confidence.</p>
+            <div class="color-terra font-weight-600 font-13 margin-top-12">Practice →</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat cursor-pointer" onclick="showTab('jobs',document.querySelectorAll('.mend-tab')[2])" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div class="font-40 margin-bottom-12">💼</div>
+            <h4>Job Board</h4>
+            <p class="color-muted font-13">Browse entry-level and internship opportunities across Africa, curated for youth.</p>
+            <div class="color-green font-weight-600 font-13 margin-top-12">View Jobs →</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat cursor-pointer" onclick="showToast('Skill Tracker coming soon!','')" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div class="font-40 margin-bottom-12">📈</div>
+            <h4>Skill Tracker</h4>
+            <p class="color-muted font-13">Track your learning progress and certifications to stay ahead in your field.</p>
+            <div class="color-green font-weight-600 font-13 margin-top-12">Track Skills →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mentors Tab -->
+    <div id="tab-mentors" class="d-none">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat text-center">
+            <div>👩🏾‍💻</div>
+            <h4>Amara Diallo</h4>
+            <div class="color-terra font-13 font-weight-600 margin-bottom-8">Tech Entrepreneur · Dakar, Senegal</div>
+            <div class="mend-badge badge-terra mb-3">Fintech · Startups · Leadership</div>
+            <p class="color-muted font-13">Co-founder of a fintech startup with 100K+ users. Passionate about empowering African women in tech.</p>
+            <button class="btn btn-outline-terra w-100 mt-3" onclick="showToast('Mentor requests coming soon!','')">Request Mentorship</button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat text-center">
+            <div>👨🏽‍⚕️</div>
+            <h4>Dr. Kwame Osei</h4>
+            <div class="color-terra font-13 font-weight-600 margin-bottom-8">Medical Professional · Accra, Ghana</div>
+            <div class="mend-badge badge-green mb-3">Healthcare · Research · Public Health</div>
+            <p class="color-muted font-13">Public health expert who has worked with WHO and MOH Ghana. Mentor to aspiring healthcare workers.</p>
+            <button class="btn btn-outline-terra w-100 mt-3" onclick="showToast('Mentor requests coming soon!','')">Request Mentorship</button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mend-card-flat text-center">
+            <div>👩🏿‍🎨</div>
+            <h4>Zainab Musa</h4>
+            <div class="color-terra font-13 font-weight-600 margin-bottom-8">Creative Director · Lagos, Nigeria</div>
+            <div class="mend-badge badge-gold mb-3">Design · Media · Branding</div>
+            <p class="color-muted font-13">Award-winning creative director redefining African aesthetics in global brand campaigns.</p>
+            <button class="btn btn-outline-terra w-100 mt-3" onclick="showToast('Mentor requests coming soon!','')">Request Mentorship</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jobs Tab -->
+    <div id="tab-jobs" class="d-none">
+      <div class="position-relative mb-3">
+        <span>🔍</span>
+        <input id="job-search" class="form-control ps-5" placeholder="Search jobs…" oninput="filterJobs()" />
+      </div>
+      <div id="jobs-list"><div class="color-muted">Loading jobs…</div></div>
+    </div>
+
+    <!-- Career Quiz Tab -->
+    <div id="tab-quiz" class="d-none">
+      <div class="mend-card-flat">
+        <h3>🧭 Career Compass Quiz</h3>
+        <p class="color-muted mb-4 font-14">Answer these quick questions to discover career paths that match your personality and strengths.</p>
+        <div id="quiz-container"></div>
+        <div id="quiz-result" class="d-none">
+          <div  id="qr-emoji"></div>
+          <h4 id="qr-title"></h4>
+          <p class="color-muted text-center mb-3 font-14" id="qr-desc"></p>
+          <div class="row g-3" id="qr-paths"></div>
+          <div class="text-center mt-4"><button class="btn btn-outline-terra" onclick="resetQuiz()">Retake Quiz</button></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/js/mend.js"></script>
+<script>
+  if (!Auth.requireAuth()) throw new Error();
+  renderNavbar('career'); renderSidebar('career');
+  let allJobs = [];
+
+  function showTab(id, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('d-none'));
+    document.querySelectorAll('.mend-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.remove('d-none');
+    btn.classList.add('active');
+    if (id === 'jobs' && !allJobs.length) loadJobs();
+    if (id === 'quiz') renderQuiz();
+  }
+
+  async function loadJobs() {
+    allJobs = await api.get('/jobs');
+    renderJobs(allJobs);
+  }
+
+  function filterJobs() {
+    const q = document.getElementById('job-search').value.toLowerCase();
+    renderJobs(q ? allJobs.filter(j => (j.title+j.company+j.location).toLowerCase().includes(q)) : allJobs);
+  }
+
+  function renderJobs(jobs) {
+    const el = document.getElementById('jobs-list');
+    if (!jobs.length) { el.innerHTML='<div class="color-muted">No jobs found.</div>'; return; }
+    el.innerHTML = jobs.map(j => `
+      <div class="job-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <h5 class="font-weight-700 margin-bottom-4">${j.title}</h5>
+            <div class="color-terra font-13 font-weight-600">${j.company}</div>
+            <div class="d-flex gap-2 mt-2 flex-wrap">
+              <span class="mend-badge badge-muted">📍 ${j.location}</span>
+              <span class="mend-badge badge-green">💰 ${j.salary_range||'Negotiable'}</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-terra" onclick="showToast('Application portal coming soon!','')">Apply Now →</button>
+        </div>
+        <p class="color-muted mt-3 mb-1 font-13">${j.description}</p>
+        <div class="font-12 color-muted"><strong>Requirements:</strong> ${j.requirements}</div>
+      </div>`).join('');
+  }
+
+  const QUIZ_QS = [
+    { q:'What do you enjoy most?', opts:[{l:'Solving technical problems',v:'tech'},{l:'Helping and healing people',v:'care'},{l:'Creating art and stories',v:'creative'},{l:'Leading and organizing',v:'lead'}] },
+    { q:'How do you prefer to work?', opts:[{l:'Independently with focus',v:'tech'},{l:'In a team supporting others',v:'care'},{l:'Flexibly and expressively',v:'creative'},{l:'Managing and directing others',v:'lead'}] },
+    { q:'What drives you most?', opts:[{l:'Innovation and discovery',v:'tech'},{l:'Community impact',v:'care'},{l:'Self-expression',v:'creative'},{l:'Building something big',v:'lead'}] },
+  ];
+  const PROFILES = {
+    tech:     { emoji:'💻', title:'Tech Innovator', desc:'You thrive on problem-solving and building systems. The tech world needs your analytical mind.', paths:['Software Developer','Data Analyst','Cybersecurity Specialist','Product Manager'] },
+    care:     { emoji:'🌿', title:'Community Healer', desc:"Your empathy and drive to help others makes you perfect for impact-focused careers.", paths:['Mental Health Counselor','Public Health Officer','Social Worker','Teacher / Educator'] },
+    creative: { emoji:'🎨', title:'Creative Visionary', desc:'Your artistic mind and expressive nature will shine in industries that celebrate originality.', paths:['UX/UI Designer','Content Creator','Journalist / Writer','Brand Strategist'] },
+    lead:     { emoji:'🚀', title:'Strategic Leader', desc:"You're built to lead, organize, and build. The business world awaits your vision.", paths:['Entrepreneur','Project Manager','Policy Analyst','NGO Director'] },
+  };
+  let qAnswers = [], qIdx = 0;
+
+  function renderQuiz() {
+    qAnswers = []; qIdx = 0;
+    document.getElementById('quiz-result').classList.add('d-none');
+    document.getElementById('quiz-container').classList.remove('d-none');
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = QUIZ_QS[qIdx];
+    document.getElementById('quiz-container').innerHTML = `
+      <div class="font-12 font-weight-700 text-uppercase letter-spacing-2 color-muted margin-bottom-8">Question ${qIdx+1} of ${QUIZ_QS.length}</div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${((qIdx)/QUIZ_QS.length)*100}%"></div></div>
+      <h4 style="font-family:var(--serif);margin-bottom:18px">${q.q}</h4>
+      ${q.opts.map(o=>`<button class="q-option" onclick="answerQ('${o.v}')">${o.l}</button>`).join('')}`;
+  }
+
+  function answerQ(v) {
+    qAnswers.push(v); qIdx++;
+    if (qIdx < QUIZ_QS.length) { showQuestion(); return; }
+    const counts = {};
+    qAnswers.forEach(a => counts[a] = (counts[a]||0)+1);
+    const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+    const p = PROFILES[top];
+    document.getElementById('quiz-container').classList.add('d-none');
+    document.getElementById('quiz-result').classList.remove('d-none');
+    document.getElementById('qr-emoji').textContent = p.emoji;
+    document.getElementById('qr-title').textContent = p.title;
+    document.getElementById('qr-desc').textContent = p.desc;
+    document.getElementById('qr-paths').innerHTML = p.paths.map(path=>`
+      <div class="col-6"><div class="career-path-result">✅ ${path}</div></div>`).join('');
+  }
+
+  function resetQuiz() { renderQuiz(); }
+  renderQuiz();
+</script>
+</body>
+</html>

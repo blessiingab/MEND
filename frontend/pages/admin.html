@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — MEND</title>
+  <link rel="stylesheet" href="../css/mend.css" />
+</head>
+<body>
+<div id="main-navbar"></div>
+<div class="app-layout">
+  <aside class="mend-sidebar" id="main-sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">⚙️ Admin Panel</div>
+      <div class="page-sub">Platform management and content moderation</div>
+    </div>
+
+    <div class="alert mb-4">
+      ⚠️ <strong>Admin Only.</strong> Actions here affect all platform users. Use with care.
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-2-4">
+        <div class="stat-card"><div class="stat-num color-terra" id="a-users">—</div><div class="stat-label">👥 Users</div></div>
+      </div>
+      <div class="col-6 col-lg-2-4">
+        <div class="stat-card"><div class="stat-num color-green" id="a-bookings">—</div><div class="stat-label">💬 Bookings</div></div>
+      </div>
+      <div class="col-6 col-lg-2-4">
+        <div class="stat-card"><div class="stat-num color-gold" id="a-stories">—</div><div class="stat-label">✍️ Stories</div></div>
+      </div>
+      <div class="col-6 col-lg-2-4">
+        <div class="stat-card"><div class="stat-num color-green" id="a-assess">—</div><div class="stat-label">🧠 Assessments</div></div>
+      </div>
+      <div class="col-6 col-lg-2-4">
+        <div class="stat-card"><div class="stat-num" id="a-moods">—</div><div class="stat-label">😊 Mood Logs</div></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mend-tabs">
+      <button class="mend-tab active" onclick="showTab('users',this)">👥 Users</button>
+      <button class="mend-tab" onclick="showTab('stories',this)">✍️ Stories</button>
+      <button class="mend-tab" onclick="showTab('bookings',this)">📅 Bookings</button>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="tab-users">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div class="font-14 font-weight-600 color-muted">Registered Users</div>
+        <input id="user-search" class="form-control"  placeholder="Search users…" oninput="filterUsers()" />
+      </div>
+      <div class="mend-card-flat p-0 overflow-hidden">
+        <div>
+          <table class="admin-table" id="users-table">
+            <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Streak</th><th>Joined</th><th>Action</th></tr></thead>
+            <tbody id="users-tbody"><tr><td colspan="6" class="color-muted p-4">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stories Tab -->
+    <div id="tab-stories" class="d-none">
+      <div class="mend-card-flat p-0 overflow-hidden">
+        <div>
+          <table class="admin-table" id="stories-table">
+            <thead><tr><th>Author</th><th>Title</th><th>Date</th><th>Likes</th><th>Action</th></tr></thead>
+            <tbody id="stories-tbody"><tr><td colspan="5" class="color-muted p-4">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div id="tab-bookings" class="d-none">
+      <div class="mend-card-flat p-0 overflow-hidden">
+        <div>
+          <table class="admin-table" id="bookings-table">
+            <thead><tr><th>User</th><th>Therapist</th><th>Date & Time</th><th>Status</th><th>Note</th></tr></thead>
+            <tbody id="bookings-tbody"><tr><td colspan="5" class="color-muted p-4">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/js/mend.js"></script>
+<script>
+  if (!Auth.requireAuth()) throw new Error();
+  const user = Auth.getUser();
+  if (user?.role !== 'admin') { window.location.href='/pages/dashboard.html'; throw new Error(); }
+  renderNavbar('admin'); renderSidebar('admin');
+
+  let allUsers = [];
+
+  function showTab(id, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('d-none'));
+    document.querySelectorAll('.mend-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.remove('d-none');
+    btn.classList.add('active');
+    if (id==='stories') loadStories();
+    if (id==='bookings') loadBookings();
+  }
+
+  async function loadStats() {
+    const s = await api.get('/admin/stats');
+    document.getElementById('a-users').textContent = s.totalUsers;
+    document.getElementById('a-bookings').textContent = s.totalBookings;
+    document.getElementById('a-stories').textContent = s.totalStories;
+    document.getElementById('a-assess').textContent = s.totalAssessments;
+    document.getElementById('a-moods').textContent = s.totalMoodLogs;
+  }
+
+  async function loadUsers() {
+    allUsers = await api.get('/admin/users');
+    renderUsers(allUsers);
+  }
+
+  function filterUsers() {
+    const q = document.getElementById('user-search').value.toLowerCase();
+    renderUsers(q ? allUsers.filter(u=>(u.name+u.email).toLowerCase().includes(q)) : allUsers);
+  }
+
+  function renderUsers(users) {
+    document.getElementById('users-tbody').innerHTML = users.map(u => `
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--clay-dk);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--cream);flex-shrink:0">${u.name?u.name[0].toUpperCase():'?'}</div>
+            <span>${u.name||u.email.split('@')[0]}</span>
+          </div>
+        </td>
+        <td class="color-muted">${u.email}</td>
+        <td><span class="mend-badge ${u.role==='admin'?'badge-terra':'badge-green'}">${u.role}</span></td>
+        <td>🔥 ${u.streak||0}</td>
+        <td class="color-muted">${fmtDate(u.createdAt)}</td>
+        <td>
+          ${u.role!=='admin'
+            ? `<button class="btn btn-sm btn-outline-terra" onclick="deleteUser(${u.id},'${u.name||u.email}')">Delete</button>`
+            : '<span class="font-12 color-muted">Protected</span>'}
+        </td>
+      </tr>`).join('');
+  }
+
+  async function deleteUser(id, name) {
+    if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+    await api.delete('/admin/users/'+id);
+    showToast('User deleted.','');
+    loadUsers(); loadStats();
+  }
+
+  async function loadStories() {
+    const stories = await api.get('/admin/stories');
+    document.getElementById('stories-tbody').innerHTML = stories.length ? stories.map(s=>`
+      <tr>
+        <td>${s.author}</td>
+        <td>${s.emoji} ${s.title||s.content?.slice(0,60)+'…'}</td>
+        <td class="color-muted">${fmtDate(s.createdAt)}</td>
+        <td>👍 ${s.likes} ❤️ ${s.hearts}</td>
+        <td><button class="btn btn-sm btn-outline-terra" onclick="deleteStory(${s.id})">Remove</button></td>
+      </tr>`).join('') : '<tr><td colspan="5" class="color-muted p-4 text-center">No stories yet.</td></tr>';
+  }
+
+  async function deleteStory(id) {
+    if (!confirm('Remove this story?')) return;
+    await api.delete('/admin/stories/'+id);
+    showToast('Story removed.','');
+    loadStories(); loadStats();
+  }
+
+  async function loadBookings() {
+    const bookings = await api.get('/admin/bookings');
+    document.getElementById('bookings-tbody').innerHTML = bookings.length ? bookings.map(b=>`
+      <tr>
+        <td>${b.user?.name||'Unknown'}</td>
+        <td>${b.therapist?.emoji||''} ${b.therapist?.name||'—'}</td>
+        <td class="color-muted">${b.date||'—'} ${b.slot?'· '+b.slot:''}</td>
+        <td><span class="mend-badge ${b.status==='confirmed'?'badge-green':b.status==='cancelled'?'badge-muted':'badge-terra'}">${b.status}</span></td>
+        <td class="color-muted">${b.note||'—'}</td>
+      </tr>`).join('') : '<tr><td colspan="5" class="color-muted p-4 text-center">No bookings yet.</td></tr>';
+  }
+
+  loadStats();
+  loadUsers();
+</script>
+</body>
+</html>

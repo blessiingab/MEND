@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assessment — MEND</title>
+  <link rel="stylesheet" href="../css/mend.css" />
+</head>
+<body>
+<div id="main-navbar"></div>
+<div class="app-layout">
+  <aside class="mend-sidebar" id="main-sidebar"></aside>
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-title">Mental Health Assessment 🧠</div>
+      <div class="page-sub">A private, confidential check-in with yourself</div>
+    </div>
+
+    <!-- Quiz -->
+    <div id="quiz-area">
+      <div class="d-flex gap-2 mb-4" id="progress-dots"></div>
+      <div class="assessment-progress-bg">
+        <div class="progress-bar-mend" id="prog-bar"></div>
+      </div>
+
+      <div class="mend-card-flat" id="question-card">
+        <div class="font-12 font-weight-700 text-uppercase letter-spacing-2 color-muted" id="q-counter">Question 1 of 8</div>
+        <h3 id="q-text" x"></h3>
+        <div id="q-options"></div>
+        <div class="mt-4 assessment-result-tip">
+          🔒 Your answers are encrypted and never shared without your consent.
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <button class="btn btn-outline-terra" id="btn-prev" onclick="prevQ()" disabled>← Previous</button>
+        <button class="btn btn-terra" id="btn-next" onclick="nextQ()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="results-area" class="d-none">
+      <div class="mend-card text-center mb-4">
+        <div  id="result-emoji">🌱</div>
+        <h2 id="result-title">Your Assessment Results</h2>
+        <p class="color-muted" id="result-desc"></p>
+        <div id="result-score"></div>
+        <div class="row g-3 text-start mt-2" id="result-breakdown"></div>
+      </div>
+      <div class="row g-3 mt-2">
+        <div class="col-md-4">
+          <div class="mend-card-flat text-center" onclick="window.location.href='../pages/therapy.html'"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div>💬</div>
+            <h4>Book Therapy</h4>
+            <p class="color-muted font-13">Connect with a professional therapist</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mend-card-flat text-center" onclick="window.location.href='../pages/resources.html'"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div>📚</div>
+            <h4>Browse Resources</h4>
+            <p class="color-muted font-13">Articles and guides for your wellbeing</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mend-card-flat text-center" onclick="retake()"  onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <div>🔄</div>
+            <h4>Retake Assessment</h4>
+            <p class="color-muted font-13">Track your progress over time</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../js/mend.js"></script>
+<script>
+  if (!Auth.requireAuth()) throw new Error('Not authenticated');
+  renderNavbar('assessment');
+  renderSidebar('assessment');
+
+  const QUESTIONS = [
+    { id:'mood',     text:'Over the past 2 weeks, how often have you felt down, depressed, or hopeless?', opts:['Not at all','Several days','More than half the days','Nearly every day'] },
+    { id:'interest', text:'How often have you had little interest or pleasure in doing things you used to enjoy?', opts:['Not at all','Several days','More than half the days','Nearly every day'] },
+    { id:'anxiety',  text:'How often have you felt nervous, anxious, or on edge?', opts:['Not at all','Several days','More than half the days','Nearly every day'] },
+    { id:'sleep',    text:'How would you describe your sleep over the past 2 weeks?', opts:['Sleeping well','Slightly disrupted','Frequently disrupted','Very poor sleep'] },
+    { id:'energy',   text:'How are your energy levels on most days?', opts:['High energy','Moderate energy','Often tired','Exhausted most of the time'] },
+    { id:'social',   text:'How connected do you feel to your community and loved ones?', opts:['Very connected','Somewhat connected','Feeling isolated sometimes','Very isolated and alone'] },
+    { id:'stress',   text:'How would you rate your current stress levels?', opts:['Minimal stress','Manageable stress','High stress','Overwhelming stress'] },
+    { id:'future',   text:'How do you feel about your future and personal goals?', opts:['Very hopeful','Somewhat hopeful','Uncertain / worried','Hopeless about the future'] },
+  ];
+
+  let currentQ = 0;
+  const answers = {};
+
+  function renderQ() {
+    const q = QUESTIONS[currentQ];
+    const total = QUESTIONS.length;
+    document.getElementById('progress-dots').innerHTML = QUESTIONS.map((_, i) =>
+      `<div class="progress-dot ${i < currentQ ? 'completed' : i === currentQ ? 'current' : 'pending'}"></div>`).join('');
+    document.getElementById('prog-bar').style.width = `${(currentQ / total) * 100}%`;
+    document.getElementById('q-counter').textContent = `Question ${currentQ + 1} of ${total}`;
+    document.getElementById('q-text').textContent = q.text;
+    document.getElementById('q-options').innerHTML = q.opts.map((opt, i) => `
+      <button class="q-option ${answers[q.id] === i ? 'chosen' : ''}" onclick="selectOpt(${i})">${opt}</button>`).join('');
+    document.getElementById('btn-prev').disabled = currentQ === 0;
+    document.getElementById('btn-next').textContent = currentQ === total - 1 ? 'Submit ✓' : 'Next →';
+  }
+
+  function selectOpt(i) { answers[QUESTIONS[currentQ].id] = i; renderQ(); }
+
+  function nextQ() {
+    if (answers[QUESTIONS[currentQ].id] === undefined) { showToast('Please select an answer to continue.', 'error'); return; }
+    if (currentQ < QUESTIONS.length - 1) { currentQ++; renderQ(); } else { submitAssessment(); }
+  }
+
+  function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
+
+  async function submitAssessment() {
+    try { await api.post('/assessments', { scores: answers }); showResults(); }
+    catch(e) { showToast(e.message, 'error'); }
+  }
+
+  function showResults() {
+    const total = Object.values(answers).reduce((a, b) => a + b, 0);
+    const max = QUESTIONS.length * 3;
+    const pct = Math.round((total / max) * 100);
+    const level = pct < 25
+      ? { emoji:'🌟', title:'Thriving', desc:'Your responses suggest strong mental wellbeing. Keep nurturing your positive habits and support systems.', color:'var(--jade)' }
+      : pct < 50
+      ? { emoji:'🌿', title:'Doing Well', desc:"You're managing reasonably well with some areas to strengthen. Small daily practices can make a big difference.", color:'var(--jade)' }
+      : pct < 75
+      ? { emoji:'🌱', title:'Needs Attention', desc:'Your responses indicate some challenges that deserve care and attention. Consider speaking with a professional.', color:'var(--gold)' }
+      : { emoji:'💛', title:'Seek Support', desc:"It looks like you're going through a tough time. Please reach out to a therapist or trusted person. You are not alone.", color:'var(--clay)' };
+    document.getElementById('quiz-area').classList.add('d-none');
+    document.getElementById('results-area').classList.remove('d-none');
+    document.getElementById('result-emoji').textContent = level.emoji;
+    document.getElementById('result-title').textContent = level.title;
+    document.getElementById('result-desc').textContent = level.desc;
+    document.getElementById('result-score').innerHTML = `<span style="color:${level.color}">${pct}%</span> <span style="font-size:1.2rem;color:var(--muted)">wellbeing index</span>`;
+    const labels = { mood:'Low mood', interest:'Loss of interest', anxiety:'Anxiety', sleep:'Sleep', energy:'Energy', social:'Social connection', stress:'Stress', future:'Outlook' };
+    document.getElementById('result-breakdown').innerHTML = Object.entries(answers).map(([k, v]) => `
+      <div class="col-6">
+        <div class="assessment-breakdown-label">${labels[k] || k}</div>
+        <div class="assessment-breakdown-bar">
+          <div class="assessment-breakdown-fill" style="background:${v >= 2 ? 'var(--clay)' : 'var(--jade)'};width:${Math.round((v/3)*100)}%"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  function retake() {
+    currentQ = 0;
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.getElementById('quiz-area').classList.remove('d-none');
+    document.getElementById('results-area').classList.add('d-none');
+    renderQ();
+  }
+
+  renderQ();
+</script>
+</body>
+</html>
