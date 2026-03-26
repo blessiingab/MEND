@@ -63,7 +63,9 @@ export const Navigation = () => {
                 <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-xs text-gray-500">{user?.role === 'therapist' ? 'Therapist' : 'User'}</p>
+                    <p className="text-xs text-gray-500">
+                      {user?.role === 'admin' ? 'Admin' : user?.role === 'therapist' ? 'Therapist' : user?.role === 'mentor' ? 'Mentor' : 'User'}
+                    </p>
                   </div>
                   <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     {user?.firstName?.charAt(0)?.toUpperCase()}

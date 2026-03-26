@@ -42,8 +42,8 @@ apiClient.interceptors.response.use(
 
 // Auth Service
 export const authService = {
-  register: (email, password, firstName, lastName, role = 'user') =>
-    apiClient.post('/auth/register', { email, password, firstName, lastName, role }),
+  register: (email, password, firstName, lastName, role = 'user', metadata = {}) =>
+    apiClient.post('/auth/register', { email, password, firstName, lastName, role, ...metadata }),
   login: (email, password, role = 'user') =>
     apiClient.post('/auth/login', { email, password, role }),
   getProfile: () =>
@@ -74,6 +74,8 @@ export const sessionService = {
     apiClient.post('/sessions/book', { therapistId, startTime, endTime, notes }),
   getMySessions: (limit, offset) =>
     apiClient.get('/sessions/my-sessions', { params: { limit, offset } }),
+  getTherapistSessions: (limit, offset) =>
+    apiClient.get('/sessions/therapist-sessions', { params: { limit, offset } }),
   getAvailableTherapists: () =>
     apiClient.get('/sessions/available-therapists'),
   getSessionById: (sessionId) =>

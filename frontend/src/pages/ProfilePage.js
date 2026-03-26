@@ -97,7 +97,7 @@ export const ProfilePage = () => {
                 <h2 className="text-2xl font-bold text-gray-900">{user?.firstName} {user?.lastName}</h2>
                 <p className="text-gray-600 mt-1">{user?.email}</p>
                 <div className="bg-blue-50 px-3 py-1 rounded-full inline-block mt-3 text-sm font-medium text-blue-700">
-                  {user?.role === 'admin' ? 'Admin' : user?.role === 'therapist' ? 'Therapist' : 'User'}
+                  {user?.role === 'admin' ? 'Admin' : user?.role === 'therapist' ? 'Therapist' : user?.role === 'mentor' ? 'Mentor' : 'User'}
                 </div>
               </CardBody>
             </Card>

@@ -21,6 +21,20 @@ const validateForm = (values) => {
   if (!values.confirmPassword) errors.confirmPassword = 'Please confirm password';
   else if (values.password !== values.confirmPassword) errors.confirmPassword = 'Passwords do not match';
   if (!values.role) errors.role = 'Please select a role';
+
+  if (values.role === 'therapist') {
+    if (!values.licenseNumber) errors.licenseNumber = 'License number is required for therapists';
+    if (!values.specialization) errors.specialization = 'Specialization is required for therapists';
+  }
+
+  if (values.role === 'mentor') {
+    if (!values.expertiseArea) errors.expertiseArea = 'Expertise area is required for mentors';
+    if (!values.experienceYears) errors.experienceYears = 'Experience years is required for mentors';
+    else if (isNaN(values.experienceYears) || Number(values.experienceYears) < 0) {
+      errors.experienceYears = 'Enter a valid number of years';
+    }
+  }
+
   if (!values.agreeTerms) errors.agreeTerms = 'You must agree to terms';
   return errors;
 };
@@ -44,12 +58,33 @@ export const Register = () => {
       password: '',
       confirmPassword: '',
       role: 'user',
-      agreeTerms: false
+      agreeTerms: false,
+      licenseNumber: '',
+      specialization: '',
+      expertiseArea: '',
+      experienceYears: ''
     },
     async (values) => {
       try {
         setServerError('');
-        await register(values.email, values.password, values.firstName, values.lastName, values.role);
+        const metadata = {};
+        if (values.role === 'therapist') {
+          metadata.licenseNumber = values.licenseNumber;
+          metadata.specialization = values.specialization;
+        }
+        if (values.role === 'mentor') {
+          metadata.expertiseArea = values.expertiseArea;
+          metadata.experienceYears = Number(values.experienceYears);
+        }
+
+        await register(
+          values.email,
+          values.password,
+          values.firstName,
+          values.lastName,
+          values.role,
+          metadata
+        );
         navigate('/dashboard');
       } catch (err) {
         setServerError(err.message || 'Registration failed');
@@ -158,6 +193,61 @@ export const Register = () => {
                 <p className="text-red-500 text-xs mt-1">{errors.role}</p>
               )}
             </div>
+
+            {values.role === 'therapist' && (
+              <>
+                <Input
+                  label="License Number"
+                  name="licenseNumber"
+                  placeholder="e.g., TH-12345"
+                  value={values.licenseNumber}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.licenseNumber ? errors.licenseNumber : ''}
+                  required
+                  fullWidth
+                />
+                <Input
+                  label="Specialization"
+                  name="specialization"
+                  placeholder="e.g., Cognitive Behavioral Therapy"
+                  value={values.specialization}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.specialization ? errors.specialization : ''}
+                  required
+                  fullWidth
+                />
+              </>
+            )}
+
+            {values.role === 'mentor' && (
+              <>
+                <Input
+                  label="Expertise Area"
+                  name="expertiseArea"
+                  placeholder="e.g., Career Development"
+                  value={values.expertiseArea}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.expertiseArea ? errors.expertiseArea : ''}
+                  required
+                  fullWidth
+                />
+                <Input
+                  label="Experience Years"
+                  name="experienceYears"
+                  type="number"
+                  placeholder="e.g., 5"
+                  value={values.experienceYears}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.experienceYears ? errors.experienceYears : ''}
+                  required
+                  fullWidth
+                />
+              </>
+            )}
 
             <Input
               label="Email Address"

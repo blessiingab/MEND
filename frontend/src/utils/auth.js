@@ -24,7 +24,16 @@ export const setUser = (user) => {
 
 export const getUser = () => {
   const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
+  // Handle case where localStorage contains the string "undefined" or null
+  if (!user || user === 'undefined') {
+    return null;
+  }
+  try {
+    return JSON.parse(user);
+  } catch (err) {
+    console.error('Failed to parse user data:', err);
+    return null;
+  }
 };
 
 export const clearAuth = () => {

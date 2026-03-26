@@ -28,10 +28,10 @@ export const AuthProvider = ({ children }) => {
   /**
    * Register new user
    */
-  const register = useCallback(async (email, password, firstName, lastName, role = 'user') => {
+  const register = useCallback(async (email, password, firstName, lastName, role = 'user', metadata = {}) => {
     try {
       setError(null);
-      const response = await authService.register(email, password, firstName, lastName, role);
+      const response = await authService.register(email, password, firstName, lastName, role, metadata);
       const { token, user } = response;
       
       setToken(token);
