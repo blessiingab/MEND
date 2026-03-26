@@ -27,7 +27,10 @@ apiClient.interceptors.request.use(
 
 // Response interceptor to handle errors
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    // Return the data property from the response, or the whole response if no data property
+    return response.data?.data !== undefined ? response.data.data : response.data;
+  },
   (error) => {
     if (error.response?.status === 401) {
       removeToken();
@@ -45,6 +48,8 @@ export const authService = {
     apiClient.post('/auth/login', { email, password, role }),
   getProfile: () =>
     apiClient.get('/auth/profile'),
+  updateProfile: (userData) =>
+    apiClient.put('/auth/profile', userData),
   changePassword: (oldPassword, newPassword) =>
     apiClient.post('/auth/change-password', { oldPassword, newPassword })
 };

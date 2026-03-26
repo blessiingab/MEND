@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /**
  * Home Page - Landing Page
  */
@@ -24,9 +25,6 @@ export const HomePage = () => {
       <section className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mb-6">
-              🏆 Trusted by 10,000+ users worldwide
-            </div>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Your Mental Health
               <span className="text-blue-600 block">Journey Starts Here</span>
@@ -348,7 +346,7 @@ export const HomePage = () => {
               <a href="#" className="text-gray-400 hover:text-white text-sm">Facebook</a>
               <a href="#" className="text-gray-400 hover:text-white text-sm">Twitter</a>
               <a href="#" className="text-gray-400 hover:text-white text-sm">LinkedIn</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm">Instagram</a>
+              <a href="#" >Instagram</a>
             </div>
           </div>
         </div>

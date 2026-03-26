@@ -9,33 +9,48 @@ const seedDatabase = async () => {
   try {
     console.log('Seeding database...');
 
-    // Create sample users
-    const therapistUser = await User.create({
-      email: 'therapist@mend.com',
-      password: 'TherapistPass123',
-      firstName: 'Dr. Sarah',
-      lastName: 'Johnson',
-      role: 'therapist'
-    });
-    console.log('✓ Therapist user created');
+    // Create sample users (check if they exist first)
+    let therapistUser = await User.findByEmail('therapist@mend.com');
+    if (!therapistUser) {
+      therapistUser = await User.create({
+        email: 'therapist@mend.com',
+        password: 'TherapistPass123',
+        firstName: 'Dr. Sarah',
+        lastName: 'Johnson',
+        role: 'therapist'
+      });
+      console.log('✓ Therapist user created');
+    } else {
+      console.log('✓ Therapist user already exists');
+    }
 
-    const regularUser = await User.create({
-      email: 'user@mend.com',
-      password: 'UserPass123',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'user'
-    });
-    console.log('✓ Regular user created');
+    let regularUser = await User.findByEmail('user@mend.com');
+    if (!regularUser) {
+      regularUser = await User.create({
+        email: 'user@mend.com',
+        password: 'UserPass123',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'user'
+      });
+      console.log('✓ Regular user created');
+    } else {
+      console.log('✓ Regular user already exists');
+    }
 
-    const mentorUser = await User.create({
-      email: 'mentor@mend.com',
-      password: 'MentorPass123',
-      firstName: 'Alex',
-      lastName: 'Chen',
-      role: 'mentor'
-    });
-    console.log('✓ Mentor user created');
+    let mentorUser = await User.findByEmail('mentor@mend.com');
+    if (!mentorUser) {
+      mentorUser = await User.create({
+        email: 'mentor@mend.com',
+        password: 'MentorPass123',
+        firstName: 'Alex',
+        lastName: 'Chen',
+        role: 'mentor'
+      });
+      console.log('✓ Mentor user created');
+    } else {
+      console.log('✓ Mentor user already exists');
+    }
 
     // Create sample posts
     await CreativePost.create({

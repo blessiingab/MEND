@@ -65,6 +65,36 @@ class AuthController {
         lastName: user.last_name,
         role: user.role,
         bio: user.bio,
+        profileImage: user.profile_image,
+        createdAt: user.created_at
+      });
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async updateProfile(req, res) {
+    try {
+      const { firstName, lastName, bio, phone } = req.body;
+      const User = require('../models/User');
+
+      const updateData = {};
+      if (firstName) updateData.first_name = firstName;
+      if (lastName) updateData.last_name = lastName;
+      if (bio !== undefined) updateData.bio = bio;
+      if (phone !== undefined) updateData.phone = phone;
+
+      const user = await User.findById(req.user.id);
+      await user.update(updateData);
+
+      return successResponse(res, 'Profile updated successfully', {
+        id: user.id,
+        email: user.email,
+        firstName: updateData.first_name || user.first_name,
+        lastName: updateData.last_name || user.last_name,
+        role: user.role,
+        bio: updateData.bio !== undefined ? updateData.bio : user.bio,
+        phone: updateData.phone !== undefined ? updateData.phone : user.phone,
         profileImage: user.profile_image
       });
     } catch (error) {

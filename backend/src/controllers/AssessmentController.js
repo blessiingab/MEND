@@ -56,10 +56,7 @@ class AssessmentController {
     try {
       const assessments = await AssessmentService.getUserAssessmentHistory(req.user.id);
 
-      return successResponse(res, 'Assessment history retrieved', {
-        assessments,
-        count: assessments.length
-      });
+      return successResponse(res, 'Assessment history retrieved', assessments);
     } catch (error) {
       return errorResponse(res, error.message, 400, error);
     }

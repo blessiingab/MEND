@@ -14,20 +14,24 @@ import { assessmentService, sessionService, postService } from '../services/api'
 export const DashboardPage = () => {
   const { user } = useAuth();
 
+  // Check if user is new (signed up within last 7 days)
+  const isNewUser = user?.createdAt ? 
+    (new Date() - new Date(user.createdAt)) < (7 * 24 * 60 * 60 * 1000) : false;
+
   // Fetch dashboard data
   const { data: latestAssessment } = useFetch(
     () => assessmentService.getStats(),
-    []
+    [user?.id]
   );
 
   const { data: upcomingSessions, loading: sessionsLoading } = useFetch(
     () => sessionService.getMySessions(5, 0),
-    []
+    [user?.id]
   );
 
   const { data: communityPosts } = useFetch(
     () => postService.getAllPosts('creative', 5, 0),
-    []
+    [user?.id]
   );
 
   return (
@@ -40,6 +44,70 @@ export const DashboardPage = () => {
           </h1>
           <p className="text-gray-600 mt-2">Here's your mental health journey overview</p>
         </div>
+
+        {/* New User Welcome Content */}
+        {isNewUser && (
+          <Card className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+            <CardHeader>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                🎉 Welcome to MEND! Your journey starts here.
+              </h2>
+            </CardHeader>
+            <CardBody>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="text-4xl mb-3">📋</div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Take Your First Assessment</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Start by taking a mental health assessment to understand your current state.
+                  </p>
+                  <Link to="/assessments">
+                    <Button variant="primary" size="sm">Start Assessment</Button>
+                  </Link>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-3">🧘</div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Book a Therapy Session</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Connect with a licensed therapist for personalized support.
+                  </p>
+                  <Link to="/sessions">
+                    <Button variant="secondary" size="sm">Book Session</Button>
+                  </Link>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-3">👥</div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Join the Community</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Share your story and connect with others on similar journeys.
+                  </p>
+                  <Link to="/community">
+                    <Button variant="outline" size="sm">Explore Community</Button>
+                  </Link>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-3">🚀</div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Explore Career Guidance</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Get personalized career advice and resources.
+                  </p>
+                  <Link to="/career">
+                    <Button variant="success" size="sm">View Career Path</Button>
+                  </Link>
+                </div>
+              </div>
+              <div className="mt-6 p-4 bg-white rounded-lg border">
+                <h3 className="font-semibold text-gray-900 mb-2">💡 Quick Tips for Getting Started:</h3>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Complete your profile to get personalized recommendations</li>
+                  <li>• Set daily mental health goals in your profile settings</li>
+                  <li>• Track your mood daily to see patterns over time</li>
+                  <li>• Join support groups for additional community support</li>
+                </ul>
+              </div>
+            </CardBody>
+          </Card>
+        )}
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

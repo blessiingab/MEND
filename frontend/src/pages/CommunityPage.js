@@ -29,14 +29,14 @@ export const CommunityPage = () => {
     return errors;
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit, resetForm } = useForm(
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit, reset } = useForm(
     { title: '', content: '' },
     async (values) => {
       setIsSubmitting(true);
       try {
         await postService.createPost(values.title, values.content, selectedType);
         setSuccessMessage('✓ Post created successfully!');
-        resetForm();
+        reset();
         setShowCreateModal(false);
         refetchPosts();
         setTimeout(() => setSuccessMessage(''), 3000);

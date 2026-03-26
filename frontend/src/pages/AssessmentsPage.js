@@ -42,7 +42,7 @@ export const AssessmentsPage = () => {
 
   const { data: assessmentHistory, loading: historyLoading, refetch } = useFetch(
     () => assessmentService.getHistory(),
-    []
+    [] // Only fetch once on component mount
   );
 
   const questions = assessmentType === 'phq9' ? PHQ9_QUESTIONS : GAD7_QUESTIONS;
