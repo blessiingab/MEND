@@ -1,128 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  Card,
-  Typography,
-  Button,
-  Box,
-  Grid,
-  AppBar,
-  Toolbar,
-  Avatar,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+/**
+ * Dashboard Page
+ */
+import React from 'react';
+import { useAuth } from '../hooks/useCustomHooks';
+import { Card, Button } from '../components/common/CommonComponents';
+import { Link } from 'react-router-dom';
 
-export default function DashboardPage({ user, onLogout }) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    onLogout();
-    navigate('/');
-  };
+export const DashboardPage = () => {
+  const { user } = useAuth();
 
   return (
-    <>
-      {/* Dashboard Header */}
-      <AppBar position="static" sx={{ backgroundColor: '#1C1917' }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700 }}>
-            ❤️ MEND Dashboard
-          </Typography>
-          <Avatar sx={{ mr: 2 }}>{user?.name?.charAt(0).toUpperCase()}</Avatar>
-          <Button color="inherit" onClick={handleLogout}>
-            Log Out
-          </Button>
-        </Toolbar>
-      </AppBar>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8">
+        Welcome back, {user?.firstName}!
+      </h1>
 
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h4" sx={{ mb: 4, fontWeight: 700 }}>
-          Welcome, {user?.name}! 👋
-        </Typography>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card>
+          <h3 className="text-xl font-bold mb-4">📋 Assessments</h3>
+          <p className="text-gray-600 mb-4">
+            Track your mental health with regular assessments
+          </p>
+          <Link to="/assessments">
+            <Button variant="primary" fullWidth>
+              Take Assessment
+            </Button>
+          </Link>
+        </Card>
 
-        <Typography variant="body2" sx={{ mb: 4, color: '#502506' }}>
-          Account Type: <strong>{user?.type?.charAt(0).toUpperCase() + user?.type?.slice(1)}</strong>
-        </Typography>
+        <Card>
+          <h3 className="text-xl font-bold mb-4">👨‍⚕️ Therapy Sessions</h3>
+          <p className="text-gray-600 mb-4">
+            Book or view your upcoming therapy sessions
+          </p>
+          <Link to="/sessions">
+            <Button variant="primary" fullWidth>
+              Book a Session
+            </Button>
+          </Link>
+        </Card>
 
-        <Grid container spacing={3}>
-          {/* Quick Actions */}
-          <Grid item xs={12} md={6}>
-            <Card sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
-                ✨ Quick Actions
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  sx={{ backgroundColor: '#c17f76' }}
-                  onClick={() => navigate('/assessment')}
-                >
-                  Start Assessment
-                </Button>
-                <Button fullWidth variant="outlined">
-                  View Resources
-                </Button>
-                <Button fullWidth variant="outlined">
-                  Book Therapy Session
-                </Button>
-              </Box>
-            </Card>
-          </Grid>
+        <Card>
+          <h3 className="text-xl font-bold mb-4">🎨 Community</h3>
+          <p className="text-gray-600 mb-4">
+            Share your stories and connect with others
+          </p>
+          <Link to="/community">
+            <Button variant="primary" fullWidth>
+              View Community
+            </Button>
+          </Link>
+        </Card>
 
-          {/* Statistics */}
-          <Grid item xs={12} md={6}>
-            <Card sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
-                📊 Your Statistics
-              </Typography>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ color: '#c17f76', fontWeight: 700 }}>
-                    0
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#502506' }}>
-                    Assessments
-                  </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h4" sx={{ color: '#053e21', fontWeight: 700 }}>
-                    0
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#502506' }}>
-                    Sessions
-                  </Typography>
-                </Box>
-              </Box>
-            </Card>
-          </Grid>
+        <Card>
+          <h3 className="text-xl font-bold mb-4">💼 Career Path</h3>
+          <p className="text-gray-600 mb-4">
+            Plan your career and access resources
+          </p>
+          <Link to="/career">
+            <Button variant="primary" fullWidth>
+              Explore Career
+            </Button>
+          </Link>
+        </Card>
 
-          {/* Welcome Section */}
-          <Grid item xs={12}>
-            <Card
-              sx={{
-                p: 4,
-                background: 'linear-gradient(135deg, #3ECAAD 0%, #5B9BD5 100%)',
-                color: 'white',
-              }}
-            >
-              <Typography variant="h5" sx={{ mb: 1, fontWeight: 700 }}>
-                How are you feeling today?
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 2, opacity: 0.9 }}>
-                Take a quick assessment to track your emotional well-being and get personalized recommendations.
-              </Typography>
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: 'white', color: '#1C1917', fontWeight: 700 }}
-                onClick={() => navigate('/assessment')}
-              >
-                Take Assessment
+        <Card>
+          <h3 className="text-xl font-bold mb-4">⚙️ Profile Settings</h3>
+          <p className="text-gray-600 mb-4">
+            Manage your account and preferences
+          </p>
+          <Link to="/profile">
+            <Button variant="primary" fullWidth>
+              Go to Profile
+            </Button>
+          </Link>
+        </Card>
+
+        {user?.role === 'admin' && (
+          <Card>
+            <h3 className="text-xl font-bold mb-4">🔐 Admin Panel</h3>
+            <p className="text-gray-600 mb-4">
+              Access admin tools and analytics
+            </p>
+            <Link to="/admin">
+              <Button variant="danger" fullWidth>
+                Admin Dashboard
               </Button>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-    </>
+            </Link>
+          </Card>
+        )}
+      </div>
+    </div>
   );
-}
+};

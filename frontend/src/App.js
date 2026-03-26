@@ -1,88 +1,91 @@
-import React, { useState, useEffect } from 'react';
+/**
+ * Main App Component
+ */
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { AuthProvider } from './context/AuthContext';
+import { Navigation } from './components/common/Navigation';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 
 // Pages
-import LandingPage from './pages/LandingPage';
-import SignupPage from './pages/SignupPage';
-import SigninPage from './pages/SigninPage';
-import DashboardPage from './pages/DashboardPage';
-import AssessmentPage from './pages/AssessmentPage';
-import NotFoundPage from './pages/NotFoundPage';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#c17f76', // Coral
-    },
-    secondary: {
-      main: '#053e21', // Sage
-    },
-  },
-  typography: {
-    fontFamily: '"DM Sans", sans-serif',
-    h1: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 700,
-    },
-    h2: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 700,
-    },
-  },
-});
+import { HomePage } from './pages/HomePage';
+import { Login } from './components/auth/Login';
+import { Register } from './components/auth/Register';
+import { DashboardPage } from './pages/DashboardPage';
+import { AssessmentsPage } from './pages/AssessmentsPage';
+import { SessionsPage } from './pages/SessionsPage';
+import { CommunityPage } from './pages/CommunityPage';
+import { CareerPage } from './pages/CareerPage';
+import { AdminPage } from './pages/AdminPage';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        setUser(JSON.parse(userData));
-      }
-    }
-    setLoading(false);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setIsAuthenticated(false);
-    setUser(null);
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
+    <Router>
+      <AuthProvider>
+        <Navigation />
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<SignupPage setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
-          <Route path="/signin" element={<SigninPage setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
-          
-          {isAuthenticated ? (
-            <>
-              <Route path="/dashboard" element={<DashboardPage user={user} onLogout={handleLogout} />} />
-              <Route path="/assessment" element={<AssessmentPage user={user} onLogout={handleLogout} />} />
-            </>
-          ) : (
-            <Route path="/dashboard" element={<Navigate to="/signin" />} />
-          )}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-          <Route path="*" element={<NotFoundPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/assessments"
+            element={
+              <ProtectedRoute>
+                <AssessmentsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/sessions"
+            element={
+              <ProtectedRoute>
+                <SessionsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/community"
+            element={
+              <ProtectedRoute>
+                <CommunityPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/career"
+            element={
+              <ProtectedRoute>
+                <CareerPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </Router>
-    </ThemeProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
