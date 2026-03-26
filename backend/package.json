@@ -26,10 +26,10 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "pg": "^8.10.0",
-    "postgresql": "^0.0.1",
+    "sqlite3": "^5.1.6",
     "validator": "^13.11.0"
   },
+  
   "devDependencies": {
     "nodemon": "^3.0.1"
   }

@@ -39,10 +39,10 @@ apiClient.interceptors.response.use(
 
 // Auth Service
 export const authService = {
-  register: (email, password, firstName, lastName) =>
-    apiClient.post('/auth/register', { email, password, firstName, lastName }),
-  login: (email, password) =>
-    apiClient.post('/auth/login', { email, password }),
+  register: (email, password, firstName, lastName, role = 'user') =>
+    apiClient.post('/auth/register', { email, password, firstName, lastName, role }),
+  login: (email, password, role = 'user') =>
+    apiClient.post('/auth/login', { email, password, role }),
   getProfile: () =>
     apiClient.get('/auth/profile'),
   changePassword: (oldPassword, newPassword) =>

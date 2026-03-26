@@ -1,7 +1,7 @@
 /**
  * Database Seed - Populate with sample data
  */
-const pool = require('../config/database');
+const db = require('../config/database');
 const User = require('../models/User');
 const CreativePost = require('../models/CreativePost');
 
@@ -28,6 +28,15 @@ const seedDatabase = async () => {
     });
     console.log('✓ Regular user created');
 
+    const mentorUser = await User.create({
+      email: 'mentor@mend.com',
+      password: 'MentorPass123',
+      firstName: 'Alex',
+      lastName: 'Chen',
+      role: 'mentor'
+    });
+    console.log('✓ Mentor user created');
+
     // Create sample posts
     await CreativePost.create({
       userId: regularUser.id,
@@ -48,13 +57,13 @@ const seedDatabase = async () => {
     console.log('✓ Sample art post created');
 
     // Create career resources
-    await pool.query(`
-      INSERT INTO career_resources (title, description, type, link, is_active)
-      VALUES 
-        ('LinkedIn Learning', 'Online courses for career development', 'course', 'https://linkedin.com/learning', true),
-        ('Udemy Courses', 'Affordable online education', 'course', 'https://udemy.com', true),
-        ('Indeed Resume Guide', 'Guide to writing effective resumes', 'guide', 'https://indeed.com', true),
-        ('Glassdoor Salary Data', 'Salary and company reviews', 'research', 'https://glassdoor.com', true)
+    await db.run(`
+      INSERT INTO career_resources (title, description, type, link, is_active, created_at, updated_at)
+      VALUES
+        ('LinkedIn Learning', 'Online courses for career development', 'course', 'https://linkedin.com/learning', 1, datetime('now'), datetime('now')),
+        ('Udemy Courses', 'Affordable online education', 'course', 'https://udemy.com', 1, datetime('now'), datetime('now')),
+        ('Indeed Resume Guide', 'Guide to writing effective resumes', 'guide', 'https://indeed.com', 1, datetime('now'), datetime('now')),
+        ('Glassdoor Salary Data', 'Salary and company reviews', 'research', 'https://glassdoor.com', 1, datetime('now'), datetime('now'))
     `);
     console.log('✓ Career resources created');
 

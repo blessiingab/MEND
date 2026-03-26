@@ -1,46 +1,48 @@
 /**
  * Assessment Model - PHQ-9 and GAD-7 assessments
  */
-const pool = require('../config/database');
+const db = require('../config/database');
 const { PHQ9_SCORES, GAD7_SCORES } = require('../config/constants');
 
 class Assessment {
   static async createAssessment(assessmentData) {
     const { userId, type, answers, totalScore, severity } = assessmentData;
-    
+
     const query = `
       INSERT INTO assessments (user_id, type, answers, total_score, severity, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
-      RETURNING id, user_id, type, total_score, severity, created_at
+      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
     `;
-    
-    const result = await pool.query(query, [userId, type, JSON.stringify(answers), totalScore, severity]);
-    return result.rows[0];
+
+    const result = await db.run(query, [userId, type, JSON.stringify(answers), totalScore, severity]);
+
+    // Get the created assessment
+    const assessment = await db.get('SELECT id, user_id, type, total_score, severity, created_at FROM assessments WHERE id = ?', [result.id]);
+    return assessment;
   }
 
   static async getUserAssessments(userId, limit = 20, offset = 0) {
     const query = `
       SELECT id, user_id, type, total_score, severity, created_at
       FROM assessments
-      WHERE user_id = $1
+      WHERE user_id = ?
       ORDER BY created_at DESC
-      LIMIT $2 OFFSET $3
+      LIMIT ? OFFSET ?
     `;
-    
-    const result = await pool.query(query, [userId, limit, offset]);
-    return result.rows;
+
+    const result = await db.all(query, [userId, limit, offset]);
+    return result;
   }
 
   static async getLatestAssessment(userId, type) {
     const query = `
       SELECT * FROM assessments
-      WHERE user_id = $1 AND type = $2
+      WHERE user_id = ? AND type = ?
       ORDER BY created_at DESC
       LIMIT 1
     `;
-    
-    const result = await pool.query(query, [userId, type]);
-    return result.rows[0] || null;
+
+    const result = await db.get(query, [userId, type]);
+    return result || null;
   }
 
   static calculatePHQ9Severity(score) {
@@ -59,26 +61,26 @@ class Assessment {
   }
 
   static async getAssessmentById(assessmentId) {
-    const query = `SELECT * FROM assessments WHERE id = $1`;
-    const result = await pool.query(query, [assessmentId]);
-    return result.rows[0] || null;
+    const query = `SELECT * FROM assessments WHERE id = ?`;
+    const result = await db.get(query, [assessmentId]);
+    return result || null;
   }
 
   static async getUserAssessmentStats(userId) {
     const query = `
-      SELECT 
+      SELECT
         type,
         COUNT(*) as total_assessments,
         AVG(total_score) as avg_score,
         MAX(total_score) as highest_score,
         MIN(total_score) as lowest_score
       FROM assessments
-      WHERE user_id = $1
+      WHERE user_id = ?
       GROUP BY type
     `;
-    
-    const result = await pool.query(query, [userId]);
-    return result.rows;
+
+    const result = await db.all(query, [userId]);
+    return result;
   }
 }
 

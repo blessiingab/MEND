@@ -1,7 +1,7 @@
 /**
- * Auth Context - Global authentication state
+ * Auth Context - Global authentication state with JWT handling
  */
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { getToken, getUser, setToken, setUser, clearAuth } from '../utils/auth';
 import { authService } from '../services/api';
 
@@ -9,61 +9,119 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setCurrentUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Initialize auth state on mount
   useEffect(() => {
     const token = getToken();
     const savedUser = getUser();
     
     if (token && savedUser) {
       setCurrentUser(savedUser);
+      setIsAuthenticated(true);
     }
     setLoading(false);
   }, []);
 
-  const register = async (email, password, firstName, lastName) => {
+  /**
+   * Register new user
+   */
+  const register = useCallback(async (email, password, firstName, lastName, role = 'user') => {
     try {
       setError(null);
-      const response = await authService.register(email, password, firstName, lastName);
-      setToken(response.data.token);
-      setUser(response.data.user);
-      setCurrentUser(response.data.user);
-      return response.data;
+      const response = await authService.register(email, password, firstName, lastName, role);
+      const { token, user } = response;
+      
+      setToken(token);
+      setUser(user);
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      
+      return response;
     } catch (err) {
-      setError(err.message);
+      const errorMessage = err.message || 'Registration failed';
+      setError(errorMessage);
       throw err;
     }
-  };
+  }, []);
 
-  const login = async (email, password) => {
+  /**
+   * Login user
+   */
+  const login = useCallback(async (email, password, role = 'user') => {
     try {
       setError(null);
-      const response = await authService.login(email, password);
-      setToken(response.data.token);
-      setUser(response.data.user);
-      setCurrentUser(response.data.user);
-      return response.data;
+      const response = await authService.login(email, password, role);
+      const { token, user } = response;
+      
+      setToken(token);
+      setUser(user);
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      
+      return response;
     } catch (err) {
-      setError(err.message);
+      const errorMessage = err.message || 'Login failed';
+      setError(errorMessage);
       throw err;
     }
-  };
+  }, []);
 
-  const logout = () => {
+  /**
+   * Logout user
+   */
+  const logout = useCallback(() => {
     clearAuth();
     setCurrentUser(null);
+    setIsAuthenticated(false);
     setError(null);
-  };
+  }, []);
+
+  /**
+   * Update user profile
+   */
+  const updateProfile = useCallback(async (userData) => {
+    try {
+      setError(null);
+      const response = await authService.updateProfile(userData);
+      setUser(response);
+      setCurrentUser(response);
+      return response;
+    } catch (err) {
+      const errorMessage = err.message || 'Update failed';
+      setError(errorMessage);
+      throw err;
+    }
+  }, []);
+
+  /**
+   * Change password
+   */
+  const changePassword = useCallback(async (oldPassword, newPassword) => {
+    try {
+      setError(null);
+      await authService.changePassword(oldPassword, newPassword);
+      return true;
+    } catch (err) {
+      const errorMessage = err.message || 'Password change failed';
+      setError(errorMessage);
+      throw err;
+    }
+  }, []);
 
   const value = {
     user,
     loading,
     error,
+    isAuthenticated,
     register,
     login,
     logout,
-    isAuthenticated: !!user
+    updateProfile,
+    changePassword,
+    setError
   };
 
   return (

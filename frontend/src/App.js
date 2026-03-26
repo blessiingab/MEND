@@ -16,6 +16,7 @@ import { AssessmentsPage } from './pages/AssessmentsPage';
 import { SessionsPage } from './pages/SessionsPage';
 import { CommunityPage } from './pages/CommunityPage';
 import { CareerPage } from './pages/CareerPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { AdminPage } from './pages/AdminPage';
 
 function App() {
@@ -24,10 +25,12 @@ function App() {
       <AuthProvider>
         <Navigation />
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          {/* Protected Routes - Authenticated Users Only */}
           <Route
             path="/dashboard"
             element={
@@ -74,6 +77,16 @@ function App() {
           />
 
           <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route
             path="/admin"
             element={
               <ProtectedRoute requiredRole="admin">
@@ -82,7 +95,8 @@ function App() {
             }
           />
 
-          <Route path="*" element={<Navigate to="/" />} />
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

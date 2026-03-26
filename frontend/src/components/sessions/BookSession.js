@@ -2,8 +2,12 @@
  * Session Booking Component
  */
 import React, { useState, useEffect } from 'react';
-import { sessionService } from '../services/api';
-import { Button, Alert, Card, Input, LoadingSpinner } from './common/CommonComponents';
+import { sessionService } from '../../services/api';
+import { Button } from '../common/Button';
+import { Alert } from '../common/Alert';
+import { Card, CardBody, CardHeader } from '../common/Card';
+import { Input } from '../common/Input';
+import { Loading } from '../common/Loading';
 
 export const BookSession = () => {
   const [therapists, setTherapists] = useState([]);
@@ -62,7 +66,7 @@ export const BookSession = () => {
   };
 
   if (loadingTherapists) {
-    return <LoadingSpinner />;
+    return <Loading />;
   }
 
   return (

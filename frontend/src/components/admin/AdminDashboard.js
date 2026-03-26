@@ -2,8 +2,10 @@
  * Admin Dashboard Component
  */
 import React, { useState, useEffect } from 'react';
-import { adminService } from '../services/api';
-import { Card, LoadingSpinner, Alert } from './common/CommonComponents';
+import { Card, CardBody, CardHeader } from '../common/Card';
+import { Button } from '../common/Button';
+import { Alert } from '../common/Alert';
+import { Loading } from '../common/Loading';
 
 export const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -12,14 +14,15 @@ export const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    fetchStats();
+    // fetchStats(); // TODO: Implement admin service
   }, []);
 
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await adminService.getDashboardStats();
-      setStats(response.data);
+      // const response = await adminService.getDashboardStats();
+      // setStats(response.data);
+      setError('Admin service not yet implemented');
     } catch (err) {
       setError('Failed to load dashboard stats');
     } finally {
@@ -27,7 +30,7 @@ export const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <Loading />;
   if (error) return <Alert type="error" message={error} />;
 
   return (

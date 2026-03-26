@@ -1,152 +1,162 @@
 /**
  * Database Migration - Create all tables
  */
-const pool = require('../config/database');
+const db = require('../config/database');
 
 const createTables = async () => {
   try {
     console.log('Creating database tables...');
 
     // Users table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        first_name VARCHAR(255),
-        last_name VARCHAR(255),
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        first_name TEXT,
+        last_name TEXT,
         bio TEXT,
-        profile_image VARCHAR(500),
-        role VARCHAR(50) DEFAULT 'user',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        profile_image TEXT,
+        role TEXT DEFAULT 'user',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
     console.log('✓ Users table created');
 
     // Assessments table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS assessments (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        type VARCHAR(50) NOT NULL,
-        answers JSONB,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        type TEXT NOT NULL,
+        answers TEXT,
         total_score INTEGER,
-        severity VARCHAR(50),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        severity TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
     console.log('✓ Assessments table created');
 
     // Therapy Sessions table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS therapy_sessions (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        therapist_id INTEGER NOT NULL REFERENCES users(id),
-        start_time TIMESTAMP NOT NULL,
-        end_time TIMESTAMP,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        therapist_id INTEGER NOT NULL,
+        start_time DATETIME NOT NULL,
+        end_time DATETIME,
         notes TEXT,
-        status VARCHAR(50) DEFAULT 'pending',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        status TEXT DEFAULT 'pending',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (therapist_id) REFERENCES users(id)
       )
     `);
     console.log('✓ Therapy Sessions table created');
 
     // Creative Posts table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS creative_posts (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        title VARCHAR(500) NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        title TEXT NOT NULL,
         content TEXT NOT NULL,
-        type VARCHAR(50) NOT NULL,
-        thumbnail VARCHAR(500),
-        status VARCHAR(50) DEFAULT 'published',
+        type TEXT NOT NULL,
+        thumbnail TEXT,
+        status TEXT DEFAULT 'published',
         likes INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
     console.log('✓ Creative Posts table created');
 
     // Post Likes table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS post_likes (
-        id SERIAL PRIMARY KEY,
-        post_id INTEGER NOT NULL REFERENCES creative_posts(id) ON DELETE CASCADE,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES creative_posts(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         UNIQUE(post_id, user_id)
       )
     `);
     console.log('✓ Post Likes table created');
 
     // Comments table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS comments (
-        id SERIAL PRIMARY KEY,
-        post_id INTEGER NOT NULL REFERENCES creative_posts(id) ON DELETE CASCADE,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
         content TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES creative_posts(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
     console.log('✓ Comments table created');
 
     // Career Guidance table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS career_guidance (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        career_goal VARCHAR(500),
-        current_role VARCHAR(500),
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        career_goal TEXT,
+        current_role TEXT,
         experience TEXT,
         guidance TEXT,
-        recommended_actions JSONB,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        recommended_actions TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
     console.log('✓ Career Guidance table created');
 
     // Career Resources table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS career_resources (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(500) NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
         description TEXT,
-        type VARCHAR(100),
-        link VARCHAR(1000) NOT NULL,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        type TEXT,
+        link TEXT NOT NULL,
+        is_active INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
     console.log('✓ Career Resources table created');
 
     // Career Progress table
-    await pool.query(`
+    await db.run(`
       CREATE TABLE IF NOT EXISTS career_progress (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        goal VARCHAR(500),
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        goal TEXT,
         milestone TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
     console.log('✓ Career Progress table created');
 
     // Create indexes
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON assessments(user_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON therapy_sessions(user_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_sessions_therapist_id ON therapy_sessions(therapist_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_posts_user_id ON creative_posts(user_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_career_user_id ON career_guidance(user_id)`);
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON assessments(user_id)`);
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON therapy_sessions(user_id)`);
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_sessions_therapist_id ON therapy_sessions(therapist_id)`);
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_posts_user_id ON creative_posts(user_id)`);
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id)`);
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_career_user_id ON career_guidance(user_id)`);
     console.log('✓ Indexes created');
 
     console.log('✅ All tables created successfully');

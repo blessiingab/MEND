@@ -5,22 +5,22 @@ const User = require('../models/User');
 const Assessment = require('../models/Assessment');
 const TherapySession = require('../models/TherapySession');
 const CreativePost = require('../models/CreativePost');
-const pool = require('../config/database');
+const db = require('../config/database');
 const { successResponse, errorResponse } = require('../utils/responseHandler');
 
 class AdminController {
   static async getDashboardStats(req, res) {
     try {
       const userCount = await User.countUsers();
-      
-      const assessmentResult = await pool.query('SELECT COUNT(*) as count FROM assessments');
-      const assessmentCount = parseInt(assessmentResult.rows[0].count);
 
-      const sessionResult = await pool.query('SELECT COUNT(*) as count FROM therapy_sessions');
-      const sessionCount = parseInt(sessionResult.rows[0].count);
+      const assessmentResult = await db.get('SELECT COUNT(*) as count FROM assessments');
+      const assessmentCount = parseInt(assessmentResult.count);
 
-      const postResult = await pool.query('SELECT COUNT(*) as count FROM creative_posts WHERE status = \'published\'');
-      const postCount = parseInt(postResult.rows[0].count);
+      const sessionResult = await db.get('SELECT COUNT(*) as count FROM therapy_sessions');
+      const sessionCount = parseInt(sessionResult.count);
+
+      const postResult = await db.get('SELECT COUNT(*) as count FROM creative_posts WHERE status = \'published\'');
+      const postCount = parseInt(postResult.count);
 
       const stats = {
         users: userCount,
