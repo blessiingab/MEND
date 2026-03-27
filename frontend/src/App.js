@@ -84,6 +84,15 @@ const AppContent = () => {
           />
 
           <Route
+            path="/posts"
+            element={
+              <ProtectedRoute>
+                <CommunityPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/career"
             element={
               <ProtectedRoute>

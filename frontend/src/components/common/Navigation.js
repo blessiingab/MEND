@@ -10,7 +10,7 @@ import { Button } from './Button';
 export const Navigation = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -23,19 +23,37 @@ export const Navigation = () => {
     ? user?.role === 'therapist'
       ? [
           { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Therapy', href: '/sessions' },
-          { label: 'Community', href: '/community' }
+          { label: 'Therapy', href: '/sessions' }
         ]
-      : [
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Assessments', href: '/assessments' },
-          { label: 'Therapy', href: '/sessions' },
-          { label: 'Community', href: '/community' },
-          { label: 'Career', href: '/career' }
-        ]
+      : user?.role === 'mentor'
+        ? [
+            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Mentorship', href: '/dashboard#mentorship-section' },
+            { label: 'Career Guidance', href: '/dashboard#career-guidance-section' },
+            { label: 'Talent Development', href: '/dashboard#talent-development-section' }
+          ]
+        : [
+            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Post', href: '/posts' },
+            { label: 'Assessments', href: '/assessments' },
+            { label: 'Therapy', href: '/sessions' },
+            { label: 'Career', href: '/career' }
+          ]
     : [{ label: 'Home', href: '/' }];
 
-  const isActive = (href) => pathname === href || pathname.startsWith(href + '/');
+  const isActive = (href) => {
+    const [targetPath, targetHash] = href.split('#');
+
+    if (targetHash) {
+      return pathname === targetPath && hash === `#${targetHash}`;
+    }
+
+    if (targetPath === '/dashboard' && hash) {
+      return false;
+    }
+
+    return pathname === targetPath || pathname.startsWith(targetPath + '/');
+  };
 
   return (
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 shadow-sm">
@@ -43,7 +61,6 @@ export const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 font-bold text-xl text-blue-600 dark:text-blue-400">
-            <span className="text-2xl">🧠</span>
             MEND
           </Link>
 
@@ -89,7 +106,7 @@ export const Navigation = () => {
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.firstName} {user?.lastName}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {user?.role === 'admin' ? 'Admin' : user?.role === 'therapist' ? 'Therapist' : user?.role === 'mentor' ? 'Mentor' : 'User'}
+                      {user?.role === 'admin' ? 'Admin' : user?.role === 'therapist' ? 'Therapist' : user?.role === 'mentor' ? 'Mentor (Talent Developer)' : 'User'}
                     </p>
                   </div>
                   <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">

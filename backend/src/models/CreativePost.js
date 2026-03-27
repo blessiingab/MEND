@@ -108,15 +108,16 @@ class CreativePost {
 
   static async unlikePost(postId, userId) {
     const deleteQuery = `DELETE FROM post_likes WHERE post_id = ? AND user_id = ?`;
-    await db.run(deleteQuery, [postId, userId]);
+    const deleteResult = await db.run(deleteQuery, [postId, userId]);
 
-    const updateQuery = `
-      UPDATE creative_posts
-      SET likes = likes - 1
-      WHERE id = ?
-    `;
-
-    await db.run(updateQuery, [postId]);
+    if (deleteResult.changes > 0) {
+      const updateQuery = `
+        UPDATE creative_posts
+        SET likes = CASE WHEN likes > 0 THEN likes - 1 ELSE 0 END
+        WHERE id = ?
+      `;
+      await db.run(updateQuery, [postId]);
+    }
 
     // Get updated likes count
     const post = await db.get('SELECT likes FROM creative_posts WHERE id = ?', [postId]);

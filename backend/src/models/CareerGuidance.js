@@ -44,7 +44,7 @@ class CareerGuidance {
 
   static async getUserCareerHistory(userId, limit = 10, offset = 0) {
     const query = `
-      SELECT id, user_id, career_goal, current_role, experience, guidance, created_at
+      SELECT id, user_id, career_goal, current_role, experience, guidance, recommended_actions, created_at
       FROM career_guidance
       WHERE user_id = ?
       ORDER BY created_at DESC

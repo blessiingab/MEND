@@ -186,7 +186,7 @@ export const Register = () => {
                 >
                   <div className="text-2xl mb-1">🎓</div>
                   <div className="text-sm font-medium">Mentor</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Career guidance</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Talent development</div>
                 </button>
               </div>
               {touched.role && errors.role && (
@@ -299,8 +299,8 @@ export const Register = () => {
               />
               <span className="text-gray-700 dark:text-gray-300">
                 I agree to the{' '}
-                <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</a> and{' '}
-                <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</a>
+                <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</button> and{' '}
+                <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</button>
               </span>
             </label>
             {touched.agreeTerms && errors.agreeTerms && (

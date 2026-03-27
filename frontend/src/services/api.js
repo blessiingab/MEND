@@ -4,7 +4,24 @@
 import axios from 'axios';
 import { getToken, removeToken } from '../utils/auth';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const resolveApiBaseUrl = () => {
+  if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
+
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+
+    // Local development uses backend on port 5000.
+    if (isLocalHost) return 'http://localhost:5000/api';
+
+    // Deployed environments should call the same host's /api routes.
+    return `${window.location.origin}/api`;
+  }
+
+  return 'http://localhost:5000/api';
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -36,6 +53,13 @@ apiClient.interceptors.response.use(
       removeToken();
       window.location.href = '/login';
     }
+
+    if (error.message === 'Network Error' && !error.response) {
+      return Promise.reject({
+        message: 'Unable to connect to the server. Please check your internet or backend server and try again.'
+      });
+    }
+
     return Promise.reject(error.response?.data || error);
   }
 );

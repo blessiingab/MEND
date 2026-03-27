@@ -2,6 +2,7 @@
  * Community/Creative Hub Page
  */
 import React, { useState } from 'react';
+import { FaHeart, FaRegCommentDots } from 'react-icons/fa';
 import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
@@ -9,7 +10,6 @@ import { Input } from '../components/common/Input';
 import { Alert } from '../components/common/Alert';
 import { Loading, Badge } from '../components/common/Loading';
 import { useAuth, useFetch, useForm } from '../hooks/useCustomHooks';
-import { BookSession } from '../components/sessions/BookSession';
 import { postService } from '../services/api';
 
 export const CommunityPage = () => {
@@ -63,7 +63,10 @@ export const CommunityPage = () => {
 
   const handleLikePost = async (postId) => {
     try {
-      await postService.likePost(postId);
+      const likeResult = await postService.likePost(postId);
+      if (likeResult?.liked === false) {
+        await postService.unlikePost(postId);
+      }
       refetchPosts();
       window.dispatchEvent(new Event('communityUpdated'));
     } catch (err) {
@@ -73,7 +76,7 @@ export const CommunityPage = () => {
 
   const fetchComments = async (postId) => {
     try {
-      const response = await postService.getPostComments(postId, 50, 0);
+      const response = await postService.getPostComments(postId, 1000000, 0);
       const comments = Array.isArray(response) ? response : response?.comments || [];
       setCommentsByPost((prev) => ({ ...prev, [postId]: comments }));
     } catch (err) {
@@ -160,8 +163,8 @@ export const CommunityPage = () => {
           ) : postsData.length > 0 ? (
             postsData.map((post) => {
               const loadedComments = commentsByPost[post.id] || [];
-              const likeCount = post.likes ?? post.likes_count ?? post.likesCount ?? 0;
-              const backendCommentCount = post.comments_count ?? post.comment_count ?? post.commentsCount ?? 0;
+              const likeCount = Number(post.likes ?? post.likes_count ?? post.likesCount ?? 0);
+              const backendCommentCount = Number(post.comments_count ?? post.comment_count ?? post.commentsCount ?? 0);
               const commentCount = Math.max(backendCommentCount, loadedComments.length);
 
               return (
@@ -184,14 +187,14 @@ export const CommunityPage = () => {
                         onClick={() => handleLikePost(post.id)}
                         className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition"
                       >
-                        <span className="text-lg">?</span>
+                        <FaHeart className="text-lg" />
                         <span className="text-sm">{likeCount} Likes</span>
                       </button>
                       <button
                         onClick={() => toggleComments(post.id)}
                         className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
                       >
-                        <span className="text-lg">??</span>
+                        <FaRegCommentDots className="text-lg" />
                         <span className="text-sm">{commentCount} Comments</span>
                       </button>
                     </div>
@@ -241,20 +244,6 @@ export const CommunityPage = () => {
             />
           )}
         </div>
-
-        {!isTherapist && (
-          <Card className="mt-8">
-            <CardHeader>
-              <h2 className="text-2xl font-bold text-gray-900">Book a Therapist Session</h2>
-              <p className="text-sm text-gray-600 mt-1">
-                After posting in community, you can book directly below.
-              </p>
-            </CardHeader>
-            <CardBody>
-              <BookSession />
-            </CardBody>
-          </Card>
-        )}
 
         <Modal
           isOpen={showCreateModal}
