@@ -1,179 +1,233 @@
-# MEND – Mental and Emotional Nurturing Digital
+# MEND
 
-MEND (Mental and Emotional Nurturing Digital) is a full-stack digital platform designed to support mental health, emotional well-being, and personal development. It integrates assessments, therapy sessions, community interaction, and career guidance into a single system.
+**Mental and Emotional Nurturing Digital**
 
-🧩 System Overview
+MEND is a full-stack platform for mental health support, therapy workflows, community engagement, and personal growth.
 
-MEND consists of two main parts:
+## Project Structure
 
-Frontend: A responsive React application for users and administrators
-Backend: A RESTful API server handling business logic, authentication, and data management
-🚀 Features
-👤 User Features
-Secure user authentication (JWT-based)
-Mental health assessments (PHQ-9, GAD-7)
-Therapy session booking system
-Creative community (posts, likes, comments)
-Personalized career guidance and progress tracking
-🛠️ Admin Features
-User management
-Platform analytics and statistics
-Monitoring assessments, sessions, and posts
-📱 General
-Fully responsive design (mobile, tablet, desktop)
-Clean and modular architecture
-Scalable backend API
-🏗️ Project Structure
+```text
 MEND/
-├── frontend/                # React frontend application
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   └── App.js
-│   └── package.json
-│
-├── backend/                # Node.js backend API
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   ├── validators/
-│   │   └── index.js
-│   ├── migrations/
-│   └── package.json
-⚙️ Installation & Setup
+|-- frontend/
+|   |-- public/                  # Static assets
+|   |-- src/
+|   |   |-- components/          # Reusable UI and feature components
+|   |   |-- context/             # Global providers such as auth and theme
+|   |   |-- hooks/               # Custom React hooks
+|   |   |-- pages/               # Route-level pages
+|   |   |-- services/            # API client and service calls
+|   |   |-- utils/               # Frontend helper utilities
+|   |   |-- App.js               # Main app routing
+|   |   |-- index.css            # Global styling
+|   |   `-- index.js             # Frontend entry point
+|   `-- package.json
+|
+|-- backend/
+|   |-- src/
+|   |   |-- config/              # Database and app configuration
+|   |   |-- controllers/         # Request handlers
+|   |   |-- middleware/          # Auth and role middleware
+|   |   |-- migrations/          # Database migration and seed scripts
+|   |   |-- models/              # SQLite data models
+|   |   |-- routes/              # Express route modules
+|   |   |-- services/            # Business logic layer
+|   |   |-- utils/               # Backend helpers
+|   |   `-- index.js             # Backend entry point
+|   |-- mend.db                  # SQLite database file
+|   `-- package.json
+|
+`-- README.md
+```
 
-1. Clone the Repository
- git clone
+## What The App Does
+
+### Users
+
+- Register and sign in securely
+- Use Remember Me for session persistence
+- Reset passwords through the recovery flow
+- Take PHQ-9 and GAD-7 assessments
+- Book therapy sessions
+- Post, like, and comment in the community
+- Explore career guidance features
+
+### Therapists
+
+- View a therapy dashboard
+- Review upcoming sessions
+- Manage client sessions
+- Organize client groups
+- Track therapist workflow from a dedicated workspace
+
+### Mentors
+
+- Access a dedicated Career Guidance workspace
+- Access a dedicated Talent Development feature
+- Work from a simplified mentor dashboard with feature entry points
+
+### Admins
+
+- Monitor users and platform activity
+- View platform statistics
+- Review sessions, posts, and assessments
+
+## Frontend
+
+The frontend is built with:
+
+- React 18
+- React Router v6
+- Axios
+- Tailwind CSS
+- React Icons
+
+Main frontend areas:
+
+- `components/` for shared and feature UI
+- `pages/` for dashboard, sessions, community, profile, career, and admin screens
+- `context/` for auth and theme state
+- `services/` for API calls
+
+## Backend
+
+The backend is built with:
+
+- Node.js
+- Express.js
+- SQLite
+- JWT authentication
+- bcrypt password hashing
+
+Main backend areas:
+
+- `routes/` for API endpoints
+- `controllers/` for request handling
+- `services/` for business rules
+- `models/` for database interaction
+- `middleware/` for protected access
+- `migrations/` for schema creation and seed data
+
+## API Areas
+
+The application currently exposes these main backend modules:
+
+- `/api/auth`
+- `/api/assessments`
+- `/api/sessions`
+- `/api/posts`
+- `/api/career`
+- `/api/admin`
+
+Health check:
+
+- `/health`
+
+## Setup
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repository-url>
 cd MEND
-2. Backend Setup
+```
+
+### 2. Start the backend
+
+```bash
 cd backend
 npm install
-
-Create .env file:
-
-cp .env.example .env
-
-Update environment variables (example):
-
-PORT=5000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=mend
-JWT_SECRET=your_secret_key
-
-Run database migrations:
-
 npm run db:migrate
-
-(Optional) Seed sample data:
-
 npm run db:seed
-
-Start backend server:
-
 npm run dev
+```
 
-Backend runs on:
-<http://localhost:5000>
+Backend default URL:
 
-1. Frontend Setup
-cd ../frontend
+```text
+http://localhost:5000
+```
+
+### 3. Start the frontend
+
+Open a new terminal and run:
+
+```bash
+cd frontend
 npm install
-
-Create .env file:
-
-REACT_APP_API_URL=<http://localhost:5000/api>
-
-Start frontend:
-
 npm start
+```
 
-Frontend runs on:
-<http://localhost:3000>
+Frontend default URL:
 
-🔌 API Endpoints (Backend)
-Authentication
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/change-password
-GET /api/auth/profile
-Assessments
-POST /api/assessments/phq9
-POST /api/assessments/gad7
-GET /api/assessments/history
-GET /api/assessments/stats
-GET /api/assessments/latest/:type
-Therapy Sessions
-POST /api/sessions/book
-GET /api/sessions/my-sessions
-GET /api/sessions/available-therapists
-GET /api/sessions/:sessionId
-PUT /api/sessions/:sessionId
-PUT /api/sessions/:sessionId/cancel
-Creative Posts
-POST /api/posts
-GET /api/posts
-GET /api/posts/:postId
-PUT /api/posts/:postId
-DELETE /api/posts/:postId
-POST /api/posts/:postId/like
-DELETE /api/posts/:postId/like
-POST /api/posts/:postId/comments
-GET /api/posts/:postId/comments
-Career Guidance
-POST /api/career/guidance
-GET /api/career/my-path
-GET /api/career/resources
-POST /api/career/progress
-GET /api/career/progress/tracking
-Admin
-GET /api/admin/dashboard/stats
-GET /api/admin/users
-GET /api/admin/users/:userId
-DELETE /api/admin/users/:userId
-GET /api/admin/assessments/stats
-GET /api/admin/sessions/stats
-GET /api/admin/posts/stats
-🧠 Technology Stack
-Frontend
-React 18
-React Router v6
-Axios
-Tailwind CSS
-Backend
-Node.js
-Express.js
-Relational Database (MySQL/PostgreSQL)
-JWT Authentication
-🔄 System Flow
-User interacts with the React frontend
-Frontend sends requests to backend API
-Backend processes logic and interacts with database
-Data is returned and displayed in the UI
-🔐 Security
-JWT-based authentication
-Protected routes (frontend & backend)
-Input validation and middleware checks
-📦 Deployment (Optional)
-Frontend: Vercel / Netlify
-Backend: Render / Railway / VPS
-Database: Cloud SQL / PostgreSQL
-📌 Future Improvements
-Real-time chat with therapists
-AI-based mental health insights
-Notifications system
-Multi-language support
-👨‍💻 Author
+```text
+http://localhost:3000
+```
 
-MEND Project – Built for mental health support and digital well-being.
+## Environment Variables
+
+### Backend
+
+```env
+PORT=5000
+JWT_SECRET=your_secret_here
+JWT_EXPIRE=7d
+DB_NAME=mend.db
+APP_URL=http://localhost:3000
+NODE_ENV=development
+```
+
+### Frontend
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+## Available Scripts
+
+### Backend
+
+```bash
+npm run dev
+npm run start
+npm run db:migrate
+npm run db:seed
+```
+
+### Frontend
+
+```bash
+npm start
+npm run build
+npm test
+```
+
+## Security
+
+The current app includes:
+
+- JWT-based authentication
+- Role-protected routes
+- Remember Me session handling
+- Forgot Password and Reset Password flow
+- Password hashing with bcrypt
+- Protected backend middleware
+
+## Deployment Notes
+
+Typical deployment options:
+
+- Frontend: Vercel or Netlify
+- Backend: Render, Railway, or VPS
+- Database: SQLite for lightweight deployment
+
+## Future Improvements
+
+- Real email delivery for password recovery
+- Real-time therapist and client communication
+- Notifications and reminders
+- Better analytics and reporting
+- Automated tests across frontend and backend
+
+## License
+
+MIT
