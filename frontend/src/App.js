@@ -38,7 +38,7 @@ const AppContent = () => {
   const showNavigation = !hideNavRoutes.includes(location.pathname);
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {showNavigation && <Navigation />}
       <Routes>
           {/* Public Routes */}
@@ -114,7 +114,7 @@ const AppContent = () => {
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </>
+      </div>
     );
   };
 

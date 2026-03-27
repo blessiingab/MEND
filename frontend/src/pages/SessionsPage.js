@@ -18,7 +18,7 @@ export const SessionsPage = () => {
   const sessionList = Array.isArray(sessions) ? sessions : sessions?.sessions || [];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+    <div className="min-h-screen max-w-5xl mx-auto px-4 py-8 space-y-8">
       <h1 className="text-3xl font-bold">Therapy Sessions</h1>
 
       <BookSession />
@@ -37,7 +37,7 @@ export const SessionsPage = () => {
           ) : (
             <div className="space-y-3">
               {sessionList.map((session) => (
-                <div key={session.id} className="p-4 border rounded-lg bg-gray-50">
+                <div key={session.id} className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                   <p className="font-semibold text-gray-900">
                     {session.first_name} {session.last_name}
                   </p>

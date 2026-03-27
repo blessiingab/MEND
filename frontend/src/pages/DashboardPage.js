@@ -44,9 +44,17 @@ export const DashboardPage = () => {
   const sessionsData = Array.isArray(upcomingSessions) ? upcomingSessions : upcomingSessions?.sessions || [];
 
   const { data: communityPosts, refetch: refetchCommunityPosts } = useFetch(
-    () => postService.getAllPosts('creative', 5, 0),
+    () => postService.getAllPosts('all', 20, 0),
     [user?.id]
   );
+
+  const communityPostsData = Array.isArray(communityPosts)
+    ? communityPosts
+    : communityPosts?.posts || communityPosts?.data?.posts || [];
+
+  const communityPostsCount = Array.isArray(communityPosts)
+    ? communityPosts.length
+    : communityPosts?.count ?? communityPosts?.data?.count ?? communityPostsData.length;
 
   React.useEffect(() => {
     const onCommunityUpdated = () => {
@@ -67,7 +75,7 @@ export const DashboardPage = () => {
   }, [refetchAssessmentStats]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -229,7 +237,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Saved Resources</p>
                     <p className="text-3xl font-bold text-purple-600 mt-2">
-                      {communityPosts?.length || 0}
+                      {communityPostsCount || 0}
                     </p>
                   </div>
                   <div className="text-4xl">📚</div>
@@ -255,7 +263,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Community Posts</p>
                     <p className="text-3xl font-bold text-pink-600 mt-2">
-                      {communityPosts?.length || 0}
+                      {communityPostsCount || 0}
                     </p>
                   </div>
                   <div className="text-4xl">📝</div>
@@ -299,7 +307,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Community Posts</p>
                     <p className="text-3xl font-bold text-purple-600 mt-2">
-                      {communityPosts?.length || 0}
+                      {communityPostsCount || 0}
                     </p>
                   </div>
                   <div className="text-4xl">📝</div>
@@ -412,15 +420,18 @@ export const DashboardPage = () => {
                     {sessionsData.map((session) => {
                       const partnerName = `${session.first_name || session.therapistName || ''} ${session.last_name || ''}`.trim() || (isTherapist ? 'Client' : 'Therapist');
                       const partnerLabel = isTherapist ? 'Client' : 'Therapist';
+                      const sessionStart = session.start_time || session.startTime;
+                      const sessionDate = sessionStart ? new Date(sessionStart) : null;
+                      const hasValidDate = sessionDate && !Number.isNaN(sessionDate.getTime());
                       return (
                         <div key={session.id} className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-600">
                           <p className="font-semibold text-gray-900">{partnerName}</p>
                           <p className="text-xs text-gray-500 font-medium">{partnerLabel}</p>
                           <p className="text-sm text-gray-600 mt-1">
-                            {new Date(session.startTime).toLocaleDateString()}
+                            {hasValidDate ? sessionDate.toLocaleDateString() : 'Date pending'}
                           </p>
                           <p className="text-sm text-blue-600 font-medium">
-                            {new Date(session.startTime).toLocaleTimeString()}
+                            {hasValidDate ? sessionDate.toLocaleTimeString() : 'Time pending'}
                           </p>
                         </div>
                       );
@@ -482,7 +493,7 @@ export const DashboardPage = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-purple-600">
-                    {communityPosts?.length || 0}
+                    {communityPostsCount || 0}
                   </div>
                   <p className="text-gray-600 mt-2">Community Interactions</p>
                 </div>

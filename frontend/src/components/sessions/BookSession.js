@@ -51,9 +51,14 @@ export const BookSession = () => {
     setLoading(true);
 
     try {
-      const startIso = new Date(startTime).toISOString();
-      const end = new Date(new Date(startTime).getTime() + 60 * 60000).toISOString();
-      const response = await sessionService.bookSession(
+      const parsedStart = new Date(startTime);
+      if (Number.isNaN(parsedStart.getTime())) {
+        throw new Error('Please select a valid session date and time');
+      }
+
+      const startIso = parsedStart.toISOString();
+      const end = new Date(parsedStart.getTime() + 60 * 60000).toISOString();
+      await sessionService.bookSession(
         Number(selectedTherapist),
         startIso,
         end,
