@@ -18,10 +18,36 @@ const createTables = async () => {
         bio TEXT,
         profile_image TEXT,
         role TEXT DEFAULT 'user',
+        license_number TEXT,
+        specialization TEXT,
+        expertise_area TEXT,
+        experience_years INTEGER,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Ensure legacy databases gain the new columns if they are missing
+    const userColumns = await db.all(`PRAGMA table_info(users)`);
+    const hasColumn = (name) => userColumns.some(col => col.name === name);
+
+    if (!hasColumn('license_number')) {
+      await db.run(`ALTER TABLE users ADD COLUMN license_number TEXT`);
+      console.log('✓ Added license_number column to users table');
+    }
+    if (!hasColumn('specialization')) {
+      await db.run(`ALTER TABLE users ADD COLUMN specialization TEXT`);
+      console.log('✓ Added specialization column to users table');
+    }
+    if (!hasColumn('expertise_area')) {
+      await db.run(`ALTER TABLE users ADD COLUMN expertise_area TEXT`);
+      console.log('✓ Added expertise_area column to users table');
+    }
+    if (!hasColumn('experience_years')) {
+      await db.run(`ALTER TABLE users ADD COLUMN experience_years INTEGER`);
+      console.log('✓ Added experience_years column to users table');
+    }
+
     console.log('✓ Users table created');
 
     // Assessments table

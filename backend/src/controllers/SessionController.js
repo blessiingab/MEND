@@ -119,6 +119,17 @@ class SessionController {
     }
   }
 
+  static async getTherapistSessions(req, res) {
+    try {
+      const { limit = 20, offset = 0 } = req.query;
+      const sessions = await TherapySession.getTherapistSessions(req.user.id, parseInt(limit), parseInt(offset));
+
+      return successResponse(res, 'Therapist sessions retrieved', { sessions, count: sessions.length });
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
   static async getSessionStats(req, res) {
     try {
       const stats = await TherapySession.getSessionStats(req.user.id);

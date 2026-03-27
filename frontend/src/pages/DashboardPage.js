@@ -40,6 +40,9 @@ export const DashboardPage = () => {
   const mentorGuidanceCount = isMentor ? careerHistory?.length || 0 : 0;
   const userCareerProgress = !isMentor ? (careerHistory ? 1 : 0) : 0;
 
+  // Normalize sessions data for compatibility with older API payloads
+  const sessionsData = Array.isArray(upcomingSessions) ? upcomingSessions : upcomingSessions?.sessions || [];
+
   const { data: communityPosts } = useFetch(
     () => postService.getAllPosts('creative', 5, 0),
     [user?.id]
@@ -140,7 +143,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Your Appointments</p>
                     <p className="text-3xl font-bold text-green-600 mt-2">
-                      {upcomingSessions?.length || 0}
+                      {sessionsData.length}
                     </p>
                   </div>
                   <div className="text-4xl">🗓️</div>
@@ -153,7 +156,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Pending Requests</p>
                     <p className="text-3xl font-bold text-yellow-600 mt-2">
-                      {upcomingSessions?.filter((s) => s.status === 'pending').length || 0}
+                      {sessionsData.filter((s) => s.status === 'pending').length}
                     </p>
                   </div>
                   <div className="text-4xl">⏳</div>
@@ -166,7 +169,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Completed</p>
                     <p className="text-3xl font-bold text-blue-600 mt-2">
-                      {upcomingSessions?.filter((s) => s.status === 'completed').length || 0}
+                      {sessionsData.filter((s) => s.status === 'completed').length}
                     </p>
                   </div>
                   <div className="text-4xl">✅</div>
@@ -179,7 +182,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Clients This Week</p>
                     <p className="text-3xl font-bold text-indigo-600 mt-2">
-                      {upcomingSessions?.length || 0}
+                      {sessionsData.length}
                     </p>
                   </div>
                   <div className="text-4xl">👥</div>
@@ -264,7 +267,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Therapy Sessions</p>
                     <p className="text-3xl font-bold text-green-600 mt-2">
-                      {upcomingSessions?.length || 0}
+                      {sessionsData.length}
                     </p>
                   </div>
                   <div className="text-4xl">🧘</div>
@@ -386,9 +389,9 @@ export const DashboardPage = () => {
               <CardBody>
                 {sessionsLoading ? (
                   <Loading message="Loading sessions..." />
-                ) : upcomingSessions && upcomingSessions.length > 0 ? (
+                ) : sessionsData.length > 0 ? (
                   <div className="space-y-3">
-                    {upcomingSessions.map((session) => {
+                    {sessionsData.map((session) => {
                       const partnerName = `${session.first_name || session.therapistName || ''} ${session.last_name || ''}`.trim() || (isTherapist ? 'Client' : 'Therapist');
                       const partnerLabel = isTherapist ? 'Client' : 'Therapist';
                       return (
@@ -426,21 +429,20 @@ export const DashboardPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-blue-600">
-                    {upcomingSessions?.length || 0}
+                    {sessionsData.length}
                   </div>
                   <p className="text-gray-600 mt-2">Active Sessions</p>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-green-600">
-                    {upcomingSessions?.filter((s) => s.status === 'completed').length || 0}
+                    {sessionsData.filter((s) => s.status === 'completed').length}
                   </div>
                   <p className="text-gray-600 mt-2">Completed</p>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-orange-600">
-                    {upcomingSessions?.filter((s) => s.status === 'pending').length || 0}
-                  </div>
-                  <p className="text-gray-600 mt-2">Pending</p>
+                    {sessionsData.filter((s) => s.status === 'pending').length}
+                  </div>                  <p className="text-gray-600 mt-2">Pending</p>
                 </div>
               </div>
             </CardBody>

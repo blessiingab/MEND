@@ -6,19 +6,51 @@ const bcrypt = require('bcrypt');
 
 class User {
   static async create(userData) {
-    const { email, password, firstName, lastName, role = 'user' } = userData;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      role = 'user',
+      bio = null,
+      profileImage = null,
+      licenseNumber = null,
+      specialization = null,
+      expertiseArea = null,
+      experienceYears = null
+    } = userData;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = `
-      INSERT INTO users (email, password, first_name, last_name, role, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+      INSERT INTO users (
+        email, password, first_name, last_name, role, bio, profile_image,
+        license_number, specialization, expertise_area, experience_years,
+        created_at, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
     `;
 
-    const result = await db.run(query, [email, hashedPassword, firstName, lastName, role]);
+    const result = await db.run(query, [
+      email,
+      hashedPassword,
+      firstName,
+      lastName,
+      role,
+      bio,
+      profileImage,
+      licenseNumber,
+      specialization,
+      expertiseArea,
+      experienceYears
+    ]);
 
     // Get the created user
-    const user = await db.get('SELECT id, email, first_name, last_name, role, created_at FROM users WHERE id = ?', [result.id]);
+    const user = await db.get(`
+      SELECT id, email, first_name, last_name, role, bio, profile_image,
+        license_number, specialization, expertise_area, experience_years, created_at
+      FROM users WHERE id = ?
+    `, [result.id]);
     return user;
   }
 

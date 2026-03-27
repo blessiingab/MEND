@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/book', authMiddleware, SessionController.bookSession);
 router.get('/my-sessions', authMiddleware, SessionController.getUserSessions);
+router.get('/therapist-sessions', authMiddleware, SessionController.getTherapistSessions);
 router.get('/available-therapists', authMiddleware, SessionController.getAvailableTherapists);
 router.get('/stats', authMiddleware, SessionController.getSessionStats);
 router.get('/:sessionId', authMiddleware, SessionController.getSessionById);

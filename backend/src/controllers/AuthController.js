@@ -7,13 +7,37 @@ const { successResponse, errorResponse } = require('../utils/responseHandler');
 class AuthController {
   static async register(req, res) {
     try {
-      const { email, password, firstName, lastName } = req.body;
+      const {
+        email,
+        password,
+        firstName,
+        lastName,
+        role = 'user',
+        bio,
+        profileImage,
+        licenseNumber,
+        specialization,
+        expertiseArea,
+        experienceYears
+      } = req.body;
 
       if (!email || !password) {
         return errorResponse(res, 'Email and password are required', 400);
       }
 
-      const result = await AuthService.register(email, password, firstName, lastName);
+      const result = await AuthService.register({
+        email,
+        password,
+        firstName,
+        lastName,
+        role,
+        bio,
+        profileImage,
+        licenseNumber,
+        specialization,
+        expertiseArea,
+        experienceYears
+      });
 
       return successResponse(res, 'User registered successfully', result, 201);
     } catch (error) {

@@ -6,7 +6,21 @@ const { generateToken } = require('../utils/jwt');
 const { validateEmail, validatePassword } = require('../utils/validators');
 
 class AuthService {
-  static async register(email, password, firstName, lastName) {
+  static async register(userData) {
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      role = 'user',
+      bio,
+      profileImage,
+      licenseNumber,
+      specialization,
+      expertiseArea,
+      experienceYears
+    } = userData;
+
     // Validation
     if (!validateEmail(email)) {
       throw new Error('Invalid email format');
@@ -27,7 +41,14 @@ class AuthService {
       email,
       password,
       firstName: firstName || email.split('@')[0],
-      lastName: lastName || ''
+      lastName: lastName || '',
+      role,
+      bio,
+      profileImage,
+      licenseNumber,
+      specialization,
+      expertiseArea,
+      experienceYears
     });
 
     // Generate token
