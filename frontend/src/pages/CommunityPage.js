@@ -22,6 +22,8 @@ export const CommunityPage = () => {
     [selectedType]
   );
 
+  const postsData = Array.isArray(posts) ? posts : posts?.posts || posts?.data?.posts || [];
+
   const validateForm = (values) => {
     const errors = {};
     if (!values.title) errors.title = 'Title is required';
@@ -106,15 +108,15 @@ export const CommunityPage = () => {
         <div className="space-y-6">
           {postsLoading ? (
             <Loading message="Loading posts..." />
-          ) : posts && posts.length > 0 ? (
-            posts.map((post) => (
+          ) : postsData.length > 0 ? (
+            postsData.map((post) => (
               <Card key={post.id} hoverable>
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-xl font-bold text-gray-900">{post.title}</h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        by {post.authorName} • {new Date(post.createdAt).toLocaleDateString()}
+                        by {post.authorName || `${post.first_name || ''} ${post.last_name || ''}`.trim() || 'Unknown'} • {new Date(post.created_at || post.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                     <Badge variant="primary">{post.type}</Badge>
@@ -128,7 +130,7 @@ export const CommunityPage = () => {
                       className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition"
                     >
                       <span className="text-lg">❤️</span>
-                      <span className="text-sm">{post.likesCount || 0} Likes</span>
+                      <span className="text-sm">{post.likes || post.likesCount || 0} Likes</span>
                     </button>
                     <div className="flex items-center gap-2 text-gray-600">
                       <span className="text-lg">💬</span>

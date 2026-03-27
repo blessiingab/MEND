@@ -14,8 +14,9 @@ class PostController {
         return errorResponse(res, 'Title, content, and type are required', 400);
       }
 
-      if (!['story', 'art'].includes(type)) {
-        return errorResponse(res, 'Type must be story or art', 400);
+      const validTypes = ['story', 'art', 'creative', 'inspiration', 'question'];
+      if (!validTypes.includes(type)) {
+        return errorResponse(res, `Type must be one of: ${validTypes.join(', ')}`, 400);
       }
 
       const post = await CreativePost.create({

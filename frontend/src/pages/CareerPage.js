@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Loading';
+import { CareerResources } from '../components/career/CareerResources';
 
 export const CareerPage = () => {
   const [selectedTab, setSelectedTab] = useState('paths');
@@ -212,19 +213,7 @@ export const CareerPage = () => {
 
         {/* Resources Tab */}
         {selectedTab === 'resources' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {careerResources.map((resource) => (
-              <Card key={resource.id} hoverable>
-                <CardBody>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{resource.title}</h3>
-                  <p className="text-gray-600 mb-4">{resource.description}</p>
-                  <Button variant="outline" fullWidth size="sm">
-                    Access Resource
-                  </Button>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
+          <CareerResources />
         )}
       </div>
     </div>

@@ -19,7 +19,10 @@ export const CareerResources = () => {
     try {
       setLoading(true);
       const response = await careerService.getResources(selectedType);
-      setResources(response.data.resources || response.data);
+      const resourcesArray = Array.isArray(response)
+        ? response
+        : response?.resources || response?.data?.resources || response?.data || [];
+      setResources(resourcesArray);
     } catch (err) {
       setError('Failed to load resources');
     } finally {

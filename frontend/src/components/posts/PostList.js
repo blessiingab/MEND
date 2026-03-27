@@ -21,7 +21,10 @@ export const PostList = ({ filterType = null }) => {
     try {
       setLoading(true);
       const response = await postService.getAllPosts(filterType);
-      setPosts(response.data.posts || response.data);
+      const postArray = Array.isArray(response)
+        ? response
+        : response?.posts || response?.data?.posts || response?.data || [];
+      setPosts(postArray);
     } catch (err) {
       setError('Failed to load posts');
     } finally {
