@@ -2,7 +2,7 @@
  * Main App Component
  */
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { Navigation } from './components/common/Navigation';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
@@ -23,8 +23,21 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Navigation />
-        <Routes>
+        <AppContent />
+      </AuthProvider>
+    </Router>
+  );
+}
+
+const AppContent = () => {
+  const location = useLocation();
+  const hideNavRoutes = ['/login', '/register'];
+  const showNavigation = !hideNavRoutes.includes(location.pathname);
+
+  return (
+    <>
+      {showNavigation && <Navigation />}
+      <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
@@ -98,9 +111,8 @@ function App() {
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </AuthProvider>
-    </Router>
-  );
-}
+      </>
+    );
+  };
 
 export default App;
