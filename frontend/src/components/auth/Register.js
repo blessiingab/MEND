@@ -94,16 +94,16 @@ export const Register = () => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-6">
       <Card className="w-full max-w-md shadow-lg">
         <CardBody>
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">🧠</div>
-            <h1 className="text-3xl font-bold text-gray-900">MEND</h1>
-            <p className="text-gray-600 text-sm mt-2">Join our community</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">MEND</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Join our community</p>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Create Account</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Create Account</h2>
 
           {(serverError || authError) && (
             <Alert
@@ -145,7 +145,7 @@ export const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 I am registering as a:
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -154,43 +154,43 @@ export const Register = () => {
                   onClick={() => handleChange({ target: { name: 'role', value: 'user' } })}
                   className={`p-3 border rounded-lg text-center transition-colors ${
                     values.role === 'user'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <div className="text-2xl mb-1">👤</div>
                   <div className="text-sm font-medium">User</div>
-                  <div className="text-xs text-gray-500">Access services</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Access services</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleChange({ target: { name: 'role', value: 'therapist' } })}
                   className={`p-3 border rounded-lg text-center transition-colors ${
                     values.role === 'therapist'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <div className="text-2xl mb-1">🩺</div>
                   <div className="text-sm font-medium">Therapist</div>
-                  <div className="text-xs text-gray-500">Provide therapy</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Provide therapy</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleChange({ target: { name: 'role', value: 'mentor' } })}
                   className={`p-3 border rounded-lg text-center transition-colors ${
                     values.role === 'mentor'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-blue-300 bg-white text-gray-700 hover:bg-gray-50'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <div className="text-2xl mb-1">🎓</div>
                   <div className="text-sm font-medium">Mentor</div>
-                  <div className="text-xs text-gray-500">Career guidance</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Career guidance</div>
                 </button>
               </div>
               {touched.role && errors.role && (
-                <p className="text-red-500 text-xs mt-1">{errors.role}</p>
+                <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.role}</p>
               )}
             </div>
 
@@ -295,16 +295,16 @@ export const Register = () => {
                 name="agreeTerms"
                 checked={values.agreeTerms}
                 onChange={handleChange}
-                className="mt-1 rounded"
+                className="mt-1 rounded dark:bg-gray-700 dark:border-gray-600"
               />
-              <span className="text-gray-700">
+              <span className="text-gray-700 dark:text-gray-300">
                 I agree to the{' '}
-                <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and{' '}
-                <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+                <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</a> and{' '}
+                <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</a>
               </span>
             </label>
             {touched.agreeTerms && errors.agreeTerms && (
-              <p className="text-red-500 text-xs">{errors.agreeTerms}</p>
+              <p className="text-red-500 dark:text-red-400 text-xs">{errors.agreeTerms}</p>
             )}
 
             <Button
@@ -318,10 +318,10 @@ export const Register = () => {
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-center text-gray-600">
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-center text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 font-semibold hover:text-blue-700">
+              <Link to="/login" className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300">
                 Sign In
               </Link>
             </p>

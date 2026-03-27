@@ -45,16 +45,16 @@ export const Login = () => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardBody>
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">🧠</div>
-            <h1 className="text-3xl font-bold text-gray-900">MEND</h1>
-            <p className="text-gray-600 text-sm mt-2">Mental and Emotional Nurturing Digital</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">MEND</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Mental and Emotional Nurturing Digital</p>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Welcome Back</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Welcome Back</h2>
 
           {(serverError || authError) && (
             <Alert
@@ -98,10 +98,10 @@ export const Login = () => {
 
             <div className="flex justify-between items-center text-sm">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="rounded" />
-                <span className="text-gray-700">Remember me</span>
+                <input type="checkbox" className="rounded dark:bg-gray-700 dark:border-gray-600" />
+                <span className="text-gray-700 dark:text-gray-300">Remember me</span>
               </label>
-              <Link to="#" className="text-blue-600 hover:text-blue-700">
+              <Link to="#" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                 Forgot password?
               </Link>
             </div>
@@ -117,10 +117,10 @@ export const Login = () => {
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-center text-gray-600">
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-center text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-600 font-semibold hover:text-blue-700">
+              <Link to="/register" className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300">
                 Create one
               </Link>
             </p>

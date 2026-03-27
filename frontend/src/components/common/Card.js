@@ -7,8 +7,8 @@ export const Card = ({ children, className = '', hoverable = false, ...props }) 
   return (
     <div
       className={`
-        bg-white rounded-lg shadow-md p-6
-        ${hoverable ? 'hover:shadow-lg transition duration-200 cursor-pointer' : ''}
+        bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-6
+        ${hoverable ? 'hover:shadow-lg dark:hover:shadow-xl transition duration-200 cursor-pointer' : ''}
         ${className}
       `}
       {...props}
@@ -31,7 +31,7 @@ export const CardBody = ({ children, className = '' }) => (
 );
 
 export const CardFooter = ({ children, className = '' }) => (
-  <div className={`mt-4 pt-4 border-t border-gray-200 ${className}`}>
+  <div className={`mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 ${className}`}>
     {children}
   </div>
 );
