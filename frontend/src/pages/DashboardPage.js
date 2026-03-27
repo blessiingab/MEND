@@ -2,7 +2,7 @@
  * Dashboard Page Component
  */
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth, useFetch } from '../hooks/useCustomHooks';
 import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Button } from '../components/common/Button';
@@ -12,7 +12,6 @@ import { assessmentService, sessionService, postService, careerService } from '.
 
 export const DashboardPage = () => {
   const { user } = useAuth();
-  const location = useLocation();
   const isTherapist = user?.role === 'therapist';
   const isMentor = user?.role === 'mentor';
 
@@ -71,50 +70,16 @@ export const DashboardPage = () => {
     : postsPayload?.posts || postsPayload?.data?.posts || [];
 
   const myPostsCount = postsData.filter((post) => Number(post.user_id) === Number(user?.id)).length;
-  const mentorHistoryCount = Array.isArray(careerPayload)
-    ? careerPayload.length
-    : careerPayload?.history?.length || 0;
   const mentorProgressCount = Array.isArray(mentorProgressPayload)
     ? mentorProgressPayload.length
     : mentorProgressPayload?.progress?.length || 0;
-  const mentorResourcesCount = Array.isArray(mentorResourcesPayload)
-    ? mentorResourcesPayload.length
-    : mentorResourcesPayload?.resources?.length || 0;
   const userCareerPath = !isTherapist && !isMentor ? careerPayload : null;
-  const mentorLatestGuidance = Array.isArray(careerPayload)
-    ? careerPayload[0]
-    : careerPayload?.history?.[0];
   const mentorResources = Array.isArray(mentorResourcesPayload)
     ? mentorResourcesPayload
     : mentorResourcesPayload?.resources || [];
   const mentorProgressItems = Array.isArray(mentorProgressPayload)
     ? mentorProgressPayload
     : mentorProgressPayload?.progress || [];
-  const mentorUpcomingSessions = sessionsData.filter((session) => {
-    const start = session.start_time || session.startTime;
-    if (!start) return false;
-    const date = new Date(start);
-    return !Number.isNaN(date.getTime()) && date.getTime() >= Date.now();
-  });
-  const mentorCompletedSessions = sessionsData.filter((session) => session.status === 'completed').length;
-  const mentorPendingSessions = sessionsData.filter((session) => session.status === 'pending').length;
-  const mentorMenteeNames = new Set(
-    sessionsData
-      .map((session) => `${session.first_name || ''} ${session.last_name || ''}`.trim())
-      .filter(Boolean)
-  );
-  const mentorActiveMenteesCount = mentorMenteeNames.size;
-
-  React.useEffect(() => {
-    if (!isMentor || !location?.hash) return;
-    const sectionId = location.hash.replace('#', '');
-    const node = document.getElementById(sectionId);
-    if (node) {
-      window.setTimeout(() => {
-        node.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
-    }
-  }, [isMentor, location.hash]);
 
   React.useEffect(() => {
     const onCommunityUpdated = () => refetchPosts();
@@ -234,71 +199,23 @@ export const DashboardPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900">Mentor Dashboard</h1>
-            <p className="text-gray-600 mt-2">Career guidance, mentorship, and talent development in one place.</p>
+            <p className="text-gray-600 mt-2">Use dedicated mentor workspaces for career guidance and talent development.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card id="mentorship-section" className="border-indigo-200 bg-gradient-to-b from-indigo-50 to-white">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-purple-200 bg-gradient-to-b from-purple-50 to-white">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-indigo-900">Mentorship</h2>
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-indigo-100 text-indigo-700">1:1 Coaching</span>
+                  <h2 className="text-2xl font-bold text-purple-900">Career Guidance Workspace</h2>
+                  <span className="text-xs font-semibold px-2 py-1 rounded bg-purple-100 text-purple-700">Separate Feature</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-4">
-                <p className="text-sm text-gray-600">Run 1:1 mentorship with clear mentee follow-up and next-step planning.</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 rounded bg-indigo-50">
-                    <p className="text-xs text-gray-600">Active Mentees</p>
-                    <p className="text-2xl font-bold text-indigo-700">{mentorActiveMenteesCount}</p>
-                  </div>
-                  <div className="p-3 rounded bg-blue-50">
-                    <p className="text-xs text-gray-600">Upcoming Sessions</p>
-                    <p className="text-2xl font-bold text-blue-700">{mentorUpcomingSessions.length}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 rounded bg-amber-50">
-                    <p className="text-xs text-gray-600">Pending Requests</p>
-                    <p className="text-xl font-bold text-amber-700">{mentorPendingSessions}</p>
-                  </div>
-                  <div className="p-3 rounded bg-green-50">
-                    <p className="text-xs text-gray-600">Completed Sessions</p>
-                    <p className="text-xl font-bold text-green-700">{mentorCompletedSessions}</p>
-                  </div>
-                </div>
-                {mentorUpcomingSessions.length > 0 ? (
-                  <p className="text-sm text-indigo-800">
-                    Next Mentorship Check-in: <strong>{new Date(mentorUpcomingSessions[0].start_time || mentorUpcomingSessions[0].startTime).toLocaleString()}</strong>
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-600">No upcoming mentorship sessions yet.</p>
-                )}
-                <Link to="/sessions">
-                  <Button variant="primary" fullWidth>Open Mentorship Manager</Button>
-                </Link>
-              </CardBody>
-            </Card>
-
-            <Card id="career-guidance-section" className="border-purple-200 bg-gradient-to-b from-purple-50 to-white">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-purple-900">Career Guidance</h2>
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-purple-100 text-purple-700">Roadmaps</span>
-                </div>
-              </CardHeader>
-              <CardBody className="space-y-4">
-                <p className="text-sm text-gray-600">Create and refine career plans, goals, and action roadmaps.</p>
-                <div>
-                  <p className="text-gray-600 text-sm">Latest Guidance Goal</p>
-                  <p className="text-lg font-bold text-purple-600 mt-1">
-                    {mentorLatestGuidance?.career_goal || 'No guidance goal saved yet'}
-                  </p>
-                </div>
-                <p className="text-sm text-gray-600">Total Guidance Records: <strong>{mentorHistoryCount}</strong></p>
-                <p className="text-sm text-gray-600">Guidance Resources Shared: <strong>{mentorResourcesCount}</strong></p>
+                <p className="text-sm text-gray-600">
+                  Career guidance now lives in its own dedicated page so mentors can manage roadmaps, guidance records, and planning without mixing it into the dashboard.
+                </p>
                 <Link to="/career">
-                  <Button variant="secondary" fullWidth>Manage Guidance</Button>
+                  <Button variant="secondary" fullWidth>Open Career Guidance Workspace</Button>
                 </Link>
               </CardBody>
             </Card>
@@ -330,8 +247,8 @@ export const DashboardPage = () => {
                 ) : (
                   <p className="text-sm text-gray-600">No development milestones tracked yet.</p>
                 )}
-                <Link to="/career">
-                  <Button variant="outline" fullWidth>Open Talent Development</Button>
+                <Link to="/talent-development">
+                  <Button variant="outline" fullWidth>Open Talent Development Feature</Button>
                 </Link>
               </CardBody>
             </Card>

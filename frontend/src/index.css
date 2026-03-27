@@ -21,6 +21,7 @@ body {
 html.dark body {
   background-color: #111827;
   color: #f3f4f6;
+  color-scheme: dark;
 }
 
 html, body, #root {
@@ -28,14 +29,58 @@ html, body, #root {
 }
 
 /* Global dark-mode fallback for components still using light-only utility classes */
+html.dark #root {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 24%),
+    linear-gradient(180deg, #0b1120 0%, #111827 38%, #0f172a 100%);
+}
+
 html.dark .text-gray-900 { color: #f9fafb !important; }
+html.dark .text-gray-800 { color: #edf2f7 !important; }
 html.dark .text-gray-700 { color: #e5e7eb !important; }
 html.dark .text-gray-600 { color: #d1d5db !important; }
 html.dark .text-gray-500 { color: #9ca3af !important; }
+html.dark .text-slate-900 { color: #f8fafc !important; }
+html.dark .text-slate-700 { color: #dbe4f0 !important; }
+html.dark .text-slate-600 { color: #cbd5e1 !important; }
+html.dark .text-slate-500 { color: #94a3b8 !important; }
 html.dark .bg-gray-50 { background-color: #111827 !important; }
 html.dark .bg-gray-100 { background-color: #1f2937 !important; }
+html.dark .bg-white { background-color: #111827 !important; }
+html.dark .bg-blue-50 { background-color: #172554 !important; }
+html.dark .bg-green-50 { background-color: #052e16 !important; }
+html.dark .bg-purple-50 { background-color: #2e1065 !important; }
+html.dark .bg-amber-50 { background-color: #451a03 !important; }
+html.dark .bg-red-50 { background-color: #450a0a !important; }
 html.dark .border-gray-200 { border-color: #374151 !important; }
 html.dark .border-gray-300 { border-color: #4b5563 !important; }
+html.dark .border-slate-200 { border-color: #334155 !important; }
+html.dark .border-amber-100 { border-color: #92400e !important; }
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #111827;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #94a3b8;
+}
+
+html.dark .hover\:bg-gray-50:hover { background-color: #1f2937 !important; }
+html.dark .hover\:bg-gray-100:hover { background-color: #1f2937 !important; }
+html.dark .hover\:bg-gray-200:hover { background-color: #374151 !important; }
+html.dark .hover\:text-gray-900:hover { color: #f9fafb !important; }
+html.dark .hover\:text-gray-800:hover { color: #f9fafb !important; }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -44,4 +89,342 @@ code {
 
 main {
   min-height: calc(100vh - 64px);
+}
+
+.talent-dev-page {
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.10), transparent 28%),
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 26%),
+    linear-gradient(180deg, #f7faf8 0%, #f8fafc 38%, #eef6f6 100%);
+}
+
+.talent-dev-hero {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(250, 250, 249, 0.96), rgba(233, 245, 241, 0.94)),
+    linear-gradient(135deg, #ffffff, #f0fdf4);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.talent-dev-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 85%);
+  pointer-events: none;
+}
+
+.talent-dev-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(14px);
+  opacity: 0.7;
+}
+
+.talent-dev-orb-one {
+  width: 240px;
+  height: 240px;
+  top: -60px;
+  right: 14%;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.22), rgba(13, 148, 136, 0));
+}
+
+.talent-dev-orb-two {
+  width: 220px;
+  height: 220px;
+  bottom: -80px;
+  left: -30px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.18), rgba(251, 191, 36, 0));
+}
+
+.talent-dev-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.talent-dev-title {
+  margin-top: 0.75rem;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.talent-dev-badge {
+  background: linear-gradient(90deg, #dcfce7, #ccfbf1);
+  color: #0f766e;
+}
+
+.talent-dev-chip {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  color: #334155;
+  padding: 0.6rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+}
+
+.talent-dev-hero-panel,
+.talent-dev-stat-card,
+.talent-dev-form-card,
+.talent-dev-timeline-card,
+.talent-dev-side-card {
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.talent-dev-hero-panel {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  padding: 1.5rem;
+}
+
+.talent-dev-icon-shell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #ccfbf1, #fef3c7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.talent-dev-metric-card {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.92));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.talent-dev-highlight {
+  border-radius: 1.25rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(240, 253, 250, 0.85), rgba(255, 251, 235, 0.9));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.talent-dev-stat-card {
+  padding: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.talent-dev-stat-emerald {
+  background: linear-gradient(160deg, rgba(236, 253, 245, 0.96), rgba(255, 255, 255, 0.88));
+}
+
+.talent-dev-stat-blue {
+  background: linear-gradient(160deg, rgba(239, 246, 255, 0.96), rgba(255, 255, 255, 0.88));
+}
+
+.talent-dev-stat-amber {
+  background: linear-gradient(160deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.88));
+}
+
+.talent-dev-dark-panel {
+  background:
+    radial-gradient(circle at top, rgba(20, 184, 166, 0.20), transparent 30%),
+    linear-gradient(160deg, #0f172a, #111827 62%, #1f2937);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.talent-dev-form-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 253, 245, 0.72));
+  border: 1px solid rgba(16, 185, 129, 0.18);
+}
+
+.talent-dev-input {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.talent-dev-input:focus {
+  outline: none;
+  border-color: rgba(13, 148, 136, 0.5);
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
+  transform: translateY(-1px);
+}
+
+.talent-dev-cta {
+  background: linear-gradient(135deg, #0f766e, #0ea5a6) !important;
+  border: none;
+  box-shadow: 0 12px 24px rgba(13, 148, 136, 0.25);
+}
+
+.talent-dev-timeline-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.9));
+}
+
+.talent-dev-timeline {
+  position: relative;
+}
+
+.talent-dev-timeline::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: linear-gradient(180deg, #14b8a6, rgba(20, 184, 166, 0.08));
+}
+
+.talent-dev-timeline-item {
+  position: relative;
+  margin-left: 1.8rem;
+  animation: talentDevFadeUp 0.7s ease forwards;
+  opacity: 0;
+}
+
+.talent-dev-timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -1.42rem;
+  top: 1.3rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.12);
+}
+
+.talent-dev-guidance-card {
+  background: linear-gradient(180deg, rgba(250, 245, 255, 0.96), rgba(255, 255, 255, 0.92));
+  border: 1px solid rgba(168, 85, 247, 0.16);
+}
+
+.talent-dev-resource-card {
+  background: linear-gradient(180deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.92));
+  border: 1px solid rgba(245, 158, 11, 0.16);
+}
+
+html.dark .talent-dev-page {
+  background:
+    radial-gradient(circle at top left, rgba(20, 184, 166, 0.16), transparent 24%),
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 22%),
+    linear-gradient(180deg, #07111f 0%, #0f172a 44%, #111827 100%);
+}
+
+html.dark .talent-dev-hero {
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(17, 24, 39, 0.96)),
+    linear-gradient(135deg, #0f172a, #111827);
+  border-color: #334155;
+}
+
+html.dark .talent-dev-grid::before {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+}
+
+html.dark .talent-dev-kicker {
+  color: #5eead4;
+}
+
+html.dark .talent-dev-chip {
+  background: rgba(15, 23, 42, 0.72);
+  color: #e2e8f0;
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+html.dark .talent-dev-hero-panel,
+html.dark .talent-dev-metric-card,
+html.dark .talent-dev-highlight,
+html.dark .talent-dev-stat-emerald,
+html.dark .talent-dev-stat-blue,
+html.dark .talent-dev-stat-amber,
+html.dark .talent-dev-form-card,
+html.dark .talent-dev-timeline-card,
+html.dark .talent-dev-guidance-card,
+html.dark .talent-dev-resource-card {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(17, 24, 39, 0.92));
+  border-color: rgba(71, 85, 105, 0.85);
+}
+
+html.dark .talent-dev-hero-panel,
+html.dark .talent-dev-stat-card,
+html.dark .talent-dev-form-card,
+html.dark .talent-dev-timeline-card,
+html.dark .talent-dev-side-card,
+html.dark .talent-dev-metric-card,
+html.dark .talent-dev-highlight {
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.42);
+}
+
+html.dark .talent-dev-icon-shell {
+  background: linear-gradient(135deg, #134e4a, #3f3f1f);
+}
+
+html.dark .talent-dev-input {
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  border-color: rgba(71, 85, 105, 0.9);
+}
+
+html.dark .talent-dev-timeline-item {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border-color: rgba(71, 85, 105, 0.85) !important;
+}
+
+html.dark .talent-dev-dark-panel {
+  background:
+    radial-gradient(circle at top, rgba(20, 184, 166, 0.16), transparent 30%),
+    linear-gradient(160deg, #020617, #0f172a 62%, #111827);
+}
+
+.talent-dev-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: talentDevFadeUp 0.7s ease forwards;
+}
+
+.talent-dev-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.talent-dev-delay-2 {
+  animation-delay: 0.22s;
+}
+
+@keyframes talentDevFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .talent-dev-title {
+    font-size: 2.9rem;
+  }
+
+  .talent-dev-timeline::before {
+    left: 0.55rem;
+  }
+
+  .talent-dev-timeline-item {
+    margin-left: 1.2rem;
+  }
+
+  .talent-dev-timeline-item::before {
+    left: -0.82rem;
+  }
 }

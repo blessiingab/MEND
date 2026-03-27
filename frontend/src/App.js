@@ -17,6 +17,7 @@ import { AssessmentsPage } from './pages/AssessmentsPage';
 import { SessionsPage } from './pages/SessionsPage';
 import { CommunityPage } from './pages/CommunityPage';
 import { CareerPage } from './pages/CareerPage';
+import { TalentDevelopmentPage } from './pages/TalentDevelopmentPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { AdminPage } from './pages/AdminPage';
 
@@ -97,6 +98,15 @@ const AppContent = () => {
             element={
               <ProtectedRoute>
                 <CareerPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/talent-development"
+            element={
+              <ProtectedRoute requiredRole="mentor">
+                <TalentDevelopmentPage />
               </ProtectedRoute>
             }
           />

@@ -28,9 +28,8 @@ export const Navigation = () => {
       : user?.role === 'mentor'
         ? [
             { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Mentorship', href: '/dashboard#mentorship-section' },
-            { label: 'Career Guidance', href: '/dashboard#career-guidance-section' },
-            { label: 'Talent Development', href: '/dashboard#talent-development-section' }
+            { label: 'Career Guidance', href: '/career' },
+            { label: 'Talent Development', href: '/talent-development' }
           ]
         : [
             { label: 'Dashboard', href: '/dashboard' },
