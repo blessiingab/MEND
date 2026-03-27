@@ -83,7 +83,17 @@ export const sessionService = {
   updateSession: (sessionId, data) =>
     apiClient.put(`/sessions/${sessionId}`, data),
   cancelSession: (sessionId) =>
-    apiClient.put(`/sessions/${sessionId}/cancel`)
+    apiClient.put(`/sessions/${sessionId}/cancel`),
+  createTherapistGroup: (name, description, careFocus) =>
+    apiClient.post('/sessions/groups', { name, description, careFocus }),
+  getTherapistGroups: () =>
+    apiClient.get('/sessions/groups'),
+  addMemberToTherapistGroup: (groupId, userId) =>
+    apiClient.post(`/sessions/groups/${groupId}/members`, { userId }),
+  removeMemberFromTherapistGroup: (groupId, userId) =>
+    apiClient.delete(`/sessions/groups/${groupId}/members/${userId}`),
+  getTherapistClients: () =>
+    apiClient.get('/sessions/therapist-clients')
 };
 
 // Post Service

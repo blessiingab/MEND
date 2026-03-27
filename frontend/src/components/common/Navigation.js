@@ -19,15 +19,21 @@ export const Navigation = () => {
     navigate('/login');
   };
 
-  const navLinks = isAuthenticated ? [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Assessments', href: '/assessments' },
-    { label: 'Therapy', href: '/sessions' },
-    { label: 'Community', href: '/community' },
-    { label: 'Career', href: '/career' },
-  ] : [
-    { label: 'Home', href: '/' },
-  ];
+  const navLinks = isAuthenticated
+    ? user?.role === 'therapist'
+      ? [
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Therapy', href: '/sessions' },
+          { label: 'Community', href: '/community' }
+        ]
+      : [
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Assessments', href: '/assessments' },
+          { label: 'Therapy', href: '/sessions' },
+          { label: 'Community', href: '/community' },
+          { label: 'Career', href: '/career' }
+        ]
+    : [{ label: 'Home', href: '/' }];
 
   const isActive = (href) => pathname === href || pathname.startsWith(href + '/');
 

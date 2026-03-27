@@ -24,6 +24,11 @@ class CreativePost {
       SELECT
         cp.id, cp.user_id, cp.title, cp.content, cp.type, cp.thumbnail,
         cp.status, cp.likes, cp.created_at, cp.updated_at,
+        (
+          SELECT COUNT(*)
+          FROM comments c
+          WHERE c.post_id = cp.id
+        ) as comments_count,
         u.first_name, u.last_name, u.email
       FROM creative_posts cp
       JOIN users u ON u.id = cp.user_id
@@ -52,6 +57,11 @@ class CreativePost {
       SELECT
         cp.id, cp.user_id, cp.title, cp.content, cp.type, cp.thumbnail,
         cp.likes, cp.created_at,
+        (
+          SELECT COUNT(*)
+          FROM comments c
+          WHERE c.post_id = cp.id
+        ) as comments_count,
         u.first_name, u.last_name
       FROM creative_posts cp
       JOIN users u ON u.id = cp.user_id

@@ -8,16 +8,21 @@ import { Modal } from '../components/common/Modal';
 import { Input } from '../components/common/Input';
 import { Alert } from '../components/common/Alert';
 import { Loading, Badge } from '../components/common/Loading';
-import { useFetch, useForm } from '../hooks/useCustomHooks';
+import { useAuth, useFetch, useForm } from '../hooks/useCustomHooks';
+import { BookSession } from '../components/sessions/BookSession';
 import { postService } from '../services/api';
 
 export const CommunityPage = () => {
+  const { user } = useAuth();
+  const isTherapist = user?.role === 'therapist';
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedType, setSelectedType] = useState('all');
   const [commentsByPost, setCommentsByPost] = useState({});
   const [commentTextByPost, setCommentTextByPost] = useState({});
+  const [expandedPosts, setExpandedPosts] = useState(new Set());
 
   const { data: posts, loading: postsLoading, error: postsError, refetch: refetchPosts } = useFetch(
     () => postService.getAllPosts(selectedType, 20, 0),
@@ -25,8 +30,6 @@ export const CommunityPage = () => {
   );
 
   const postsData = Array.isArray(posts) ? posts : posts?.posts || posts?.data?.posts || [];
-
-  const [expandedPosts, setExpandedPosts] = useState(new Set());
 
   const validateForm = (values) => {
     const errors = {};
@@ -37,21 +40,20 @@ export const CommunityPage = () => {
 
   const { values, errors, touched, handleChange, handleBlur, handleSubmit, reset } = useForm(
     { title: '', content: '' },
-    async (values) => {
+    async (formValues) => {
       setIsSubmitting(true);
-
       const publishType = selectedType === 'all' ? 'creative' : selectedType;
 
       try {
-        await postService.createPost(values.title, values.content, publishType);
-        setSuccessMessage('✓ Post created successfully!');
+        await postService.createPost(formValues.title, formValues.content, publishType);
+        setSuccessMessage('Post created successfully.');
         reset();
         setShowCreateModal(false);
         refetchPosts();
         window.dispatchEvent(new Event('communityUpdated'));
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (err) {
-        setSuccessMessage('✕ Error creating post: ' + (err.message || 'Unable to create post'));
+        setSuccessMessage('Error creating post: ' + (err.message || 'Unable to create post'));
       } finally {
         setIsSubmitting(false);
       }
@@ -71,7 +73,7 @@ export const CommunityPage = () => {
 
   const fetchComments = async (postId) => {
     try {
-      const response = await postService.getPostComments(postId, 20, 0);
+      const response = await postService.getPostComments(postId, 50, 0);
       const comments = Array.isArray(response) ? response : response?.comments || [];
       setCommentsByPost((prev) => ({ ...prev, [postId]: comments }));
     } catch (err) {
@@ -103,7 +105,7 @@ export const CommunityPage = () => {
     try {
       await postService.createComment(postId, content);
       setCommentTextByPost((prev) => ({ ...prev, [postId]: '' }));
-      fetchComments(postId);
+      await fetchComments(postId);
       refetchPosts();
       window.dispatchEvent(new Event('communityUpdated'));
     } catch (err) {
@@ -119,18 +121,14 @@ export const CommunityPage = () => {
             <h1 className="text-4xl font-bold text-gray-900">Creative Hub</h1>
             <p className="text-gray-600 mt-2">Share your stories and connect with our community</p>
           </div>
-          <Button 
-            variant="primary"
-            size="lg"
-            onClick={() => setShowCreateModal(true)}
-          >
+          <Button variant="primary" size="lg" onClick={() => setShowCreateModal(true)}>
             + Create Post
           </Button>
         </div>
 
         {successMessage && (
           <Alert
-            type={successMessage.includes('✓') ? 'success' : 'error'}
+            type={successMessage.toLowerCase().includes('error') ? 'error' : 'success'}
             message={successMessage}
             dismissible
             onClose={() => setSuccessMessage('')}
@@ -138,8 +136,7 @@ export const CommunityPage = () => {
           />
         )}
 
-        {/* Type Filter */}
-        <div className="flex gap-3 mb-8">
+        <div className="flex gap-3 mb-8 flex-wrap">
           {['all', 'creative', 'story', 'inspiration', 'question', 'art'].map((type) => (
             <button
               key={type}
@@ -155,78 +152,87 @@ export const CommunityPage = () => {
           ))}
         </div>
 
-        {/* Posts List */}
         <div className="space-y-6">
           {postsLoading ? (
             <Loading message="Loading posts..." />
           ) : postsError ? (
             <Alert type="error" message={postsError} />
           ) : postsData.length > 0 ? (
-            postsData.map((post) => (
-              <Card key={post.id} hoverable>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">{post.title}</h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        by {post.authorName || `${post.first_name || ''} ${post.last_name || ''}`.trim() || 'Unknown'} • {new Date(post.created_at || post.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Badge variant="primary">{post.type}</Badge>
-                  </div>
-                </CardHeader>
-                <CardBody>
-                  <p className="text-gray-700 mb-4">{post.content}</p>
-                  <div className="flex items-center gap-6 pt-4 border-t border-gray-200">
-                    <button 
-                      onClick={() => handleLikePost(post.id)}
-                      className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition"
-                    >
-                      <span className="text-lg">❤️</span>
-                      <span className="text-sm">{post.likes || post.likesCount || 0} Likes</span>
-                    </button>
-                    <button
-                      onClick={() => toggleComments(post.id)}
-                      className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
-                    >
-                      <span className="text-lg">💬</span>
-                      <span className="text-sm">{post.commentsCount || 0} Comments</span>
-                    </button>
-                  </div>
+            postsData.map((post) => {
+              const loadedComments = commentsByPost[post.id] || [];
+              const likeCount = post.likes ?? post.likes_count ?? post.likesCount ?? 0;
+              const backendCommentCount = post.comments_count ?? post.comment_count ?? post.commentsCount ?? 0;
+              const commentCount = Math.max(backendCommentCount, loadedComments.length);
 
-                  {expandedPosts.has(post.id) && (
-                    <div className="pt-4">
-                      {(commentsByPost[post.id] || []).length > 0 ? (
-                        <div className="space-y-2 mb-3">
-                          {commentsByPost[post.id].map((comment) => (
-                            <div key={comment.id} className="border p-2 rounded bg-gray-50 dark:bg-gray-800">
-                              <p className="text-sm text-gray-700 dark:text-gray-300">{comment.content}</p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">by {comment.first_name || comment.name || 'User'} · {new Date(comment.created_at || comment.createdAt).toLocaleString()}</p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm text-gray-500 mb-3">No comments yet. Be first to comment!</p>
-                      )}
-                      <div className="flex gap-2">
-                        <input
-                          className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2"
-                          placeholder="Write a comment..."
-                          value={commentTextByPost[post.id] || ''}
-                          onChange={(e) => handleCommentChange(post.id, e.target.value)}
-                        />
-                        <button
-                          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                          onClick={() => submitComment(post.id)}
-                        >
-                          Post
-                        </button>
+              return (
+                <Card key={post.id} hoverable>
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">{post.title}</h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          by {post.authorName || `${post.first_name || ''} ${post.last_name || ''}`.trim() || 'Unknown'} - {new Date(post.created_at || post.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
+                      <Badge variant="primary">{post.type}</Badge>
                     </div>
-                  )}
-                </CardBody>
-              </Card>
-            ))
+                  </CardHeader>
+                  <CardBody>
+                    <p className="text-gray-700 mb-4">{post.content}</p>
+                    <div className="flex items-center gap-6 pt-4 border-t border-gray-200">
+                      <button
+                        onClick={() => handleLikePost(post.id)}
+                        className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition"
+                      >
+                        <span className="text-lg">?</span>
+                        <span className="text-sm">{likeCount} Likes</span>
+                      </button>
+                      <button
+                        onClick={() => toggleComments(post.id)}
+                        className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
+                      >
+                        <span className="text-lg">??</span>
+                        <span className="text-sm">{commentCount} Comments</span>
+                      </button>
+                    </div>
+
+                    {expandedPosts.has(post.id) && (
+                      <div className="pt-4">
+                        {loadedComments.length > 0 ? (
+                          <div className="space-y-2 mb-3">
+                            {loadedComments.map((comment) => (
+                              <div key={comment.id} className="border p-2 rounded bg-gray-50 dark:bg-gray-800">
+                                <p className="text-sm text-gray-700 dark:text-gray-300">{comment.content}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                  by {comment.first_name || comment.name || 'User'} - {new Date(comment.created_at || comment.createdAt).toLocaleString()}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-500 mb-3">No comments yet. Be first to comment!</p>
+                        )}
+
+                        <div className="flex gap-2">
+                          <input
+                            className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2"
+                            placeholder="Write a comment..."
+                            value={commentTextByPost[post.id] || ''}
+                            onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                          />
+                          <button
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            onClick={() => submitComment(post.id)}
+                          >
+                            Post
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </CardBody>
+                </Card>
+              );
+            })
           ) : (
             <Alert
               type="info"
@@ -236,7 +242,20 @@ export const CommunityPage = () => {
           )}
         </div>
 
-        {/* Create Post Modal */}
+        {!isTherapist && (
+          <Card className="mt-8">
+            <CardHeader>
+              <h2 className="text-2xl font-bold text-gray-900">Book a Therapist Session</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                After posting in community, you can book directly below.
+              </p>
+            </CardHeader>
+            <CardBody>
+              <BookSession />
+            </CardBody>
+          </Card>
+        )}
+
         <Modal
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
@@ -247,11 +266,7 @@ export const CommunityPage = () => {
               <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
                 Cancel
               </Button>
-              <Button 
-                variant="primary" 
-                onClick={handleSubmit}
-                loading={isSubmitting}
-              >
+              <Button variant="primary" onClick={handleSubmit} loading={isSubmitting}>
                 Publish Post
               </Button>
             </>
@@ -270,9 +285,7 @@ export const CommunityPage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Content *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Content *</label>
               <textarea
                 name="content"
                 value={values.content}
@@ -284,9 +297,7 @@ export const CommunityPage = () => {
                 }`}
                 rows="6"
               />
-              {touched.content && errors.content && (
-                <p className="text-red-500 text-xs mt-1">{errors.content}</p>
-              )}
+              {touched.content && errors.content && <p className="text-red-500 text-xs mt-1">{errors.content}</p>}
             </div>
           </form>
         </Modal>

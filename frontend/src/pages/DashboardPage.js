@@ -13,6 +13,11 @@ import { assessmentService, sessionService, postService, careerService } from '.
 
 export const DashboardPage = () => {
   const { user } = useAuth();
+  const [selectedTherapist, setSelectedTherapist] = React.useState('');
+  const [bookingStartTime, setBookingStartTime] = React.useState('');
+  const [bookingNotes, setBookingNotes] = React.useState('');
+  const [isBookingFromDashboard, setIsBookingFromDashboard] = React.useState(false);
+  const [dashboardBookingMessage, setDashboardBookingMessage] = React.useState('');
 
   const isTherapist = user?.role === 'therapist';
   const isMentor = user?.role === 'mentor';
@@ -27,7 +32,7 @@ export const DashboardPage = () => {
     [user?.id]
   );
 
-  const { data: upcomingSessions, loading: sessionsLoading } = useFetch(
+  const { data: upcomingSessions, loading: sessionsLoading, refetch: refetchSessions } = useFetch(
     () => isTherapist ? sessionService.getTherapistSessions(5, 0) : sessionService.getMySessions(5, 0),
     [user?.id, user?.role]
   );
@@ -56,6 +61,15 @@ export const DashboardPage = () => {
     ? communityPosts.length
     : communityPosts?.count ?? communityPosts?.data?.count ?? communityPostsData.length;
 
+  const { data: availableTherapists, loading: therapistsLoading } = useFetch(
+    () => (!isTherapist && !isMentor ? sessionService.getAvailableTherapists() : Promise.resolve([])),
+    [user?.id, isTherapist, isMentor]
+  );
+
+  const therapistsData = Array.isArray(availableTherapists)
+    ? availableTherapists
+    : availableTherapists?.therapists || availableTherapists?.data?.therapists || [];
+
   React.useEffect(() => {
     const onCommunityUpdated = () => {
       refetchCommunityPosts();
@@ -73,6 +87,147 @@ export const DashboardPage = () => {
     window.addEventListener('assessmentUpdated', onAssessmentUpdated);
     return () => window.removeEventListener('assessmentUpdated', onAssessmentUpdated);
   }, [refetchAssessmentStats]);
+
+  const handleDashboardBooking = async (e) => {
+    e.preventDefault();
+    setDashboardBookingMessage('');
+
+    if (!selectedTherapist || !bookingStartTime) {
+      setDashboardBookingMessage('Please select a therapist and date/time.');
+      return;
+    }
+
+    const parsedStart = new Date(bookingStartTime);
+    if (Number.isNaN(parsedStart.getTime())) {
+      setDashboardBookingMessage('Please select a valid date/time.');
+      return;
+    }
+
+    setIsBookingFromDashboard(true);
+    try {
+      const startIso = parsedStart.toISOString();
+      const endIso = new Date(parsedStart.getTime() + 60 * 60000).toISOString();
+      await sessionService.bookSession(Number(selectedTherapist), startIso, endIso, bookingNotes);
+      await refetchSessions();
+      setSelectedTherapist('');
+      setBookingStartTime('');
+      setBookingNotes('');
+      setDashboardBookingMessage('Session booked successfully.');
+    } catch (err) {
+      setDashboardBookingMessage(err.message || 'Failed to book session.');
+    } finally {
+      setIsBookingFromDashboard(false);
+    }
+  };
+
+  if (isTherapist) {
+    const pendingSessions = sessionsData.filter((s) => s.status === 'pending');
+    const completedSessions = sessionsData.filter((s) => s.status === 'completed');
+
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900">Therapist Dashboard</h1>
+            <p className="text-gray-600 mt-2">
+              Welcome, {user?.firstName}. Manage your client sessions and clinical workflow.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardBody>
+                <p className="text-gray-600 text-sm">Total Sessions</p>
+                <p className="text-3xl font-bold text-blue-600 mt-2">{sessionsData.length}</p>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardBody>
+                <p className="text-gray-600 text-sm">Pending Approval</p>
+                <p className="text-3xl font-bold text-yellow-600 mt-2">{pendingSessions.length}</p>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardBody>
+                <p className="text-gray-600 text-sm">Completed Sessions</p>
+                <p className="text-3xl font-bold text-green-600 mt-2">{completedSessions.length}</p>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardBody>
+                <p className="text-gray-600 text-sm">Community Activity</p>
+                <p className="text-3xl font-bold text-purple-600 mt-2">{communityPostsCount || 0}</p>
+              </CardBody>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-bold text-gray-900">Upcoming Client Sessions</h2>
+                </CardHeader>
+                <CardBody>
+                  {sessionsLoading ? (
+                    <Loading message="Loading therapist sessions..." />
+                  ) : sessionsData.length === 0 ? (
+                    <Alert type="info" message="No assigned sessions yet." dismissible={false} />
+                  ) : (
+                    <div className="space-y-3">
+                      {sessionsData.map((session) => {
+                        const sessionStart = session.start_time || session.startTime;
+                        const sessionDate = sessionStart ? new Date(sessionStart) : null;
+                        const hasValidDate = sessionDate && !Number.isNaN(sessionDate.getTime());
+                        return (
+                          <div key={session.id} className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                            <div className="flex items-center justify-between gap-3">
+                              <div>
+                                <p className="font-semibold text-gray-900">
+                                  {`${session.first_name || ''} ${session.last_name || ''}`.trim() || 'Client'}
+                                </p>
+                                <p className="text-sm text-gray-600 capitalize">Status: {session.status}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm text-gray-700">
+                                  {hasValidDate ? sessionDate.toLocaleDateString() : 'Date pending'}
+                                </p>
+                                <p className="text-sm text-blue-600 font-medium">
+                                  {hasValidDate ? sessionDate.toLocaleTimeString() : 'Time pending'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+            </div>
+
+            <div>
+              <Card>
+                <CardHeader>
+                  <h2 className="text-xl font-bold text-gray-900">Therapist Actions</h2>
+                </CardHeader>
+                <CardBody className="space-y-3">
+                  <Link to="/sessions">
+                    <Button variant="primary" fullWidth>Manage Sessions</Button>
+                  </Link>
+                  <Link to="/community">
+                    <Button variant="outline" fullWidth>Community Support</Button>
+                  </Link>
+                  <Link to="/profile">
+                    <Button variant="secondary" fullWidth>Update Therapist Profile</Button>
+                  </Link>
+                </CardBody>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -448,6 +603,80 @@ export const DashboardPage = () => {
             </Card>
           </div>
         </div>
+
+        {!isMentor && (
+          <Card className="mt-8">
+            <CardHeader>
+              <h2 className="text-2xl font-bold text-gray-900">Book With a Therapist</h2>
+            </CardHeader>
+            <CardBody>
+              {dashboardBookingMessage ? (
+                <Alert
+                  type={dashboardBookingMessage.toLowerCase().includes('success') ? 'success' : 'error'}
+                  message={dashboardBookingMessage}
+                  dismissible
+                  onClose={() => setDashboardBookingMessage('')}
+                />
+              ) : null}
+
+              {therapistsLoading ? (
+                <Loading message="Loading therapists..." />
+              ) : therapistsData.length === 0 ? (
+                <Alert
+                  type="info"
+                  message="No licensed therapists available at the moment."
+                  dismissible={false}
+                />
+              ) : (
+                <form onSubmit={handleDashboardBooking} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Therapist</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={selectedTherapist}
+                      onChange={(e) => setSelectedTherapist(e.target.value)}
+                      required
+                    >
+                      <option value="">-- Select therapist --</option>
+                      {therapistsData.map((therapist) => (
+                        <option key={therapist.id} value={therapist.id}>
+                          {therapist.first_name} {therapist.last_name}
+                          {therapist.specialization ? ` - ${therapist.specialization}` : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
+                    <input
+                      type="datetime-local"
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={bookingStartTime}
+                      onChange={(e) => setBookingStartTime(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+                    <textarea
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      rows="3"
+                      value={bookingNotes}
+                      onChange={(e) => setBookingNotes(e.target.value)}
+                      placeholder="Share what support you need in this session..."
+                    />
+                  </div>
+
+                  <Button type="submit" variant="success" loading={isBookingFromDashboard}>
+                    Book Session
+                  </Button>
+                </form>
+              )}
+            </CardBody>
+          </Card>
+        )}
 
         {isTherapist && (
           <Card className="mt-8">

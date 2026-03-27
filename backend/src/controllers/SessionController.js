@@ -2,6 +2,7 @@
  * Therapy Session Controller - Handle session booking requests
  */
 const TherapySession = require('../models/TherapySession');
+const TherapistGroup = require('../models/TherapistGroup');
 const { successResponse, errorResponse } = require('../utils/responseHandler');
 
 class SessionController {
@@ -140,6 +141,84 @@ class SessionController {
       const stats = await TherapySession.getSessionStats(req.user.id);
 
       return successResponse(res, 'Session statistics retrieved', stats);
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async createTherapistGroup(req, res) {
+    try {
+      const { name, description, careFocus } = req.body;
+      if (!name) {
+        return errorResponse(res, 'Group name is required', 400);
+      }
+
+      const group = await TherapistGroup.createGroup(req.user.id, {
+        name,
+        description,
+        careFocus
+      });
+
+      return successResponse(res, 'Therapist group created', group, 201);
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async getTherapistGroups(req, res) {
+    try {
+      const groups = await TherapistGroup.getTherapistGroups(req.user.id);
+      return successResponse(res, 'Therapist groups retrieved', { groups, count: groups.length });
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async addMemberToTherapistGroup(req, res) {
+    try {
+      const { groupId } = req.params;
+      const { userId } = req.body;
+
+      if (!userId) {
+        return errorResponse(res, 'userId is required', 400);
+      }
+
+      const group = await TherapistGroup.getGroupById(groupId);
+      if (!group || group.therapist_id !== req.user.id) {
+        return errorResponse(res, 'Group not found', 404);
+      }
+
+      const member = await TherapistGroup.addMember(groupId, userId);
+      return successResponse(res, 'Group member added', member, 201);
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async removeMemberFromTherapistGroup(req, res) {
+    try {
+      const { groupId, userId } = req.params;
+
+      const group = await TherapistGroup.getGroupById(groupId);
+      if (!group || group.therapist_id !== req.user.id) {
+        return errorResponse(res, 'Group not found', 404);
+      }
+
+      const removed = await TherapistGroup.removeMember(groupId, userId);
+      if (!removed) {
+        return errorResponse(res, 'Group member not found', 404);
+      }
+
+      return successResponse(res, 'Group member removed', { groupId: Number(groupId), userId: Number(userId) });
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async getTherapistAvailableClients(req, res) {
+    try {
+      const clients = await TherapistGroup.getAvailableClientsForTherapist(req.user.id);
+      return successResponse(res, 'Therapist clients retrieved', { clients, count: clients.length });
     } catch (error) {
       return errorResponse(res, error.message, 400, error);
     }
