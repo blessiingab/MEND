@@ -35,15 +35,18 @@ export const CommunityPage = () => {
     { title: '', content: '' },
     async (values) => {
       setIsSubmitting(true);
+
+      const publishType = selectedType === 'all' ? 'creative' : selectedType;
+
       try {
-        await postService.createPost(values.title, values.content, selectedType);
+        await postService.createPost(values.title, values.content, publishType);
         setSuccessMessage('✓ Post created successfully!');
         reset();
         setShowCreateModal(false);
         refetchPosts();
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (err) {
-        setSuccessMessage('✕ Error creating post: ' + err.message);
+        setSuccessMessage('✕ Error creating post: ' + (err.message || 'Unable to create post'));
       } finally {
         setIsSubmitting(false);
       }

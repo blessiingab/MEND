@@ -19,13 +19,13 @@ export const CareerPage = () => {
     []
   );
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit, reset } = useForm(
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit, reset, setValues } = useForm(
     {
-      careerGoal: careerPath?.career_goal || '',
-      currentRole: careerPath?.current_role || '',
-      experience: careerPath?.experience || '',
-      guidance: careerPath?.guidance || '',
-      recommendedActions: careerPath?.recommended_actions || ''
+      careerGoal: '',
+      currentRole: '',
+      experience: '',
+      guidance: '',
+      recommendedActions: ''
     },
     async (values) => {
       try {
@@ -45,6 +45,21 @@ export const CareerPage = () => {
       }
     }
   );
+
+  const [careerPathForm, setCareerPathForm] = React.useState(null);
+
+  React.useEffect(() => {
+    if (careerPath) {
+      setCareerPathForm(careerPath);
+      setValues({
+        careerGoal: careerPath.career_goal || '',
+        currentRole: careerPath.current_role || '',
+        experience: careerPath.experience || '',
+        guidance: careerPath.guidance || '',
+        recommendedActions: careerPath.recommended_actions || ''
+      });
+    }
+  }, [careerPath, setValues]);
 
   const careerResources = [
     {
@@ -220,7 +235,38 @@ export const CareerPage = () => {
                   <p className="text-sm text-gray-600">Experience: {careerPath.experience}</p>
                   <p className="text-sm text-gray-600 mt-3">Guidance: {careerPath.guidance}</p>
                   <p className="text-sm text-gray-600 mt-3">Recommended Actions: {careerPath.recommended_actions}</p>
-                  <Button variant="secondary" className="mt-4" onClick={() => setSelectedTab('guidance')}>Reload</Button>
+                  <div className="mt-4 flex gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setSelectedTab('guidance');
+                        setValues({
+                          careerGoal: careerPath.career_goal || '',
+                          currentRole: careerPath.current_role || '',
+                          experience: careerPath.experience || '',
+                          guidance: careerPath.guidance || '',
+                          recommendedActions: careerPath.recommended_actions || ''
+                        });
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setValues({
+                          careerGoal: '',
+                          currentRole: '',
+                          experience: '',
+                          guidance: '',
+                          recommendedActions: ''
+                        });
+                        setCareerPathForm(null);
+                      }}
+                    >
+                      New Goal
+                    </Button>
+                  </div>
                 </CardBody>
               </Card>
             ) : (
