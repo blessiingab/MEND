@@ -108,7 +108,11 @@ export const postService = {
   unlikePost: (postId) =>
     apiClient.delete(`/posts/${postId}/like`),
   getPostStats: (postId) =>
-    apiClient.get(`/posts/${postId}/stats`)
+    apiClient.get(`/posts/${postId}/stats`),
+  createComment: (postId, content) =>
+    apiClient.post(`/posts/${postId}/comments`, { content }),
+  getPostComments: (postId, limit, offset) =>
+    apiClient.get(`/posts/${postId}/comments`, { params: { limit, offset } })
 };
 
 // Comment Service

@@ -19,7 +19,7 @@ export const CareerPage = () => {
     []
   );
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit, reset, setValues } = useForm(
+  const { values, handleChange, handleBlur, handleSubmit, reset, setValues } = useForm(
     {
       careerGoal: '',
       currentRole: '',
@@ -46,11 +46,8 @@ export const CareerPage = () => {
     }
   );
 
-  const [careerPathForm, setCareerPathForm] = React.useState(null);
-
   React.useEffect(() => {
     if (careerPath) {
-      setCareerPathForm(careerPath);
       setValues({
         careerGoal: careerPath.career_goal || '',
         currentRole: careerPath.current_role || '',
@@ -64,7 +61,7 @@ export const CareerPage = () => {
   const careerResources = [
     {
       id: 1,
-      title: 'Resume Writing Guide',
+      title: 'Resume Building',
       description: 'Learn how to create an effective resume that stands out.',
       link: '#'
     },
@@ -234,7 +231,7 @@ export const CareerPage = () => {
                   <p className="text-sm text-gray-600">Current Role: {careerPath.current_role}</p>
                   <p className="text-sm text-gray-600">Experience: {careerPath.experience}</p>
                   <p className="text-sm text-gray-600 mt-3">Guidance: {careerPath.guidance}</p>
-                  <p className="text-sm text-gray-600 mt-3">Recommended Actions: {careerPath.recommended_actions}</p>
+                  <p className="text-sm text-gray-600 mt-3">Recommended Actions: {Array.isArray(careerPath.recommended_actions) ? careerPath.recommended_actions.join(', ') : careerPath.recommended_actions}</p>
                   <div className="mt-4 flex gap-2">
                     <Button
                       variant="secondary"

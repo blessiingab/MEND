@@ -17,11 +17,90 @@ const seedDatabase = async () => {
         password: 'TherapistPass123',
         firstName: 'Dr. Sarah',
         lastName: 'Johnson',
-        role: 'therapist'
+        role: 'therapist',
+        bio: 'Licensed Clinical Psychologist specializing in anxiety and depression. 8 years of experience helping individuals navigate mental health challenges.',
+        specialization: 'Clinical Psychology',
+        expertiseArea: 'Anxiety, Depression, CBT',
+        experienceYears: 8,
+        licenseNumber: 'PSY12345'
       });
       console.log('✓ Therapist user created');
     } else {
       console.log('✓ Therapist user already exists');
+    }
+
+    // Additional therapists
+    const therapists = [
+      {
+        email: 'dr.michael.brown@mend.com',
+        password: 'TherapistPass123',
+        firstName: 'Dr. Michael',
+        lastName: 'Brown',
+        role: 'therapist',
+        bio: 'Licensed Marriage and Family Therapist with expertise in relationship counseling and trauma recovery. 12 years of experience.',
+        specialization: 'Marriage and Family Therapy',
+        expertiseArea: 'Relationships, Trauma, EMDR',
+        experienceYears: 12,
+        licenseNumber: 'LMFT67890'
+      },
+      {
+        email: 'dr.emily.davis@mend.com',
+        password: 'TherapistPass123',
+        firstName: 'Dr. Emily',
+        lastName: 'Davis',
+        role: 'therapist',
+        bio: 'Clinical Social Worker specializing in adolescent mental health and family therapy. 6 years of experience working with teens and families.',
+        specialization: 'Clinical Social Work',
+        expertiseArea: 'Adolescent Mental Health, Family Therapy',
+        experienceYears: 6,
+        licenseNumber: 'LCSW11223'
+      },
+      {
+        email: 'dr.robert.wilson@mend.com',
+        password: 'TherapistPass123',
+        firstName: 'Dr. Robert',
+        lastName: 'Wilson',
+        role: 'therapist',
+        bio: 'Psychiatrist with expertise in medication management and integrative mental health treatment. 15 years of experience.',
+        specialization: 'Psychiatry',
+        expertiseArea: 'Medication Management, Bipolar Disorder, Schizophrenia',
+        experienceYears: 15,
+        licenseNumber: 'MD44556'
+      },
+      {
+        email: 'dr.lisa.garcia@mend.com',
+        password: 'TherapistPass123',
+        firstName: 'Dr. Lisa',
+        lastName: 'Garcia',
+        role: 'therapist',
+        bio: 'Licensed Professional Counselor focusing on career counseling and work-life balance. 10 years of experience.',
+        specialization: 'Professional Counseling',
+        expertiseArea: 'Career Counseling, Work Stress, Burnout',
+        experienceYears: 10,
+        licenseNumber: 'LPC77889'
+      },
+      {
+        email: 'dr.david.lee@mend.com',
+        password: 'TherapistPass123',
+        firstName: 'Dr. David',
+        lastName: 'Lee',
+        role: 'therapist',
+        bio: 'Clinical Psychologist specializing in mindfulness-based therapies and stress management. 9 years of experience.',
+        specialization: 'Clinical Psychology',
+        expertiseArea: 'Mindfulness, Stress Management, Meditation',
+        experienceYears: 9,
+        licenseNumber: 'PSY33445'
+      }
+    ];
+
+    for (const therapistData of therapists) {
+      let existingTherapist = await User.findByEmail(therapistData.email);
+      if (!existingTherapist) {
+        await User.create(therapistData);
+        console.log(`✓ Therapist ${therapistData.firstName} ${therapistData.lastName} created`);
+      } else {
+        console.log(`✓ Therapist ${therapistData.firstName} ${therapistData.lastName} already exists`);
+      }
     }
 
     let regularUser = await User.findByEmail('user@mend.com');

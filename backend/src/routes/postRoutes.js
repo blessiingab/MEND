@@ -10,8 +10,8 @@ const router = express.Router();
 // Post CRUD
 router.post('/', authMiddleware, PostController.createPost);
 router.get('/', PostController.getAllPosts);
-router.get('/:postId', PostController.getPostById);
 router.get('/user/:userId', PostController.getUserPosts);
+router.get('/:postId', PostController.getPostById);
 router.put('/:postId', authMiddleware, PostController.updatePost);
 router.delete('/:postId', authMiddleware, PostController.deletePost);
 

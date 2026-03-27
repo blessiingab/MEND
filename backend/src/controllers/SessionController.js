@@ -13,6 +13,11 @@ class SessionController {
         return errorResponse(res, 'therapistId, startTime, and endTime are required', 400);
       }
 
+      const isLicensedTherapist = await TherapySession.isLicensedTherapist(therapistId);
+      if (!isLicensedTherapist) {
+        return errorResponse(res, 'Selected therapist is not available for booking', 400);
+      }
+
       // Check therapist availability
       const isAvailable = await TherapySession.checkTherapistAvailability(therapistId, startTime, endTime);
       if (!isAvailable) {

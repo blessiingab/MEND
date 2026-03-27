@@ -29,7 +29,17 @@ class CareerGuidance {
     `;
 
     const result = await db.get(query, [userId]);
-    return result || null;
+    if (!result) return null;
+
+    try {
+      result.recommended_actions = result.recommended_actions
+        ? JSON.parse(result.recommended_actions)
+        : [];
+    } catch (parseErr) {
+      result.recommended_actions = result.recommended_actions || [];
+    }
+
+    return result;
   }
 
   static async getUserCareerHistory(userId, limit = 10, offset = 0) {
@@ -42,7 +52,16 @@ class CareerGuidance {
     `;
 
     const result = await db.all(query, [userId, limit, offset]);
-    return result;
+    return result.map((item) => {
+      try {
+        item.recommended_actions = item.recommended_actions
+          ? JSON.parse(item.recommended_actions)
+          : [];
+      } catch (parseErr) {
+        item.recommended_actions = item.recommended_actions || [];
+      }
+      return item;
+    });
   }
 
   static async createResource(resourceData) {

@@ -43,10 +43,19 @@ export const DashboardPage = () => {
   // Normalize sessions data for compatibility with older API payloads
   const sessionsData = Array.isArray(upcomingSessions) ? upcomingSessions : upcomingSessions?.sessions || [];
 
-  const { data: communityPosts } = useFetch(
+  const { data: communityPosts, refetch: refetchCommunityPosts } = useFetch(
     () => postService.getAllPosts('creative', 5, 0),
     [user?.id]
   );
+
+  React.useEffect(() => {
+    const onCommunityUpdated = () => {
+      refetchCommunityPosts();
+    };
+
+    window.addEventListener('communityUpdated', onCommunityUpdated);
+    return () => window.removeEventListener('communityUpdated', onCommunityUpdated);
+  }, [refetchCommunityPosts]);
 
   React.useEffect(() => {
     const onAssessmentUpdated = () => {

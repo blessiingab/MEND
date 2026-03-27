@@ -16,6 +16,8 @@ export const CommunityPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedType, setSelectedType] = useState('all');
+  const [commentsByPost, setCommentsByPost] = useState({});
+  const [commentTextByPost, setCommentTextByPost] = useState({});
 
   const { data: posts, loading: postsLoading, error: postsError, refetch: refetchPosts } = useFetch(
     () => postService.getAllPosts(selectedType, 20, 0),
@@ -23,6 +25,8 @@ export const CommunityPage = () => {
   );
 
   const postsData = Array.isArray(posts) ? posts : posts?.posts || posts?.data?.posts || [];
+
+  const [expandedPosts, setExpandedPosts] = useState(new Set());
 
   const validateForm = (values) => {
     const errors = {};
@@ -44,6 +48,7 @@ export const CommunityPage = () => {
         reset();
         setShowCreateModal(false);
         refetchPosts();
+        window.dispatchEvent(new Event('communityUpdated'));
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (err) {
         setSuccessMessage('✕ Error creating post: ' + (err.message || 'Unable to create post'));
@@ -58,8 +63,51 @@ export const CommunityPage = () => {
     try {
       await postService.likePost(postId);
       refetchPosts();
+      window.dispatchEvent(new Event('communityUpdated'));
     } catch (err) {
       console.error('Error liking post:', err);
+    }
+  };
+
+  const fetchComments = async (postId) => {
+    try {
+      const response = await postService.getPostComments(postId, 20, 0);
+      const comments = Array.isArray(response) ? response : response?.comments || [];
+      setCommentsByPost((prev) => ({ ...prev, [postId]: comments }));
+    } catch (err) {
+      console.error('Error fetching comments:', err);
+    }
+  };
+
+  const toggleComments = (postId) => {
+    setExpandedPosts((prev) => {
+      const next = new Set(prev);
+      if (next.has(postId)) {
+        next.delete(postId);
+      } else {
+        next.add(postId);
+        fetchComments(postId);
+      }
+      return next;
+    });
+  };
+
+  const handleCommentChange = (postId, text) => {
+    setCommentTextByPost((prev) => ({ ...prev, [postId]: text }));
+  };
+
+  const submitComment = async (postId) => {
+    const content = (commentTextByPost[postId] || '').trim();
+    if (!content) return;
+
+    try {
+      await postService.createComment(postId, content);
+      setCommentTextByPost((prev) => ({ ...prev, [postId]: '' }));
+      fetchComments(postId);
+      refetchPosts();
+      window.dispatchEvent(new Event('communityUpdated'));
+    } catch (err) {
+      console.error('Error creating comment:', err);
     }
   };
 
@@ -137,11 +185,45 @@ export const CommunityPage = () => {
                       <span className="text-lg">❤️</span>
                       <span className="text-sm">{post.likes || post.likesCount || 0} Likes</span>
                     </button>
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <button
+                      onClick={() => toggleComments(post.id)}
+                      className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
+                    >
                       <span className="text-lg">💬</span>
                       <span className="text-sm">{post.commentsCount || 0} Comments</span>
-                    </div>
+                    </button>
                   </div>
+
+                  {expandedPosts.has(post.id) && (
+                    <div className="pt-4">
+                      {(commentsByPost[post.id] || []).length > 0 ? (
+                        <div className="space-y-2 mb-3">
+                          {commentsByPost[post.id].map((comment) => (
+                            <div key={comment.id} className="border p-2 rounded bg-gray-50 dark:bg-gray-800">
+                              <p className="text-sm text-gray-700 dark:text-gray-300">{comment.content}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">by {comment.first_name || comment.name || 'User'} · {new Date(comment.created_at || comment.createdAt).toLocaleString()}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500 mb-3">No comments yet. Be first to comment!</p>
+                      )}
+                      <div className="flex gap-2">
+                        <input
+                          className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2"
+                          placeholder="Write a comment..."
+                          value={commentTextByPost[post.id] || ''}
+                          onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                        />
+                        <button
+                          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                          onClick={() => submitComment(post.id)}
+                        >
+                          Post
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </CardBody>
               </Card>
             ))

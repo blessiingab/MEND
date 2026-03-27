@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { sessionService } from '../../services/api';
 import { Button } from '../common/Button';
 import { Alert } from '../common/Alert';
-import { Card, CardBody, CardHeader } from '../common/Card';
+import { Card } from '../common/Card';
 import { Input } from '../common/Input';
 import { Loading } from '../common/Loading';
 
@@ -24,11 +24,15 @@ export const BookSession = () => {
   }, []);
 
   const fetchTherapists = async () => {
+    setError('');
     try {
       const response = await sessionService.getAvailableTherapists();
-      setTherapists(response.data.therapists || response.data);
+      const therapistList = Array.isArray(response)
+        ? response
+        : response?.therapists || response?.data?.therapists || [];
+      setTherapists(therapistList);
     } catch (err) {
-      setError('Failed to load therapists');
+      setError(err.message || 'Failed to load therapists');
     } finally {
       setLoadingTherapists(false);
     }
@@ -47,10 +51,11 @@ export const BookSession = () => {
     setLoading(true);
 
     try {
+      const startIso = new Date(startTime).toISOString();
       const end = new Date(new Date(startTime).getTime() + 60 * 60000).toISOString();
       const response = await sessionService.bookSession(
-        selectedTherapist,
-        startTime,
+        Number(selectedTherapist),
+        startIso,
         end,
         notes
       );
@@ -66,7 +71,7 @@ export const BookSession = () => {
   };
 
   if (loadingTherapists) {
-    return <Loading />;
+    return <Loading message="Loading available therapists..." />;
   }
 
   return (
@@ -75,6 +80,13 @@ export const BookSession = () => {
 
       {error && <Alert type="error" message={error} />}
       {success && <Alert type="success" message={success} />}
+
+      {therapists.length === 0 && (
+        <Alert
+          type="info"
+          message="No licensed therapists are currently available. Please check back later."
+        />
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -91,10 +103,39 @@ export const BookSession = () => {
             {therapists.map(therapist => (
               <option key={therapist.id} value={therapist.id}>
                 {therapist.first_name} {therapist.last_name}
+                {therapist.specialization ? ` - ${therapist.specialization}` : ''}
+                {therapist.experience_years ? ` (${therapist.experience_years} years exp.)` : ''}
               </option>
             ))}
           </select>
         </div>
+
+        {selectedTherapist && (
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <h3 className="font-semibold text-blue-900 mb-2">Selected Therapist</h3>
+            {(() => {
+              const therapist = therapists.find(t => t.id === parseInt(selectedTherapist));
+              return therapist ? (
+                <div>
+                  <p className="font-medium">{therapist.first_name} {therapist.last_name}</p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {therapist.specialization || 'General Therapy'}
+                  </p>
+                  {therapist.experience_years ? (
+                    <p className="text-sm text-gray-600 mb-1">Experience: {therapist.experience_years} years</p>
+                  ) : null}
+                  {therapist.expertise_area ? (
+                    <p className="text-sm text-gray-600 mb-1">Expertise: {therapist.expertise_area}</p>
+                  ) : null}
+                  {therapist.license_number ? (
+                    <p className="text-sm text-gray-600 mb-1">License: {therapist.license_number}</p>
+                  ) : null}
+                  {therapist.bio && <p className="text-sm text-gray-700 mt-2">{therapist.bio}</p>}
+                </div>
+              ) : null;
+            })()}
+          </div>
+        )}
 
         <Input
           label="Session Date & Time"
@@ -122,6 +163,7 @@ export const BookSession = () => {
           fullWidth
           loading={loading}
           type="submit"
+          disabled={therapists.length === 0}
         >
           Book Session
         </Button>

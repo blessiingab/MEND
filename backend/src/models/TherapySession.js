@@ -103,14 +103,30 @@ class TherapySession {
 
   static async getAvailableTherapists() {
     const query = `
-      SELECT id, first_name, last_name, email
+      SELECT id, first_name, last_name, email, bio, specialization, expertise_area, experience_years, license_number
       FROM users
       WHERE role = 'therapist'
+        AND license_number IS NOT NULL
+        AND TRIM(license_number) != ''
       ORDER BY first_name, last_name
     `;
 
     const result = await db.all(query);
     return result;
+  }
+
+  static async isLicensedTherapist(therapistId) {
+    const query = `
+      SELECT id
+      FROM users
+      WHERE id = ?
+        AND role = 'therapist'
+        AND license_number IS NOT NULL
+        AND TRIM(license_number) != ''
+    `;
+
+    const therapist = await db.get(query, [therapistId]);
+    return !!therapist;
   }
 
   static async checkTherapistAvailability(therapistId, startTime, endTime) {
