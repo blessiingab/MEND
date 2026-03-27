@@ -31,11 +31,11 @@ export const Login = () => {
   }, [isAuthenticated, navigate]);
 
   const { values, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit } = useForm(
-    { email: '', password: '' },
+    { email: '', password: '', rememberMe: false },
     async (values) => {
       try {
         setServerError('');
-        await login(values.email, values.password);
+        await login(values.email, values.password, values.rememberMe);
         navigate('/dashboard');
       } catch (err) {
         setServerError(err.message || 'Login failed');
@@ -98,10 +98,16 @@ export const Login = () => {
 
             <div className="flex justify-between items-center text-sm">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="rounded dark:bg-gray-700 dark:border-gray-600" />
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={values.rememberMe}
+                  onChange={handleChange}
+                  className="rounded dark:bg-gray-700 dark:border-gray-600"
+                />
                 <span className="text-gray-700 dark:text-gray-300">Remember me</span>
               </label>
-              <Link to="#" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+              <Link to="/forgot-password" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                 Forgot password?
               </Link>
             </div>

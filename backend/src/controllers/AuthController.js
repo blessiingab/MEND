@@ -77,6 +77,42 @@ class AuthController {
     }
   }
 
+  static async forgotPassword(req, res) {
+    try {
+      const { email, appUrl } = req.body;
+
+      if (!email) {
+        return errorResponse(res, 'Email is required', 400);
+      }
+
+      const result = await AuthService.requestPasswordReset(email, appUrl);
+
+      return successResponse(
+        res,
+        'If an account with that email exists, password reset instructions have been prepared.',
+        result
+      );
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
+  static async resetPassword(req, res) {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        return errorResponse(res, 'Reset token and new password are required', 400);
+      }
+
+      const result = await AuthService.resetPassword(token, newPassword);
+
+      return successResponse(res, 'Password reset successfully', result);
+    } catch (error) {
+      return errorResponse(res, error.message, 400, error);
+    }
+  }
+
   static async getProfile(req, res) {
     try {
       const User = require('../models/User');

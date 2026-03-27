@@ -2,7 +2,7 @@
  * API Client Service
  */
 import axios from 'axios';
-import { getToken, removeToken } from '../utils/auth';
+import { clearAuth, getToken } from '../utils/auth';
 
 const resolveApiBaseUrl = () => {
   if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
@@ -50,7 +50,7 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      removeToken();
+      clearAuth();
       window.location.href = '/login';
     }
 
@@ -70,6 +70,10 @@ export const authService = {
     apiClient.post('/auth/register', { email, password, firstName, lastName, role, ...metadata }),
   login: (email, password, role = 'user') =>
     apiClient.post('/auth/login', { email, password, role }),
+  forgotPassword: (email, appUrl) =>
+    apiClient.post('/auth/forgot-password', { email, appUrl }),
+  resetPassword: (token, newPassword) =>
+    apiClient.post('/auth/reset-password', { token, newPassword }),
   getProfile: () =>
     apiClient.get('/auth/profile'),
   updateProfile: (userData) =>

@@ -11,7 +11,9 @@ import { ProtectedRoute } from './components/common/ProtectedRoute';
 // Pages
 import { HomePage } from './pages/HomePage';
 import { Login } from './components/auth/Login';
+import { ForgotPassword } from './components/auth/ForgotPassword';
 import { Register } from './components/auth/Register';
+import { ResetPassword } from './components/auth/ResetPassword';
 import { DashboardPage } from './pages/DashboardPage';
 import { AssessmentsPage } from './pages/AssessmentsPage';
 import { SessionsPage } from './pages/SessionsPage';
@@ -35,7 +37,7 @@ function App() {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavRoutes = ['/login', '/register'];
+  const hideNavRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
   const showNavigation = !hideNavRoutes.includes(location.pathname);
 
   return (
@@ -45,7 +47,9 @@ const AppContent = () => {
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes - Authenticated Users Only */}
           <Route

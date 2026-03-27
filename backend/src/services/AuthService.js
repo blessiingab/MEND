@@ -4,6 +4,7 @@
 const User = require('../models/User');
 const { generateToken } = require('../utils/jwt');
 const { validateEmail, validatePassword } = require('../utils/validators');
+const crypto = require('crypto');
 
 class AuthService {
   static async register(userData) {
@@ -119,6 +120,56 @@ class AuthService {
     await User.updatePassword(userId, newPassword);
 
     return { message: 'Password changed successfully' };
+  }
+
+  static async requestPasswordReset(email, appUrl) {
+    if (!validateEmail(email)) {
+      throw new Error('Invalid email format');
+    }
+
+    const user = await User.findByEmail(email);
+    if (!user) {
+      return {
+        message: 'If an account with that email exists, password reset instructions have been prepared.'
+      };
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+
+    await User.savePasswordResetToken(user.id, tokenHash, expiresAt);
+
+    const safeBaseUrl = (appUrl || process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+
+    return {
+      message: 'If an account with that email exists, password reset instructions have been prepared.',
+      previewResetUrl: process.env.NODE_ENV === 'production'
+        ? undefined
+        : `${safeBaseUrl}/reset-password?token=${rawToken}`,
+      expiresAt: process.env.NODE_ENV === 'production' ? undefined : expiresAt
+    };
+  }
+
+  static async resetPassword(resetToken, newPassword) {
+    if (!resetToken) {
+      throw new Error('Reset token is required');
+    }
+
+    if (!validatePassword(newPassword)) {
+      throw new Error('Password must be at least 8 characters with uppercase, lowercase, and number');
+    }
+
+    const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+    const user = await User.findByPasswordResetToken(tokenHash);
+
+    if (!user) {
+      throw new Error('Reset link is invalid or has expired');
+    }
+
+    await User.updatePassword(user.id, newPassword);
+
+    return { message: 'Password reset successfully' };
   }
 }
 

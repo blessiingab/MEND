@@ -64,6 +64,16 @@ export const DashboardPage = () => {
     [user?.id, user?.role]
   );
 
+  const { data: therapistGroupsPayload } = useFetch(
+    () => (isTherapist ? sessionService.getTherapistGroups() : Promise.resolve([])),
+    [user?.id, user?.role]
+  );
+
+  const { data: therapistClientsPayload } = useFetch(
+    () => (isTherapist ? sessionService.getTherapistClients() : Promise.resolve([])),
+    [user?.id, user?.role]
+  );
+
   const sessionsData = Array.isArray(sessionPayload) ? sessionPayload : sessionPayload?.sessions || [];
   const postsData = Array.isArray(postsPayload)
     ? postsPayload
@@ -80,6 +90,31 @@ export const DashboardPage = () => {
   const mentorProgressItems = Array.isArray(mentorProgressPayload)
     ? mentorProgressPayload
     : mentorProgressPayload?.progress || [];
+  const therapistGroups = Array.isArray(therapistGroupsPayload)
+    ? therapistGroupsPayload
+    : therapistGroupsPayload?.groups || [];
+  const therapistClients = Array.isArray(therapistClientsPayload)
+    ? therapistClientsPayload
+    : therapistClientsPayload?.clients || [];
+  const therapistUpcomingSessions = sessionsData
+    .filter((session) => {
+      const start = session.start_time || session.startTime;
+      if (!start) return false;
+      const date = new Date(start);
+      return !Number.isNaN(date.getTime()) && date.getTime() >= Date.now();
+    })
+    .sort((a, b) => new Date(a.start_time || a.startTime) - new Date(b.start_time || b.startTime));
+  const therapistCompletedSessions = sessionsData.filter((session) => session.status === 'completed').length;
+  const therapistPendingSessions = sessionsData.filter((session) => session.status === 'pending').length;
+  const therapistUpcomingCount = therapistUpcomingSessions.length;
+  const therapistGroupMembers = therapistGroups.reduce(
+    (sum, group) => sum + (Array.isArray(group.members) ? group.members.length : 0),
+    0
+  );
+  const therapistCareFocusLabels = therapistGroups
+    .map((group) => group.care_focus)
+    .filter(Boolean)
+    .slice(0, 3);
 
   React.useEffect(() => {
     const onCommunityUpdated = () => refetchPosts();
@@ -172,22 +207,183 @@ export const DashboardPage = () => {
   if (isTherapist) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-3xl mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900">Therapist Portal</h1>
-            <p className="text-gray-600 mt-2">Therapist dashboard has been removed.</p>
+            <h1 className="text-4xl font-bold text-gray-900">Therapy Dashboard</h1>
+            <p className="text-gray-600 mt-2">A focused workspace for client care, session planning, and therapy coordination.</p>
           </div>
-          <Card>
-            <CardHeader>
-              <h2 className="text-2xl font-bold text-gray-900">Continue in Therapy</h2>
-            </CardHeader>
-            <CardBody className="space-y-4">
-              <p className="text-gray-600">Please use the Therapy page to manage client sessions and groups.</p>
-              <Link to="/sessions">
-                <Button variant="primary" fullWidth>Go To Therapy</Button>
-              </Link>
-            </CardBody>
-          </Card>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <Card className="lg:col-span-2 border-0 overflow-hidden shadow-xl">
+              <CardBody className="p-0">
+                <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-teal-700 px-6 py-7 text-white">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-cyan-100">Clinical Overview</p>
+                      <h2 className="text-3xl font-black mt-2">Support your clients with calm, visible structure.</h2>
+                      <p className="text-sm text-cyan-100 mt-3 max-w-2xl">
+                        Stay on top of upcoming sessions, care groups, and client momentum from one presentable therapy workspace.
+                      </p>
+                    </div>
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/15 border border-white/20">
+                      Therapist Workspace
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+                    <div className="rounded-xl bg-white/10 border border-white/10 px-4 py-4">
+                      <p className="text-[11px] uppercase tracking-wide text-cyan-100 font-semibold">Total Sessions</p>
+                      <p className="text-3xl font-black mt-2">{sessionsData.length}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/10 border border-white/10 px-4 py-4">
+                      <p className="text-[11px] uppercase tracking-wide text-cyan-100 font-semibold">Upcoming</p>
+                      <p className="text-3xl font-black mt-2">{therapistUpcomingCount}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/10 border border-white/10 px-4 py-4">
+                      <p className="text-[11px] uppercase tracking-wide text-cyan-100 font-semibold">Active Clients</p>
+                      <p className="text-3xl font-black mt-2">{therapistClients.length}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/10 border border-white/10 px-4 py-4">
+                      <p className="text-[11px] uppercase tracking-wide text-cyan-100 font-semibold">Client Groups</p>
+                      <p className="text-3xl font-black mt-2">{therapistGroups.length}</p>
+                    </div>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+
+            <Card className="border-blue-200 bg-gradient-to-b from-blue-50 to-white">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-blue-900">Practice Pulse</h2>
+                  <span className="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-700">Today</span>
+                </div>
+              </CardHeader>
+              <CardBody className="space-y-3">
+                <div className="rounded-lg bg-blue-50 px-4 py-3">
+                  <p className="text-xs text-gray-600">Pending Sessions</p>
+                  <p className="text-2xl font-bold text-blue-700">{therapistPendingSessions}</p>
+                </div>
+                <div className="rounded-lg bg-emerald-50 px-4 py-3">
+                  <p className="text-xs text-gray-600">Completed Sessions</p>
+                  <p className="text-2xl font-bold text-emerald-700">{therapistCompletedSessions}</p>
+                </div>
+                <div className="rounded-lg bg-cyan-50 px-4 py-3">
+                  <p className="text-xs text-gray-600">Group Memberships</p>
+                  <p className="text-2xl font-bold text-cyan-700">{therapistGroupMembers}</p>
+                </div>
+                <Link to="/sessions">
+                  <Button variant="primary" fullWidth>Open Therapy Workspace</Button>
+                </Link>
+              </CardBody>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <Card className="lg:col-span-7 border-indigo-200 bg-gradient-to-b from-indigo-50 to-white">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-indigo-900">Upcoming Schedule</h2>
+                  <span className="text-xs font-semibold px-2 py-1 rounded bg-indigo-100 text-indigo-700">Sessions</span>
+                </div>
+              </CardHeader>
+              <CardBody>
+                {sessionsLoading ? (
+                  <Loading message="Loading therapist schedule..." />
+                ) : sessionsError ? (
+                  <Alert type="error" message={sessionsError} />
+                ) : therapistUpcomingSessions.length === 0 ? (
+                  <Alert type="info" message="No upcoming therapy sessions yet." dismissible={false} />
+                ) : (
+                  <div className="space-y-4">
+                    {therapistUpcomingSessions.slice(0, 5).map((session) => {
+                      const start = session.start_time || session.startTime;
+                      const sessionDate = start ? new Date(start) : null;
+                      const displayName = `${session.first_name || ''} ${session.last_name || ''}`.trim() || 'Client';
+                      return (
+                        <div key={session.id} className="rounded-xl border border-indigo-100 bg-white px-4 py-4 shadow-sm">
+                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-gray-900">{displayName}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {sessionDate && !Number.isNaN(sessionDate.getTime())
+                                  ? sessionDate.toLocaleString()
+                                  : 'Session time pending'}
+                              </p>
+                              <p className="text-xs uppercase tracking-wide text-indigo-600 mt-2">
+                                Status: {session.status || 'pending'}
+                              </p>
+                            </div>
+                            <div className="text-sm text-gray-600 md:text-right">
+                              <p>{session.notes ? `Notes: ${session.notes}` : 'No session notes yet.'}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+
+            <div className="lg:col-span-5 space-y-6">
+              <Card className="border-emerald-200 bg-gradient-to-b from-emerald-50 to-white">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-emerald-900">Client Network</h2>
+                    <span className="text-xs font-semibold px-2 py-1 rounded bg-emerald-100 text-emerald-700">Care</span>
+                  </div>
+                </CardHeader>
+                <CardBody className="space-y-4">
+                  <p className="text-sm text-gray-600">Monitor your current client load and how your care groups are distributed.</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded bg-green-50">
+                      <p className="text-xs text-gray-600">Active Clients</p>
+                      <p className="text-2xl font-bold text-green-700">{therapistClients.length}</p>
+                    </div>
+                    <div className="p-3 rounded bg-emerald-50">
+                      <p className="text-xs text-gray-600">Care Groups</p>
+                      <p className="text-2xl font-bold text-emerald-700">{therapistGroups.length}</p>
+                    </div>
+                  </div>
+                  {therapistCareFocusLabels.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {therapistCareFocusLabels.map((focus, index) => (
+                        <span key={`${focus}-${index}`} className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                          {focus}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-600">No care focus labels added to groups yet.</p>
+                  )}
+                  <Link to="/sessions">
+                    <Button variant="outline" fullWidth>Manage Clients and Groups</Button>
+                  </Link>
+                </CardBody>
+              </Card>
+
+              <Card className="border-slate-200 bg-slate-900 text-white">
+                <CardHeader>
+                  <h2 className="text-2xl font-bold">Care Priorities</h2>
+                </CardHeader>
+                <CardBody className="space-y-3 text-sm text-slate-200">
+                  <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3">
+                    <p className="font-semibold text-white">Session follow-up</p>
+                    <p className="mt-1">Review pending sessions and add notes to keep care continuity strong.</p>
+                  </div>
+                  <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3">
+                    <p className="font-semibold text-white">Group coordination</p>
+                    <p className="mt-1">Use therapy groups to support clients with shared needs and care focus areas.</p>
+                  </div>
+                  <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-3">
+                    <p className="font-semibold text-white">Clinical rhythm</p>
+                    <p className="mt-1">Keep your schedule balanced with visible upcoming, pending, and completed work.</p>
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     );

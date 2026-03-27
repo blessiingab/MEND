@@ -50,14 +50,14 @@ export const AuthProvider = ({ children }) => {
   /**
    * Login user
    */
-  const login = useCallback(async (email, password, role = 'user') => {
+  const login = useCallback(async (email, password, rememberMe = false, role = 'user') => {
     try {
       setError(null);
       const response = await authService.login(email, password, role);
       const { token, user } = response;
       
-      setToken(token);
-      setUser(user);
+      setToken(token, rememberMe);
+      setUser(user, rememberMe);
       setCurrentUser(user);
       setIsAuthenticated(true);
       

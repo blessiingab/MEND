@@ -2,28 +2,38 @@
  * Auth Utilities
  */
 
-export const setToken = (token) => {
-  localStorage.setItem('token', token);
+const TOKEN_KEY = 'token';
+const USER_KEY = 'user';
+
+const getStorage = (rememberMe = true) => (rememberMe ? window.localStorage : window.sessionStorage);
+
+export const setToken = (token, rememberMe = true) => {
+  window.localStorage.removeItem(TOKEN_KEY);
+  window.sessionStorage.removeItem(TOKEN_KEY);
+  getStorage(rememberMe).setItem(TOKEN_KEY, token);
 };
 
 export const getToken = () => {
-  return localStorage.getItem('token');
+  return window.localStorage.getItem(TOKEN_KEY) || window.sessionStorage.getItem(TOKEN_KEY);
 };
 
 export const removeToken = () => {
-  localStorage.removeItem('token');
+  window.localStorage.removeItem(TOKEN_KEY);
+  window.sessionStorage.removeItem(TOKEN_KEY);
 };
 
 export const isAuthenticated = () => {
   return !!getToken();
 };
 
-export const setUser = (user) => {
-  localStorage.setItem('user', JSON.stringify(user));
+export const setUser = (user, rememberMe = true) => {
+  window.localStorage.removeItem(USER_KEY);
+  window.sessionStorage.removeItem(USER_KEY);
+  getStorage(rememberMe).setItem(USER_KEY, JSON.stringify(user));
 };
 
 export const getUser = () => {
-  const user = localStorage.getItem('user');
+  const user = window.localStorage.getItem(USER_KEY) || window.sessionStorage.getItem(USER_KEY);
   // Handle case where localStorage contains the string "undefined" or null
   if (!user || user === 'undefined') {
     return null;
@@ -38,5 +48,6 @@ export const getUser = () => {
 
 export const clearAuth = () => {
   removeToken();
-  localStorage.removeItem('user');
+  window.localStorage.removeItem(USER_KEY);
+  window.sessionStorage.removeItem(USER_KEY);
 };

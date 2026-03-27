@@ -22,6 +22,8 @@ const createTables = async () => {
         specialization TEXT,
         expertise_area TEXT,
         experience_years INTEGER,
+        password_reset_token TEXT,
+        password_reset_expires_at DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -29,26 +31,34 @@ const createTables = async () => {
 
     // Ensure legacy databases gain the new columns if they are missing
     const userColumns = await db.all(`PRAGMA table_info(users)`);
-    const hasColumn = (name) => userColumns.some(col => col.name === name);
+    const hasColumn = (name) => userColumns.some((col) => col.name === name);
 
     if (!hasColumn('license_number')) {
       await db.run(`ALTER TABLE users ADD COLUMN license_number TEXT`);
-      console.log('✓ Added license_number column to users table');
+      console.log('Added license_number column to users table');
     }
     if (!hasColumn('specialization')) {
       await db.run(`ALTER TABLE users ADD COLUMN specialization TEXT`);
-      console.log('✓ Added specialization column to users table');
+      console.log('Added specialization column to users table');
     }
     if (!hasColumn('expertise_area')) {
       await db.run(`ALTER TABLE users ADD COLUMN expertise_area TEXT`);
-      console.log('✓ Added expertise_area column to users table');
+      console.log('Added expertise_area column to users table');
     }
     if (!hasColumn('experience_years')) {
       await db.run(`ALTER TABLE users ADD COLUMN experience_years INTEGER`);
-      console.log('✓ Added experience_years column to users table');
+      console.log('Added experience_years column to users table');
+    }
+    if (!hasColumn('password_reset_token')) {
+      await db.run(`ALTER TABLE users ADD COLUMN password_reset_token TEXT`);
+      console.log('Added password_reset_token column to users table');
+    }
+    if (!hasColumn('password_reset_expires_at')) {
+      await db.run(`ALTER TABLE users ADD COLUMN password_reset_expires_at DATETIME`);
+      console.log('Added password_reset_expires_at column to users table');
     }
 
-    console.log('✓ Users table created');
+    console.log('Users table created');
 
     // Assessments table
     await db.run(`
@@ -64,7 +74,7 @@ const createTables = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    console.log('✓ Assessments table created');
+    console.log('Assessments table created');
 
     // Therapy Sessions table
     await db.run(`
@@ -82,7 +92,7 @@ const createTables = async () => {
         FOREIGN KEY (therapist_id) REFERENCES users(id)
       )
     `);
-    console.log('✓ Therapy Sessions table created');
+    console.log('Therapy Sessions table created');
 
     // Creative Posts table
     await db.run(`
@@ -100,7 +110,7 @@ const createTables = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    console.log('✓ Creative Posts table created');
+    console.log('Creative Posts table created');
 
     // Post Likes table
     await db.run(`
@@ -114,7 +124,7 @@ const createTables = async () => {
         UNIQUE(post_id, user_id)
       )
     `);
-    console.log('✓ Post Likes table created');
+    console.log('Post Likes table created');
 
     // Comments table
     await db.run(`
@@ -129,7 +139,7 @@ const createTables = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    console.log('✓ Comments table created');
+    console.log('Comments table created');
 
     // Career Guidance table
     await db.run(`
@@ -146,7 +156,7 @@ const createTables = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    console.log('✓ Career Guidance table created');
+    console.log('Career Guidance table created');
 
     // Career Resources table
     await db.run(`
@@ -161,7 +171,7 @@ const createTables = async () => {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    console.log('✓ Career Resources table created');
+    console.log('Career Resources table created');
 
     // Career Progress table
     await db.run(`
@@ -174,7 +184,7 @@ const createTables = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    console.log('✓ Career Progress table created');
+    console.log('Career Progress table created');
 
     // Create indexes
     await db.run(`CREATE INDEX IF NOT EXISTS idx_assessments_user_id ON assessments(user_id)`);
@@ -183,12 +193,13 @@ const createTables = async () => {
     await db.run(`CREATE INDEX IF NOT EXISTS idx_posts_user_id ON creative_posts(user_id)`);
     await db.run(`CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id)`);
     await db.run(`CREATE INDEX IF NOT EXISTS idx_career_user_id ON career_guidance(user_id)`);
-    console.log('✓ Indexes created');
+    await db.run(`CREATE INDEX IF NOT EXISTS idx_users_password_reset_token ON users(password_reset_token)`);
+    console.log('Indexes created');
 
-    console.log('✅ All tables created successfully');
+    console.log('All tables created successfully');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error creating tables:', error.message);
+    console.error('Error creating tables:', error.message);
     process.exit(1);
   }
 };

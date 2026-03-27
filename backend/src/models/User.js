@@ -26,9 +26,10 @@ class User {
       INSERT INTO users (
         email, password, first_name, last_name, role, bio, profile_image,
         license_number, specialization, expertise_area, experience_years,
+        password_reset_token, password_reset_expires_at,
         created_at, updated_at
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
     `;
 
     const result = await db.run(query, [
@@ -42,7 +43,9 @@ class User {
       licenseNumber,
       specialization,
       expertiseArea,
-      experienceYears
+      experienceYears,
+      null,
+      null
     ]);
 
     // Get the created user
@@ -95,7 +98,10 @@ class User {
 
     const query = `
       UPDATE users
-      SET password = ?, updated_at = datetime('now')
+      SET password = ?,
+          password_reset_token = NULL,
+          password_reset_expires_at = NULL,
+          updated_at = datetime('now')
       WHERE id = ?
     `;
 
@@ -104,6 +110,46 @@ class User {
     // Get updated user
     const user = await db.get('SELECT id, email FROM users WHERE id = ?', [userId]);
     return user || null;
+  }
+
+  static async savePasswordResetToken(userId, tokenHash, expiresAt) {
+    const query = `
+      UPDATE users
+      SET password_reset_token = ?,
+          password_reset_expires_at = ?,
+          updated_at = datetime('now')
+      WHERE id = ?
+    `;
+
+    await db.run(query, [tokenHash, expiresAt, userId]);
+    return true;
+  }
+
+  static async findByPasswordResetToken(tokenHash) {
+    const query = `
+      SELECT *
+      FROM users
+      WHERE password_reset_token = ?
+        AND password_reset_expires_at IS NOT NULL
+        AND datetime(password_reset_expires_at) > datetime('now')
+      LIMIT 1
+    `;
+
+    const result = await db.get(query, [tokenHash]);
+    return result || null;
+  }
+
+  static async clearPasswordResetToken(userId) {
+    const query = `
+      UPDATE users
+      SET password_reset_token = NULL,
+          password_reset_expires_at = NULL,
+          updated_at = datetime('now')
+      WHERE id = ?
+    `;
+
+    await db.run(query, [userId]);
+    return true;
   }
 
   static async getAllUsers(limit = 50, offset = 0) {
