@@ -2,8 +2,8 @@
  * Career Resources Component
  */
 import React, { useState, useEffect } from 'react';
-import { careerService } from '../services/api';
-import { Card, LoadingSpinner, Alert } from './common/CommonComponents';
+import { careerService } from '../../services/api';
+import { Card, LoadingSpinner, Alert } from '../common/CommonComponents';
 
 export const CareerResources = () => {
   const [resources, setResources] = useState([]);

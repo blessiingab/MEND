@@ -33,7 +33,7 @@ class CareerController {
       const careerPath = await CareerGuidance.getUserCareerPath(req.user.id);
 
       if (!careerPath) {
-        return errorResponse(res, 'No career guidance found', 404);
+        return successResponse(res, 'No career guidance found', null);
       }
 
       return successResponse(res, 'Career path retrieved', careerPath);

@@ -6,9 +6,45 @@ import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Loading';
 import { CareerResources } from '../components/career/CareerResources';
+import { Alert } from '../components/common/Alert';
+import { useFetch, useForm } from '../hooks/useCustomHooks';
+import { careerService } from '../services/api';
 
 export const CareerPage = () => {
   const [selectedTab, setSelectedTab] = useState('paths');
+  const [guidanceMessage, setGuidanceMessage] = useState('');
+
+  const { data: careerPath, loading: careerPathLoading, error: careerPathError, refetch: refetchCareerPath } = useFetch(
+    () => careerService.getMyPath(),
+    []
+  );
+
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit, reset } = useForm(
+    {
+      careerGoal: careerPath?.career_goal || '',
+      currentRole: careerPath?.current_role || '',
+      experience: careerPath?.experience || '',
+      guidance: careerPath?.guidance || '',
+      recommendedActions: careerPath?.recommended_actions || ''
+    },
+    async (values) => {
+      try {
+        setGuidanceMessage('');
+        await careerService.createGuidanceSession(
+          values.careerGoal,
+          values.currentRole,
+          values.experience,
+          values.guidance,
+          values.recommendedActions
+        );
+        setGuidanceMessage('Your career guidance has been saved successfully.');
+        reset();
+        refetchCareerPath();
+      } catch (err) {
+        setGuidanceMessage(err.message || 'Failed to save guidance.');
+      }
+    }
+  );
 
   const careerResources = [
     {
@@ -164,51 +200,99 @@ export const CareerPage = () => {
 
         {/* Guidance Tab */}
         {selectedTab === 'guidance' && (
-          <Card>
-            <CardHeader>
-              <h2 className="text-2xl font-bold text-gray-900">Your Personalized Career Guidance</h2>
-            </CardHeader>
-            <CardBody className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Your Ideal Role</p>
-                  <p className="text-lg font-bold text-gray-900">Software Engineer</p>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Required Skills</p>
-                  <p className="text-lg font-bold text-gray-900">7/10</p>
-                </div>
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Estimated Timeline</p>
-                  <p className="text-lg font-bold text-gray-900">18 Months</p>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Next Steps</h3>
-                <ol className="space-y-3">
-                  <li className="flex gap-3">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
-                    <p className="text-gray-700">Complete core programming courses</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
-                    <p className="text-gray-700">Build a portfolio with 3-5 projects</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
-                    <p className="text-gray-700">Network with professionals in tech</p>
-                  </li>
-               <li className="flex gap-3">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
-                    <p className="text-gray-700">Apply to entry-level positions</p>
-                  </li>
-                </ol>
-              </div>
-              <Button variant="primary" size="lg" fullWidth>
-                Get Personalized Guidance
-              </Button>
-            </CardBody>
-          </Card>
+          <div className="space-y-6">
+            {careerPathLoading ? (
+              <Card>
+                <CardBody>
+                  <p className="text-gray-600">Loading your guidance path...</p>
+                </CardBody>
+              </Card>
+            ) : careerPathError ? (
+              <Alert type="error" message="Unable to load your career path" />
+            ) : careerPath ? (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-bold text-gray-900">Your Saved Career Path</h2>
+                </CardHeader>
+                <CardBody>
+                  <p className="text-sm text-gray-600">Goal: {careerPath.career_goal}</p>
+                  <p className="text-sm text-gray-600">Current Role: {careerPath.current_role}</p>
+                  <p className="text-sm text-gray-600">Experience: {careerPath.experience}</p>
+                  <p className="text-sm text-gray-600 mt-3">Guidance: {careerPath.guidance}</p>
+                  <p className="text-sm text-gray-600 mt-3">Recommended Actions: {careerPath.recommended_actions}</p>
+                  <Button variant="secondary" className="mt-4" onClick={() => setSelectedTab('guidance')}>Reload</Button>
+                </CardBody>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-bold text-gray-900">Create Your Career Guidance</h2>
+                </CardHeader>
+                <CardBody>
+                  {guidanceMessage && (
+                    <div className="mb-4 text-sm text-green-700 bg-green-100 p-2 rounded">{guidanceMessage}</div>
+                  )}
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Career Goal</label>
+                      <input
+                        name="careerGoal"
+                        value={values.careerGoal}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full border border-gray-300 rounded p-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Current Role</label>
+                      <input
+                        name="currentRole"
+                        value={values.currentRole}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full border border-gray-300 rounded p-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Experience</label>
+                      <input
+                        name="experience"
+                        value={values.experience}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full border border-gray-300 rounded p-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Guidance</label>
+                      <textarea
+                        name="guidance"
+                        value={values.guidance}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full border border-gray-300 rounded p-2"
+                        rows="3"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Recommended Actions</label>
+                      <textarea
+                        name="recommendedActions"
+                        value={values.recommendedActions}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full border border-gray-300 rounded p-2"
+                        rows="3"
+                      />
+                    </div>
+                    <Button type="submit" variant="primary" fullWidth>
+                      Save Guidance
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
+          </div>
         )}
 
         {/* Resources Tab */}

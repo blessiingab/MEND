@@ -15,9 +15,9 @@ export const CommunityPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedType, setSelectedType] = useState('creative');
+  const [selectedType, setSelectedType] = useState('all');
 
-  const { data: posts, loading: postsLoading, refetch: refetchPosts } = useFetch(
+  const { data: posts, loading: postsLoading, error: postsError, refetch: refetchPosts } = useFetch(
     () => postService.getAllPosts(selectedType, 20, 0),
     [selectedType]
   );
@@ -89,7 +89,7 @@ export const CommunityPage = () => {
 
         {/* Type Filter */}
         <div className="flex gap-3 mb-8">
-          {['creative', 'story', 'inspiration', 'question'].map((type) => (
+          {['all', 'creative', 'story', 'inspiration', 'question', 'art'].map((type) => (
             <button
               key={type}
               onClick={() => setSelectedType(type)}
@@ -99,7 +99,7 @@ export const CommunityPage = () => {
                   : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
         </div>
@@ -108,6 +108,8 @@ export const CommunityPage = () => {
         <div className="space-y-6">
           {postsLoading ? (
             <Loading message="Loading posts..." />
+          ) : postsError ? (
+            <Alert type="error" message={postsError} />
           ) : postsData.length > 0 ? (
             postsData.map((post) => (
               <Card key={post.id} hoverable>

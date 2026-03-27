@@ -79,11 +79,83 @@ class AssessmentService {
   }
 
   static async getUserAssessmentHistory(userId) {
-    return await Assessment.getUserAssessments(userId);
+    const assessments = await Assessment.getUserAssessments(userId);
+    return assessments.map((assessment) => ({
+      id: assessment.id,
+      userId: assessment.user_id || assessment.userId,
+      type: assessment.type,
+      score: assessment.total_score ?? assessment.score,
+      severity: assessment.severity,
+      createdAt: assessment.created_at || assessment.createdAt
+    }));
+  }
+
+  static calculateMoodStreak(assessments) {
+    const parsedDates = Array.from(
+      new Set(
+        assessments
+          .map((a) => (a.created_at || a.createdAt))
+          .filter((v) => v)
+          .map((v) => new Date(v).toDateString())
+      )
+    ).sort((a, b) => new Date(b) - new Date(a));
+
+    let streak = 0;
+    let currentDay = new Date();
+    while (true) {
+      const dayString = currentDay.toDateString();
+      if (parsedDates.includes(dayString)) {
+        streak += 1;
+        currentDay.setDate(currentDay.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
   }
 
   static async getAssessmentStats(userId) {
-    return await Assessment.getUserAssessmentStats(userId);
+    const typeStats = await Assessment.getUserAssessmentStats(userId);
+    const allAssessments = await Assessment.getUserAssessments(userId, 1000, 0);
+
+    const mapped = allAssessments.map((assessment) => ({
+      ...assessment,
+      score: assessment.total_score ?? assessment.score,
+      createdAt: assessment.created_at || assessment.createdAt
+    }));
+
+    const totalAssessments = mapped.length;
+    const avgScore =
+      totalAssessments > 0
+        ? parseFloat(
+            (
+              mapped.reduce((sum, item) => sum + Number(item.score || 0), 0) / totalAssessments
+            ).toFixed(1)
+          )
+        : 0;
+    const highestScore = totalAssessments > 0 ? Math.max(...mapped.map((a) => Number(a.score || 0))) : 0;
+    const lowestScore = totalAssessments > 0 ? Math.min(...mapped.map((a) => Number(a.score || 0))) : 0;
+    const streakDays = this.calculateMoodStreak(mapped);
+    const completionRate = totalAssessments > 0 ? Math.round((mapped.filter((m) => Number(m.score) > 0).length / totalAssessments) * 100) : 0;
+    const dates = mapped
+      .map((a) => new Date(a.createdAt))
+      .filter((d) => !Number.isNaN(d.getTime()));
+    const startDate = dates.length ? new Date(Math.min.apply(null, dates)) : null;
+    const totalDays = startDate ? Math.max(1, Math.ceil((Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24))) : 0;
+    const latestAssessment = mapped.length > 0 ? mapped[0] : null;
+
+    return {
+      typeStats,
+      totalAssessments,
+      averageScore: avgScore,
+      highestScore,
+      lowestScore,
+      moodStreak: streakDays,
+      completionRate,
+      totalDays,
+      latestAssessment
+    };
   }
 }
 

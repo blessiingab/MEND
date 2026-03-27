@@ -90,8 +90,11 @@ export const sessionService = {
 export const postService = {
   createPost: (title, content, type, thumbnail) =>
     apiClient.post('/posts', { title, content, type, thumbnail }),
-  getAllPosts: (type, limit, offset) =>
-    apiClient.get('/posts', { params: { type, limit, offset } }),
+  getAllPosts: (type, limit, offset) => {
+    const params = { limit, offset };
+    if (type && type !== 'all') params.type = type;
+    return apiClient.get('/posts', { params });
+  },
   getPostById: (postId) =>
     apiClient.get(`/posts/${postId}`),
   getUserPosts: (userId, limit, offset) =>

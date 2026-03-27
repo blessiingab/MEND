@@ -22,7 +22,7 @@ export const DashboardPage = () => {
     (new Date() - new Date(user.createdAt)) < (7 * 24 * 60 * 60 * 1000) : false;
 
   // Fetch dashboard data
-  const { data: latestAssessment } = useFetch(
+  const { data: assessmentStats, refetch: refetchAssessmentStats } = useFetch(
     () => assessmentService.getStats(),
     [user?.id]
   );
@@ -47,6 +47,15 @@ export const DashboardPage = () => {
     () => postService.getAllPosts('creative', 5, 0),
     [user?.id]
   );
+
+  React.useEffect(() => {
+    const onAssessmentUpdated = () => {
+      refetchAssessmentStats();
+    };
+
+    window.addEventListener('assessmentUpdated', onAssessmentUpdated);
+    return () => window.removeEventListener('assessmentUpdated', onAssessmentUpdated);
+  }, [refetchAssessmentStats]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -224,7 +233,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Progress Notes</p>
                     <p className="text-3xl font-bold text-green-600 mt-2">
-                      {latestAssessment?.completionRate || 0}%
+                      {assessmentStats?.averageScore || 0}%
                     </p>
                   </div>
                   <div className="text-4xl">📈</div>
@@ -253,7 +262,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Total Assessments</p>
                     <p className="text-3xl font-bold text-blue-600 mt-2">
-                      {latestAssessment?.totalAssessments || 0}
+                      {assessmentStats?.totalAssessments || 0}
                     </p>
                   </div>
                   <div className="text-4xl">📊</div>
@@ -295,7 +304,7 @@ export const DashboardPage = () => {
                   <div>
                     <p className="text-gray-600 text-sm">Mood Streak</p>
                     <p className="text-3xl font-bold text-orange-600 mt-2">
-                      {latestAssessment?.streakDays || 0}d
+                      {assessmentStats?.moodStreak || 0}d
                     </p>
                   </div>
                   <div className="text-4xl">🔥</div>
@@ -470,7 +479,7 @@ export const DashboardPage = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-green-600">
-                    {latestAssessment?.completionRate || 0}%
+                    {assessmentStats?.completionRate || 0}%
                   </div>
                   <p className="text-gray-600 mt-2">Goal Completion</p>
                 </div>
@@ -488,19 +497,19 @@ export const DashboardPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-blue-600">
-                    {latestAssessment?.averageScore || 0}%
+                    {assessmentStats?.averageScore || 0}%
                   </div>
                   <p className="text-gray-600 mt-2">Mental Health Score</p>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-green-600">
-                    {latestAssessment?.completionRate || 0}%
+                    {assessmentStats?.completionRate || 0}%
                   </div>
                   <p className="text-gray-600 mt-2">Completion Rate</p>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-purple-600">
-                    {latestAssessment?.totalDays || 0}
+                    {assessmentStats?.totalDays || 0}
                   </div>
                   <p className="text-gray-600 mt-2">Days on MEND</p>
                 </div>

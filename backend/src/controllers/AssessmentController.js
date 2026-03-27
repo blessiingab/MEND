@@ -22,7 +22,8 @@ class AssessmentController {
         type: assessment.type,
         score: assessment.totalScore,
         severity: assessment.severity,
-        interpretation: assessment.interpretation
+        interpretation: assessment.interpretation,
+        createdAt: saved.created_at || saved.createdAt
       }, 201);
     } catch (error) {
       return errorResponse(res, error.message, 400, error);
@@ -45,7 +46,8 @@ class AssessmentController {
         type: assessment.type,
         score: assessment.totalScore,
         severity: assessment.severity,
-        interpretation: assessment.interpretation
+        interpretation: assessment.interpretation,
+        createdAt: saved.created_at || saved.createdAt
       }, 201);
     } catch (error) {
       return errorResponse(res, error.message, 400, error);

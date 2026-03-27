@@ -2,7 +2,7 @@
  * PHQ-9 Assessment Component
  */
 import React, { useState } from 'react';
-import { assessmentService } from '../services/api';
+import { assessmentService } from '../../services/api';
 import { Button, Alert, Card, LoadingSpinner } from './common/CommonComponents';
 
 const PHQ9_QUESTIONS = [
@@ -41,7 +41,8 @@ export const PHQ9Assessment = () => {
 
     try {
       const response = await assessmentService.submitPHQ9(answers);
-      setResult(response.data);
+      setResult(response);
+      window.dispatchEvent(new Event('assessmentUpdated'));
       setSubmitted(true);
     } catch (err) {
       setError(err.message || 'Failed to submit assessment');

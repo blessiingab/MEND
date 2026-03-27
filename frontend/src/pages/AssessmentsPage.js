@@ -66,15 +66,17 @@ export const AssessmentsPage = () => {
         ? assessmentService.submitPHQ9 
         : assessmentService.submitGAD7;
       
-      await endpoint(answers);
-      setSubmitMessage('✓ Assessment submitted successfully!');
+      const response = await endpoint(answers);
+      const score = response?.score || response?.data?.score || 'N/A';
+      setSubmitMessage(`✓ Assessment submitted successfully! Score: ${score}`);
+      window.dispatchEvent(new Event('assessmentUpdated'));
       setShowModal(false);
       setAnswers([]);
       refetch();
       
       setTimeout(() => setSubmitMessage(''), 3000);
     } catch (error) {
-      setSubmitMessage('✕ Error submitting assessment: ' + error.message);
+      setSubmitMessage('✕ Error submitting assessment: ' + (error.message || error?.msg || 'Unknown error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -191,7 +193,7 @@ export const AssessmentsPage = () => {
                       return (
                         <tr key={assessment.id} className="hover:bg-gray-50">
                           <td className="px-4 py-3 text-gray-600">
-                            {new Date(assessment.createdAt).toLocaleDateString('en-US', {
+                            {new Date(assessment.createdAt || assessment.created_at).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'short',
                               day: 'numeric'

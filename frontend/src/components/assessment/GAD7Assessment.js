@@ -2,7 +2,7 @@
  * GAD-7 Assessment Component
  */
 import React, { useState } from 'react';
-import { assessmentService } from '../services/api';
+import { assessmentService } from '../../services/api';
 import { Button, Alert, Card } from './common/CommonComponents';
 
 const GAD7_QUESTIONS = [
@@ -39,7 +39,8 @@ export const GAD7Assessment = () => {
 
     try {
       const response = await assessmentService.submitGAD7(answers);
-      setResult(response.data);
+      setResult(response);
+      window.dispatchEvent(new Event('assessmentUpdated'));
       setSubmitted(true);
     } catch (err) {
       setError(err.message || 'Failed to submit assessment');
