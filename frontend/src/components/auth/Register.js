@@ -9,6 +9,7 @@ import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { Alert } from '../common/Alert';
 import { Card, CardBody } from '../common/Card';
+import { Logo } from '../common/Logo';
 
 const validateForm = (values) => {
   const errors = {};
@@ -51,10 +52,10 @@ export const Register = () => {
   }, [isAuthenticated, navigate]);
 
   const { values, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit } = useForm(
-    { 
-      firstName: '', 
-      lastName: '', 
-      email: '', 
+    {
+      firstName: '',
+      lastName: '',
+      email: '',
       password: '',
       confirmPassword: '',
       role: 'user',
@@ -64,25 +65,25 @@ export const Register = () => {
       expertiseArea: '',
       experienceYears: ''
     },
-    async (values) => {
+    async (submittedValues) => {
       try {
         setServerError('');
         const metadata = {};
-        if (values.role === 'therapist') {
-          metadata.licenseNumber = values.licenseNumber;
-          metadata.specialization = values.specialization;
+        if (submittedValues.role === 'therapist') {
+          metadata.licenseNumber = submittedValues.licenseNumber;
+          metadata.specialization = submittedValues.specialization;
         }
-        if (values.role === 'mentor') {
-          metadata.expertiseArea = values.expertiseArea;
-          metadata.experienceYears = Number(values.experienceYears);
+        if (submittedValues.role === 'mentor') {
+          metadata.expertiseArea = submittedValues.expertiseArea;
+          metadata.experienceYears = Number(submittedValues.experienceYears);
         }
 
         await register(
-          values.email,
-          values.password,
-          values.firstName,
-          values.lastName,
-          values.role,
+          submittedValues.email,
+          submittedValues.password,
+          submittedValues.firstName,
+          submittedValues.lastName,
+          submittedValues.role,
           metadata
         );
         navigate('/dashboard');
@@ -94,12 +95,14 @@ export const Register = () => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-6">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardBody>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4 py-6 sm:py-10">
+      <div className="mx-auto flex w-full max-w-2xl items-start justify-center">
+        <Card className="w-full shadow-lg">
+          <CardBody className="p-5 sm:p-6">
           <div className="text-center mb-8">
-            <div className="text-4xl mb-3">🧠</div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">MEND</h1>
+            <div className="flex justify-center mb-3">
+              <Logo size="lg" />
+            </div>
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Join our community</p>
           </div>
 
@@ -119,7 +122,7 @@ export const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="First Name"
                 name="firstName"
@@ -148,43 +151,43 @@ export const Register = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 I am registering as a:
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => handleChange({ target: { name: 'role', value: 'user' } })}
-                  className={`p-3 border rounded-lg text-center transition-colors ${
+                  className={`p-3 border rounded-2xl text-center transition-colors min-h-[112px] ${
                     values.role === 'user'
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <div className="text-2xl mb-1">👤</div>
+                  <div className="text-xl sm:text-2xl mb-1">User</div>
                   <div className="text-sm font-medium">User</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Access services</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleChange({ target: { name: 'role', value: 'therapist' } })}
-                  className={`p-3 border rounded-lg text-center transition-colors ${
+                  className={`p-3 border rounded-2xl text-center transition-colors min-h-[112px] ${
                     values.role === 'therapist'
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <div className="text-2xl mb-1">🩺</div>
+                  <div className="text-xl sm:text-2xl mb-1">Care</div>
                   <div className="text-sm font-medium">Therapist</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Provide therapy</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleChange({ target: { name: 'role', value: 'mentor' } })}
-                  className={`p-3 border rounded-lg text-center transition-colors ${
+                  className={`p-3 border rounded-2xl text-center transition-colors min-h-[112px] ${
                     values.role === 'mentor'
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <div className="text-2xl mb-1">🎓</div>
+                  <div className="text-xl sm:text-2xl mb-1">Grow</div>
                   <div className="text-sm font-medium">Mentor</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Talent development</div>
                 </button>
@@ -266,7 +269,7 @@ export const Register = () => {
               label="Password"
               type="password"
               name="password"
-              placeholder="••••••••"
+              placeholder="Create a password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -280,7 +283,7 @@ export const Register = () => {
               label="Confirm Password"
               type="password"
               name="confirmPassword"
-              placeholder="••••••••"
+              placeholder="Confirm your password"
               value={values.confirmPassword}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -299,21 +302,20 @@ export const Register = () => {
               />
               <span className="text-gray-700 dark:text-gray-300">
                 I agree to the{' '}
-                <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</button> and{' '}
-                <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</button>
+                <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline">
+                  Terms of Service
+                </button>{' '}
+                and{' '}
+                <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline">
+                  Privacy Policy
+                </button>
               </span>
             </label>
             {touched.agreeTerms && errors.agreeTerms && (
               <p className="text-red-500 dark:text-red-400 text-xs">{errors.agreeTerms}</p>
             )}
 
-            <Button
-              type="submit"
-              variant="primary"
-              fullWidth
-              loading={isSubmitting}
-              size="lg"
-            >
+            <Button type="submit" variant="primary" fullWidth loading={isSubmitting} size="lg">
               Create Account
             </Button>
           </form>
@@ -321,13 +323,17 @@ export const Register = () => {
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <p className="text-center text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300">
+              <Link
+                to="/login"
+                className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300"
+              >
                 Sign In
               </Link>
             </p>
           </div>
-        </CardBody>
-      </Card>
+          </CardBody>
+        </Card>
+      </div>
     </div>
   );
 };

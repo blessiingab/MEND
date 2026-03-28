@@ -11,10 +11,10 @@ import { Alert } from '../components/common/Alert';
 import { Loading, Badge } from '../components/common/Loading';
 import { useAuth, useFetch, useForm } from '../hooks/useCustomHooks';
 import { postService } from '../services/api';
+import { Logo } from '../components/common/Logo';
 
 export const CommunityPage = () => {
-  const { user } = useAuth();
-  const isTherapist = user?.role === 'therapist';
+  useAuth();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -117,16 +117,41 @@ export const CommunityPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="app-shell">
+      <div className="app-container max-w-5xl">
+        <div className="page-hero stagger-fade">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <div>
+              <div className="mb-4">
+                <Logo size="sm" />
+              </div>
+              <span className="page-kicker">Community Energy</span>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-50 mt-4">Creative Hub</h1>
+              <p className="text-gray-600 dark:text-slate-300 mt-3 max-w-2xl">Share stories, inspiration, and art inside a calmer, more expressive community space.</p>
+            </div>
+            <div>
+              <Button variant="primary" size="lg" onClick={() => setShowCreateModal(true)}>
+                + Create Post
+              </Button>
+            </div>
+          </div>
+          <div className="hero-metrics">
+            <div className="hero-metric">
+              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Visible Posts</p>
+              <p className="mt-2 text-2xl font-bold text-blue-600">{postsData.length}</p>
+            </div>
+            <div className="hero-metric">
+              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Current Filter</p>
+              <p className="mt-2 text-xl font-bold text-violet-600 capitalize">{selectedType}</p>
+            </div>
+          </div>
+        </div>
+
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900">Creative Hub</h1>
-            <p className="text-gray-600 mt-2">Share your stories and connect with our community</p>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-50">Browse community posts</h2>
+            <p className="text-gray-600 dark:text-slate-300 mt-1">Move through content types without leaving the feed.</p>
           </div>
-          <Button variant="primary" size="lg" onClick={() => setShowCreateModal(true)}>
-            + Create Post
-          </Button>
         </div>
 
         {successMessage && (
@@ -144,10 +169,10 @@ export const CommunityPage = () => {
             <button
               key={type}
               onClick={() => setSelectedType(type)}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
+              className={`px-4 py-2 rounded-2xl font-medium transition ${
                 selectedType === type
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                  : 'bg-white/80 dark:bg-slate-900/70 text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-900'
               }`}
             >
               {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
@@ -168,7 +193,7 @@ export const CommunityPage = () => {
               const commentCount = Math.max(backendCommentCount, loadedComments.length);
 
               return (
-                <Card key={post.id} hoverable>
+                <Card key={post.id} hoverable className="stagger-fade">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
@@ -182,7 +207,7 @@ export const CommunityPage = () => {
                   </CardHeader>
                   <CardBody>
                     <p className="text-gray-700 mb-4">{post.content}</p>
-                    <div className="flex items-center gap-6 pt-4 border-t border-gray-200">
+                    <div className="flex items-center gap-6 pt-4 border-t border-gray-200 dark:border-slate-700">
                       <button
                         onClick={() => handleLikePost(post.id)}
                         className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition"
@@ -204,7 +229,7 @@ export const CommunityPage = () => {
                         {loadedComments.length > 0 ? (
                           <div className="space-y-2 mb-3">
                             {loadedComments.map((comment) => (
-                              <div key={comment.id} className="border p-2 rounded bg-gray-50 dark:bg-gray-800">
+                              <div key={comment.id} className="border border-gray-200 dark:border-slate-700 p-3 rounded-2xl bg-gray-50 dark:bg-slate-900/80">
                                 <p className="text-sm text-gray-700 dark:text-gray-300">{comment.content}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                   by {comment.first_name || comment.name || 'User'} - {new Date(comment.created_at || comment.createdAt).toLocaleString()}
@@ -218,13 +243,13 @@ export const CommunityPage = () => {
 
                         <div className="flex gap-2">
                           <input
-                            className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2"
+                            className="flex-1 border border-gray-300 dark:border-slate-700 rounded-2xl px-3 py-2 bg-white/90 dark:bg-slate-950/70"
                             placeholder="Write a comment..."
                             value={commentTextByPost[post.id] || ''}
                             onChange={(e) => handleCommentChange(post.id, e.target.value)}
                           />
                           <button
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition"
                             onClick={() => submitComment(post.id)}
                           >
                             Post
@@ -274,7 +299,7 @@ export const CommunityPage = () => {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Content *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
               <textarea
                 name="content"
                 value={values.content}

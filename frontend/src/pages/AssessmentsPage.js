@@ -9,6 +9,7 @@ import { Alert } from '../components/common/Alert';
 import { Loading, Badge } from '../components/common/Loading';
 import { useFetch } from '../hooks/useCustomHooks';
 import { assessmentService } from '../services/api';
+import { Logo } from '../components/common/Logo';
 
 const PHQ9_QUESTIONS = [
   'Little interest or pleasure in doing things',
@@ -33,7 +34,6 @@ const GAD7_QUESTIONS = [
 ];
 
 export const AssessmentsPage = () => {
-  const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [assessmentType, setAssessmentType] = useState('phq9');
   const [answers, setAnswers] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -98,11 +98,27 @@ export const AssessmentsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Mental Health Assessments</h1>
-          <p className="text-gray-600 mt-2">Track your mental wellness with evidence-based assessments</p>
+    <div className="app-shell">
+      <div className="app-container max-w-6xl">
+        <div className="page-hero stagger-fade">
+          <div className="relative z-10">
+            <div className="mb-4">
+              <Logo size="sm" />
+            </div>
+            <span className="page-kicker">Evidence-Based Care</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-50 mt-4">Mental Health Assessments</h1>
+            <p className="text-gray-600 dark:text-slate-300 mt-3 max-w-2xl">Track your mental wellness with structured assessment flows, clear scoring, and a history that is easy to revisit.</p>
+            <div className="hero-metrics">
+              <div className="hero-metric">
+                <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Available Screens</p>
+                <p className="mt-2 text-2xl font-bold text-blue-600">2</p>
+              </div>
+              <div className="hero-metric">
+                <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Completed</p>
+                <p className="mt-2 text-2xl font-bold text-emerald-600">{assessmentHistory?.length || 0}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {submitMessage && (
@@ -118,7 +134,7 @@ export const AssessmentsPage = () => {
         {/* Assessment Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* PHQ-9 Assessment */}
-          <Card hoverable>
+          <Card hoverable className="stagger-fade delay-1">
             <CardHeader>
               <h2 className="text-2xl font-bold text-gray-900">PHQ-9</h2>
               <p className="text-sm text-gray-600 mt-1">Patient Health Questionnaire - Depression</p>
@@ -127,7 +143,7 @@ export const AssessmentsPage = () => {
               <p className="text-gray-700">
                 Assess severity of depression symptoms with this 9-question screening tool.
               </p>
-              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-600">
+              <div className="bg-blue-50 dark:bg-blue-950/40 p-4 rounded-2xl border-l-4 border-blue-600">
                 <p className="text-sm text-gray-700">
                   <strong>Scoring:</strong> 0-4 (Minimal), 5-9 (Mild), 10-14 (Moderate), 15-19 (Moderately Severe), 20+ (Severe)
                 </p>
@@ -143,7 +159,7 @@ export const AssessmentsPage = () => {
           </Card>
 
           {/* GAD-7 Assessment */}
-          <Card hoverable>
+          <Card hoverable className="stagger-fade delay-2">
             <CardHeader>
               <h2 className="text-2xl font-bold text-gray-900">GAD-7</h2>
               <p className="text-sm text-gray-600 mt-1">Generalized Anxiety Disorder Screening</p>
@@ -152,7 +168,7 @@ export const AssessmentsPage = () => {
               <p className="text-gray-700">
                 Assess severity of anxiety symptoms with this 7-question screening tool.
               </p>
-              <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-600">
+              <div className="bg-green-50 dark:bg-green-950/40 p-4 rounded-2xl border-l-4 border-green-600">
                 <p className="text-sm text-gray-700">
                   <strong>Scoring:</strong> 0-4 (Minimal), 5-9 (Mild), 10-14 (Moderate), 15+ (Severe)
                 </p>
@@ -169,7 +185,7 @@ export const AssessmentsPage = () => {
         </div>
 
         {/* Assessment History */}
-        <Card>
+        <Card className="stagger-fade delay-3">
           <CardHeader>
             <h2 className="text-2xl font-bold text-gray-900">Your Assessment History</h2>
           </CardHeader>

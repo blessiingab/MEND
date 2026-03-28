@@ -9,6 +9,7 @@ import { Badge, Loading } from '../components/common/Loading';
 import { Alert } from '../components/common/Alert';
 import { useFetch } from '../hooks/useCustomHooks';
 import { careerService } from '../services/api';
+import { Logo } from '../components/common/Logo';
 
 const CAREER_PATHS = [
   {
@@ -207,14 +208,25 @@ export const CareerPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Career Guidance</h1>
-          <p className="text-gray-600 mt-2">Explore paths, save your guidance, and track your career progress clearly.</p>
+    <div className="app-shell">
+      <div className="app-container max-w-6xl">
+        <div className="page-hero stagger-fade">
+          <div className="relative z-10">
+            <div className="mb-4">
+              <Logo size="sm" />
+            </div>
+            <span className="page-kicker">Career Design</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-50 mt-4">Career Guidance</h1>
+            <p className="text-gray-600 dark:text-slate-300 mt-3 max-w-2xl">Explore paths, save guidance, and track career progress inside a more editorial, premium planning workspace.</p>
+            <div className="hero-metrics">
+              <div className="hero-metric"><p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Templates</p><p className="mt-2 text-2xl font-bold text-blue-600">{CAREER_PATHS.length}</p></div>
+              <div className="hero-metric"><p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Milestones</p><p className="mt-2 text-2xl font-bold text-emerald-600">{progressItems.length}</p></div>
+              <div className="hero-metric"><p className="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">Resources</p><p className="mt-2 text-2xl font-bold text-violet-600">{resources.length}</p></div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex gap-4 mb-8 border-b border-gray-200 flex-wrap">
+        <div className="flex gap-4 mb-8 border-b border-gray-200 dark:border-slate-700 flex-wrap">
           {[
             ['paths', 'Career Paths', <FaCompass key="paths" />],
             ['guidance', 'My Guidance', <FaBriefcase key="guidance" />],
@@ -224,10 +236,10 @@ export const CareerPage = () => {
             <button
               key={key}
               onClick={() => setSelectedTab(key)}
-              className={`px-6 py-3 font-semibold border-b-2 transition flex items-center gap-2 ${
+              className={`px-6 py-3 font-semibold border-b-2 transition flex items-center gap-2 rounded-t-2xl ${
                 selectedTab === key
                   ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
+                  : 'border-transparent text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100'
               }`}
             >
               <span className="text-sm">{icon}</span>
@@ -282,12 +294,12 @@ export const CareerPage = () => {
               <CardBody>
                 <form onSubmit={handleSaveGuidance} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Career Goal *</label>
+                    <label className="block text-sm font-medium text-gray-700">Career Goal</label>
                     <input className="w-full border border-gray-300 rounded p-2" value={careerGoal} onChange={(e) => setCareerGoal(e.target.value)} />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Current Role *</label>
+                    <label className="block text-sm font-medium text-gray-700">Current Role</label>
                     <input className="w-full border border-gray-300 rounded p-2" value={currentRole} onChange={(e) => setCurrentRole(e.target.value)} />
                   </div>
 
@@ -410,11 +422,11 @@ export const CareerPage = () => {
               <CardBody>
                 <form onSubmit={handleTrackProgress} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Goal *</label>
+                    <label className="block text-sm font-medium text-gray-700">Goal</label>
                     <input className="w-full border border-gray-300 rounded p-2" value={trackGoal} onChange={(e) => setTrackGoal(e.target.value)} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Milestone *</label>
+                    <label className="block text-sm font-medium text-gray-700">Milestone</label>
                     <input className="w-full border border-gray-300 rounded p-2" value={trackMilestone} onChange={(e) => setTrackMilestone(e.target.value)} />
                   </div>
                   <Button type="submit" variant="primary" loading={savingProgress}>Save Milestone</Button>

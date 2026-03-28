@@ -13,20 +13,20 @@ export const Button = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'font-semibold rounded-lg transition duration-200 flex items-center justify-center gap-2';
+  const baseStyles = 'font-semibold rounded-2xl transition duration-300 flex items-center justify-center gap-2 transform-gpu focus:outline-none focus:ring-2 focus:ring-blue-400/50 active:scale-[0.99]';
   
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white disabled:bg-gray-400 dark:disabled:bg-gray-600',
-    secondary: 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 disabled:bg-gray-100 dark:disabled:bg-gray-600',
-    danger: 'bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white disabled:bg-gray-400 dark:disabled:bg-gray-600',
-    success: 'bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white disabled:bg-gray-400 dark:disabled:bg-gray-600',
-    outline: 'border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 disabled:border-gray-400 dark:disabled:border-gray-600 disabled:text-gray-400'
+    primary: 'bg-gradient-to-r from-blue-600 via-sky-500 to-teal-500 hover:brightness-105 text-white shadow-[0_16px_36px_rgba(37,99,235,0.28)] disabled:bg-gray-400 dark:disabled:bg-gray-600',
+    secondary: 'bg-white/88 hover:bg-white dark:bg-slate-900/82 dark:hover:bg-slate-900 text-gray-900 dark:text-gray-100 border border-slate-200/80 dark:border-slate-700/80 shadow-[0_12px_28px_rgba(15,23,42,0.08)]',
+    danger: 'bg-gradient-to-r from-rose-600 to-red-500 hover:brightness-105 text-white shadow-[0_16px_36px_rgba(220,38,38,0.22)] disabled:bg-gray-400 dark:disabled:bg-gray-600',
+    success: 'bg-gradient-to-r from-emerald-600 to-teal-500 hover:brightness-105 text-white shadow-[0_16px_36px_rgba(5,150,105,0.24)] disabled:bg-gray-400 dark:disabled:bg-gray-600',
+    outline: 'border border-blue-300 dark:border-blue-500/60 text-blue-700 dark:text-blue-300 bg-white/60 dark:bg-slate-950/40 hover:bg-blue-50 dark:hover:bg-slate-900 disabled:border-gray-400 dark:disabled:border-gray-600 disabled:text-gray-400'
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg'
+    sm: 'px-3.5 py-2 text-sm',
+    md: 'px-4.5 py-2.5 text-base',
+    lg: 'px-6 py-3.5 text-lg'
   };
 
   return (

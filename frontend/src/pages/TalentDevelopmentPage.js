@@ -232,7 +232,7 @@ export const TalentDevelopmentPage = () => {
               <CardBody>
                 <form onSubmit={handleSaveMilestone} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Development Goal *</label>
+                    <label className="block text-sm font-medium text-gray-700">Development Goal</label>
                     <input
                       className="talent-dev-input w-full rounded-xl p-3"
                       value={goal}
@@ -241,7 +241,7 @@ export const TalentDevelopmentPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Milestone *</label>
+                    <label className="block text-sm font-medium text-gray-700">Milestone</label>
                     <textarea
                       className="talent-dev-input w-full rounded-xl p-3"
                       rows="4"

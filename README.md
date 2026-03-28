@@ -165,15 +165,7 @@ http://localhost:3000
 
 ## Environment Variables
 
-### Backend
-
-```env
-PORT=5000
-JWT_SECRET=your_secret_here
-JWT_EXPIRE=7d
-DB_NAME=mend.db
-APP_URL=http://localhost:3000
-NODE_ENV=development
+##  Backen
 ```
 
 ### Frontend

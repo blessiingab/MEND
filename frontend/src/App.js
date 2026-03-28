@@ -37,7 +37,7 @@ function App() {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
+  const hideNavRoutes = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
   const showNavigation = !hideNavRoutes.includes(location.pathname);
 
   return (

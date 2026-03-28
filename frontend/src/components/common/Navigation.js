@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useCustomHooks';
 import { useTheme } from '../../context/ThemeContext';
 import { Button } from './Button';
+import { Logo } from './Logo';
 
 export const Navigation = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -59,8 +60,8 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl text-blue-600 dark:text-blue-400">
-            MEND
+          <Link to="/" className="flex items-center">
+            <Logo size="sm" />
           </Link>
 
           {/* Desktop Navigation */}

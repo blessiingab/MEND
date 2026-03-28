@@ -9,6 +9,7 @@ import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Loading } from '../components/common/Loading';
 import { Alert } from '../components/common/Alert';
 import { Button } from '../components/common/Button';
+import { Logo } from '../components/common/Logo';
 
 export const SessionsPage = () => {
   const { user } = useAuth();
@@ -156,8 +157,18 @@ export const SessionsPage = () => {
   };
 
   return (
-    <div className="min-h-screen max-w-5xl mx-auto px-4 py-8 space-y-8">
-      <h1 className="text-3xl font-bold">{isTherapist ? 'Manage Therapy Sessions' : 'Therapy Sessions'}</h1>
+    <div className="app-shell">
+      <div className="app-container max-w-5xl space-y-8">
+        <div className="page-hero stagger-fade">
+          <div className="relative z-10">
+            <div className="mb-4">
+              <Logo size="sm" />
+            </div>
+            <span className="page-kicker">Session Flow</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-50 mt-4">{isTherapist ? 'Manage Therapy Sessions' : 'Therapy Sessions'}</h1>
+            <p className="text-gray-600 dark:text-slate-300 mt-3 max-w-2xl">{isTherapist ? 'Review your schedule, care groups, and clinical notes from one polished operations page.' : 'Book, manage, and review your therapy sessions with a calmer, more guided experience.'}</p>
+          </div>
+        </div>
 
       {actionMessage ? (
         <Alert
@@ -168,9 +179,9 @@ export const SessionsPage = () => {
         />
       ) : null}
 
-      {!isTherapist && <BookSession />}
+      {!isTherapist && <div className="stagger-fade delay-1"><BookSession /></div>}
 
-      <Card>
+      <Card className="stagger-fade delay-2">
         <CardHeader>
           <h2 className="text-xl font-bold text-gray-900">
             {isTherapist ? 'Assigned Client Sessions' : 'My Booked Sessions'}
@@ -194,7 +205,7 @@ export const SessionsPage = () => {
                 const startValue = session.start_time || session.startTime;
 
                 return (
-                  <div key={session.id} className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                  <div key={session.id} className="p-4 border border-gray-200 dark:border-slate-700 rounded-2xl bg-gray-50/90 dark:bg-slate-900/80">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                       <div>
                         <p className="font-semibold text-gray-900">{displayName}</p>
@@ -208,7 +219,7 @@ export const SessionsPage = () => {
                         <div className="w-full md:w-80 space-y-2">
                           <label className="text-sm font-medium text-gray-700">Update Status</label>
                           <select
-                            className="w-full border border-gray-300 dark:border-gray-600 rounded p-2"
+                            className="w-full border border-gray-300 dark:border-slate-700 rounded-2xl p-3 bg-white/90 dark:bg-slate-950/70"
                             value={statusBySession[session.id] || session.status}
                             onChange={(e) =>
                               setStatusBySession((prev) => ({
@@ -225,7 +236,7 @@ export const SessionsPage = () => {
 
                           <label className="text-sm font-medium text-gray-700">Session Notes</label>
                           <textarea
-                            className="w-full border border-gray-300 dark:border-gray-600 rounded p-2"
+                            className="w-full border border-gray-300 dark:border-slate-700 rounded-2xl p-3 bg-white/90 dark:bg-slate-950/70"
                             rows="3"
                             placeholder="Add session notes..."
                             value={notesBySession[session.id] !== undefined ? notesBySession[session.id] : (session.notes || '')}
@@ -274,26 +285,26 @@ export const SessionsPage = () => {
       </Card>
 
       {isTherapist ? (
-        <Card>
+        <Card className="stagger-fade delay-3">
           <CardHeader>
             <h2 className="text-xl font-bold text-gray-900">Client Groups</h2>
           </CardHeader>
           <CardBody className="space-y-6">
             <form onSubmit={createGroup} className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <input
-                className="border border-gray-300 dark:border-gray-600 rounded p-2"
+                className="border border-gray-300 dark:border-slate-700 rounded-2xl p-3 bg-white/90 dark:bg-slate-950/70"
                 placeholder="Group name (e.g. Anxiety Support)"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
               />
               <input
-                className="border border-gray-300 dark:border-gray-600 rounded p-2"
+                className="border border-gray-300 dark:border-slate-700 rounded-2xl p-3 bg-white/90 dark:bg-slate-950/70"
                 placeholder="Care focus (e.g. CBT)"
                 value={groupCareFocus}
                 onChange={(e) => setGroupCareFocus(e.target.value)}
               />
               <input
-                className="border border-gray-300 dark:border-gray-600 rounded p-2"
+                className="border border-gray-300 dark:border-slate-700 rounded-2xl p-3 bg-white/90 dark:bg-slate-950/70"
                 placeholder="Description"
                 value={groupDescription}
                 onChange={(e) => setGroupDescription(e.target.value)}
@@ -313,7 +324,7 @@ export const SessionsPage = () => {
                   const memberIds = new Set((group.members || []).map((m) => m.id));
                   const availableToAdd = clientsList.filter((client) => !memberIds.has(client.id));
                   return (
-                    <div key={group.id} className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                    <div key={group.id} className="border border-gray-200 dark:border-slate-700 rounded-[24px] p-4 bg-gray-50/90 dark:bg-slate-900/80">
                       <div className="mb-3">
                         <p className="font-semibold text-gray-900">{group.name}</p>
                         {group.care_focus ? (
@@ -326,7 +337,7 @@ export const SessionsPage = () => {
 
                       <div className="flex flex-col md:flex-row gap-2 md:items-center mb-3">
                         <select
-                          className="border border-gray-300 dark:border-gray-600 rounded p-2 flex-1"
+                          className="border border-gray-300 dark:border-slate-700 rounded-2xl p-3 flex-1 bg-white/90 dark:bg-slate-950/70"
                           value={selectedClientByGroup[group.id] || ''}
                           onChange={(e) =>
                             setSelectedClientByGroup((prev) => ({
@@ -356,7 +367,7 @@ export const SessionsPage = () => {
                       ) : (
                         <div className="space-y-2">
                           {group.members.map((member) => (
-                            <div key={member.id} className="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded p-2">
+                            <div key={member.id} className="flex items-center justify-between bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-700 rounded-2xl p-3">
                               <div>
                                 <p className="text-sm font-medium text-gray-900">
                                   {member.first_name} {member.last_name}
@@ -385,6 +396,7 @@ export const SessionsPage = () => {
           </CardBody>
         </Card>
       ) : null}
+      </div>
     </div>
   );
 };

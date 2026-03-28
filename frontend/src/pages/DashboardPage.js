@@ -8,12 +8,21 @@ import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Loading } from '../components/common/Loading';
 import { Alert } from '../components/common/Alert';
+import { Logo } from '../components/common/Logo';
 import { assessmentService, sessionService, postService, careerService } from '../services/api';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
   const isTherapist = user?.role === 'therapist';
   const isMentor = user?.role === 'mentor';
+  const pageShellClass =
+    'min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/70';
+  const panelClass =
+    'border border-white/70 dark:border-slate-800/80 bg-white/88 dark:bg-slate-950/78 backdrop-blur-xl shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:shadow-[0_20px_60px_rgba(2,6,23,0.42)]';
+  const softPanelClass =
+    'border border-white/60 dark:border-slate-800/70 bg-white/80 dark:bg-slate-900/78 backdrop-blur-xl shadow-[0_18px_48px_rgba(15,23,42,0.07)] dark:shadow-[0_18px_48px_rgba(2,6,23,0.36)]';
+  const badgeClass =
+    'text-xs font-semibold px-3 py-1 rounded-full bg-white/70 dark:bg-slate-900/80 border border-white/70 dark:border-slate-700/80 text-slate-600 dark:text-slate-300';
 
   const [postTitle, setPostTitle] = React.useState('');
   const [postContent, setPostContent] = React.useState('');
@@ -206,15 +215,28 @@ export const DashboardPage = () => {
 
   if (isTherapist) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className={pageShellClass}>
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900">Therapy Dashboard</h1>
-            <p className="text-gray-600 mt-2">A focused workspace for client care, session planning, and therapy coordination.</p>
+          <div className={`mb-8 rounded-[32px] p-6 md:p-8 ${panelClass}`}>
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+              <div>
+                <div className="mb-4">
+                  <Logo size="sm" />
+                </div>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-50">Therapy Dashboard</h1>
+                <p className="text-gray-600 dark:text-slate-300 mt-2 max-w-2xl">
+                  A focused workspace for client care, session planning, and therapy coordination.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <span className={badgeClass}>Clinical Workspace</span>
+                <span className={badgeClass}>Client Care</span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <Card className="lg:col-span-2 border-0 overflow-hidden shadow-xl">
+            <Card className={`lg:col-span-2 border-0 overflow-hidden ${panelClass}`}>
               <CardBody className="p-0">
                 <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-teal-700 px-6 py-7 text-white">
                   <div className="flex flex-wrap items-start justify-between gap-4">
@@ -252,23 +274,23 @@ export const DashboardPage = () => {
               </CardBody>
             </Card>
 
-            <Card className="border-blue-200 bg-gradient-to-b from-blue-50 to-white">
+            <Card className={softPanelClass}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-blue-900">Practice Pulse</h2>
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-700">Today</span>
+                    <span className={badgeClass}>Today</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-3">
-                <div className="rounded-lg bg-blue-50 px-4 py-3">
+                <div className="rounded-2xl bg-blue-50 dark:bg-blue-950/40 px-4 py-3">
                   <p className="text-xs text-gray-600">Pending Sessions</p>
                   <p className="text-2xl font-bold text-blue-700">{therapistPendingSessions}</p>
                 </div>
-                <div className="rounded-lg bg-emerald-50 px-4 py-3">
+                <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3">
                   <p className="text-xs text-gray-600">Completed Sessions</p>
                   <p className="text-2xl font-bold text-emerald-700">{therapistCompletedSessions}</p>
                 </div>
-                <div className="rounded-lg bg-cyan-50 px-4 py-3">
+                <div className="rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 px-4 py-3">
                   <p className="text-xs text-gray-600">Group Memberships</p>
                   <p className="text-2xl font-bold text-cyan-700">{therapistGroupMembers}</p>
                 </div>
@@ -280,11 +302,11 @@ export const DashboardPage = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <Card className="lg:col-span-7 border-indigo-200 bg-gradient-to-b from-indigo-50 to-white">
+            <Card className={`lg:col-span-7 ${softPanelClass}`}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-indigo-900">Upcoming Schedule</h2>
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-indigo-100 text-indigo-700">Sessions</span>
+                    <span className={badgeClass}>Sessions</span>
                 </div>
               </CardHeader>
               <CardBody>
@@ -301,7 +323,7 @@ export const DashboardPage = () => {
                       const sessionDate = start ? new Date(start) : null;
                       const displayName = `${session.first_name || ''} ${session.last_name || ''}`.trim() || 'Client';
                       return (
-                        <div key={session.id} className="rounded-xl border border-indigo-100 bg-white px-4 py-4 shadow-sm">
+                        <div key={session.id} className="rounded-2xl border border-indigo-100 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-4 py-4 shadow-sm">
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                             <div>
                               <p className="font-semibold text-gray-900">{displayName}</p>
@@ -327,21 +349,21 @@ export const DashboardPage = () => {
             </Card>
 
             <div className="lg:col-span-5 space-y-6">
-              <Card className="border-emerald-200 bg-gradient-to-b from-emerald-50 to-white">
+              <Card className={softPanelClass}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-emerald-900">Client Network</h2>
-                    <span className="text-xs font-semibold px-2 py-1 rounded bg-emerald-100 text-emerald-700">Care</span>
+                    <span className={badgeClass}>Care</span>
                   </div>
                 </CardHeader>
                 <CardBody className="space-y-4">
                   <p className="text-sm text-gray-600">Monitor your current client load and how your care groups are distributed.</p>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 rounded bg-green-50">
+                    <div className="p-3 rounded-2xl bg-green-50 dark:bg-green-950/40">
                       <p className="text-xs text-gray-600">Active Clients</p>
                       <p className="text-2xl font-bold text-green-700">{therapistClients.length}</p>
                     </div>
-                    <div className="p-3 rounded bg-emerald-50">
+                    <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40">
                       <p className="text-xs text-gray-600">Care Groups</p>
                       <p className="text-2xl font-bold text-emerald-700">{therapistGroups.length}</p>
                     </div>
@@ -349,7 +371,7 @@ export const DashboardPage = () => {
                   {therapistCareFocusLabels.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {therapistCareFocusLabels.map((focus, index) => (
-                        <span key={`${focus}-${index}`} className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                        <span key={`${focus}-${index}`} className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300">
                           {focus}
                         </span>
                       ))}
@@ -363,7 +385,7 @@ export const DashboardPage = () => {
                 </CardBody>
               </Card>
 
-              <Card className="border-slate-200 bg-slate-900 text-white">
+              <Card className="border border-slate-800 bg-slate-900/95 text-white shadow-[0_20px_60px_rgba(2,6,23,0.42)]">
                 <CardHeader>
                   <h2 className="text-2xl font-bold">Care Priorities</h2>
                 </CardHeader>
@@ -391,19 +413,32 @@ export const DashboardPage = () => {
 
   if (isMentor) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className={pageShellClass}>
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900">Mentor Dashboard</h1>
-            <p className="text-gray-600 mt-2">Use dedicated mentor workspaces for career guidance and talent development.</p>
+          <div className={`mb-8 rounded-[32px] p-6 md:p-8 ${panelClass}`}>
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+              <div>
+                <div className="mb-4">
+                  <Logo size="sm" />
+                </div>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-50">Mentor Dashboard</h1>
+                <p className="text-gray-600 dark:text-slate-300 mt-2 max-w-2xl">
+                  Use dedicated mentor workspaces for career guidance and talent development.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <span className={badgeClass}>Guidance</span>
+                <span className={badgeClass}>Talent Growth</span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-purple-200 bg-gradient-to-b from-purple-50 to-white">
+            <Card className={softPanelClass}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-purple-900">Career Guidance Workspace</h2>
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-purple-100 text-purple-700">Separate Feature</span>
+                  <span className={badgeClass}>Separate Feature</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-4">
@@ -416,21 +451,21 @@ export const DashboardPage = () => {
               </CardBody>
             </Card>
 
-            <Card id="talent-development-section" className="border-emerald-200 bg-gradient-to-b from-emerald-50 to-white">
+            <Card id="talent-development-section" className={softPanelClass}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-emerald-900">Talent Development</h2>
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-emerald-100 text-emerald-700">Growth</span>
+                  <span className={badgeClass}>Growth</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-4">
                 <p className="text-sm text-gray-600">Develop mentee capabilities through milestones, skills tracking, and growth outcomes.</p>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 rounded bg-green-50">
+                  <div className="p-3 rounded-2xl bg-green-50 dark:bg-green-950/40">
                     <p className="text-xs text-gray-600">Tracked Milestones</p>
                     <p className="text-2xl font-bold text-green-700">{mentorProgressCount}</p>
                   </div>
-                  <div className="p-3 rounded bg-emerald-50">
+                  <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40">
                     <p className="text-xs text-gray-600">Resource Library</p>
                     <p className="text-2xl font-bold text-emerald-700">{mentorResources.length}</p>
                   </div>
@@ -455,23 +490,34 @@ export const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className={pageShellClass}>
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Welcome back, {user?.firstName}!</h1>
-          <p className="text-gray-600 mt-2">Your dashboard with all core actions fully working.</p>
+        <div className={`mb-8 rounded-[32px] p-6 md:p-8 ${panelClass}`}>
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div>
+              <div className="mb-4">
+                <Logo size="sm" />
+              </div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-50">Welcome back, {user?.firstName}!</h1>
+              <p className="text-gray-600 dark:text-slate-300 mt-2">Your dashboard with all core actions fully working.</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <span className={badgeClass}>Wellness Progress</span>
+              <span className={badgeClass}>Daily View</span>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card><CardBody><p className="text-gray-600 text-sm">Total Assessments</p><p className="text-3xl font-bold text-blue-600 mt-2">{assessmentStats?.totalAssessments || 0}</p></CardBody></Card>
-          <Card><CardBody><p className="text-gray-600 text-sm">Therapy Sessions</p><p className="text-3xl font-bold text-green-600 mt-2">{sessionsData.length}</p></CardBody></Card>
-          <Card><CardBody><p className="text-gray-600 text-sm">My Posts</p><p className="text-3xl font-bold text-purple-600 mt-2">{myPostsCount}</p></CardBody></Card>
-          <Card><CardBody><p className="text-gray-600 text-sm">Mood Streak</p><p className="text-3xl font-bold text-orange-600 mt-2">{assessmentStats?.moodStreak || 0}d</p></CardBody></Card>
+          <Card className={softPanelClass}><CardBody><p className="text-gray-600 dark:text-slate-300 text-sm">Total Assessments</p><p className="text-3xl font-bold text-blue-600 mt-2">{assessmentStats?.totalAssessments || 0}</p></CardBody></Card>
+          <Card className={softPanelClass}><CardBody><p className="text-gray-600 dark:text-slate-300 text-sm">Therapy Sessions</p><p className="text-3xl font-bold text-green-600 mt-2">{sessionsData.length}</p></CardBody></Card>
+          <Card className={softPanelClass}><CardBody><p className="text-gray-600 dark:text-slate-300 text-sm">My Posts</p><p className="text-3xl font-bold text-purple-600 mt-2">{myPostsCount}</p></CardBody></Card>
+          <Card className={softPanelClass}><CardBody><p className="text-gray-600 dark:text-slate-300 text-sm">Mood Streak</p><p className="text-3xl font-bold text-orange-600 mt-2">{assessmentStats?.moodStreak || 0}d</p></CardBody></Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <Card>
+            <Card className={softPanelClass}>
               <CardHeader><h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2></CardHeader>
               <CardBody className="space-y-3">
                 <Link to="/assessments"><Button variant="primary" fullWidth>Take an Assessment</Button></Link>
@@ -483,7 +529,7 @@ export const DashboardPage = () => {
           </div>
 
           <div>
-            <Card>
+            <Card className={softPanelClass}>
               <CardHeader><h2 className="text-xl font-bold text-gray-900">Upcoming Sessions</h2></CardHeader>
               <CardBody>
                 {sessionsLoading ? (
@@ -496,7 +542,7 @@ export const DashboardPage = () => {
                       const sessionStart = session.start_time || session.startTime;
                       const sessionDate = sessionStart ? new Date(sessionStart) : null;
                       return (
-                        <div key={session.id} className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-600">
+                        <div key={session.id} className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-2xl border-l-4 border-blue-600">
                           <p className="font-semibold text-gray-900">{`${session.first_name || ''} ${session.last_name || ''}`.trim() || 'Therapist'}</p>
                           <p className="text-sm text-gray-600 mt-1">{sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : 'Date pending'}</p>
                           <p className="text-sm text-blue-600 font-medium">{sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleTimeString() : 'Time pending'}</p>
@@ -512,7 +558,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <Card className="mb-8">
+        <Card className={`mb-8 ${softPanelClass}`}>
           <CardHeader>
             <h2 className="text-2xl font-bold text-gray-900">Career Path</h2>
           </CardHeader>
@@ -539,7 +585,7 @@ export const DashboardPage = () => {
           </CardBody>
         </Card>
 
-        <Card className="mb-8" id="post-section">
+        <Card className={`mb-8 ${softPanelClass}`} id="post-section">
           <CardHeader>
             <h2 className="text-2xl font-bold text-gray-900">Post to Community</h2>
             <p className="text-sm text-gray-600 mt-1">Posting is available directly on your dashboard once signed in.</p>
@@ -555,21 +601,21 @@ export const DashboardPage = () => {
             ) : null}
 
             <form onSubmit={handleDashboardPostSubmit} className="space-y-3">
-              <input className="w-full border border-gray-300 rounded p-2" placeholder="Post title" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
-              <select className="w-full border border-gray-300 rounded p-2" value={postType} onChange={(e) => setPostType(e.target.value)}>
+              <input className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3" placeholder="Post title" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
+              <select className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3" value={postType} onChange={(e) => setPostType(e.target.value)}>
                 <option value="story">Story</option>
                 <option value="creative">Creative</option>
                 <option value="inspiration">Inspiration</option>
                 <option value="question">Question</option>
                 <option value="art">Art</option>
               </select>
-              <textarea className="w-full border border-gray-300 rounded p-2" rows="4" placeholder="Share your thoughts..." value={postContent} onChange={(e) => setPostContent(e.target.value)} />
+              <textarea className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3" rows="4" placeholder="Share your thoughts..." value={postContent} onChange={(e) => setPostContent(e.target.value)} />
               <Button type="submit" variant="primary" loading={postSubmitting}>Publish Post</Button>
             </form>
           </CardBody>
         </Card>
 
-        <Card>
+        <Card className={softPanelClass}>
           <CardHeader>
             <h2 className="text-2xl font-bold text-gray-900">Recent Posts</h2>
           </CardHeader>
@@ -586,7 +632,7 @@ export const DashboardPage = () => {
                   const backendComments = Number(post.comments_count ?? post.comment_count ?? 0);
                   const comments = Math.max(backendComments, loadedComments.length);
                   return (
-                    <div key={post.id} className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                    <div key={post.id} className="p-4 border border-gray-200 dark:border-slate-700 rounded-2xl bg-gray-50/90 dark:bg-slate-900/80">
                       <p className="font-semibold text-gray-900">{post.title}</p>
                       <p className="text-sm text-gray-600 mt-1">
                         by {`${post.first_name || ''} ${post.last_name || ''}`.trim() || 'User'} - {new Date(post.created_at || post.createdAt).toLocaleDateString()}
@@ -604,7 +650,7 @@ export const DashboardPage = () => {
                           ) : (
                             <div className="space-y-2 mb-3">
                               {loadedComments.map((comment) => (
-                                <div key={comment.id} className="border rounded p-2 bg-white dark:bg-gray-800">
+                                <div key={comment.id} className="border border-gray-200 dark:border-slate-700 rounded-2xl p-3 bg-white dark:bg-slate-900">
                                   <p className="text-sm text-gray-700">{comment.content}</p>
                                   <p className="text-xs text-gray-500 mt-1">
                                     by {`${comment.first_name || ''} ${comment.last_name || ''}`.trim() || 'User'}
@@ -615,7 +661,7 @@ export const DashboardPage = () => {
                           )}
                           <div className="flex gap-2">
                             <input
-                              className="flex-1 border border-gray-300 rounded p-2"
+                              className="flex-1 border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3"
                               placeholder="Write a comment..."
                               value={commentTextByPost[post.id] || ''}
                               onChange={(e) => handleCommentChange(post.id, e.target.value)}
