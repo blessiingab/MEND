@@ -1,11 +1,16 @@
-const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
 const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Create database path
-const dbPath = path.join(__dirname, '../../', process.env.DB_NAME || 'mend.db');
+const configuredDbPath = process.env.DB_PATH || process.env.DB_NAME || 'mend.db';
+const dbPath = path.isAbsolute(configuredDbPath)
+  ? configuredDbPath
+  : path.resolve(__dirname, '../../', configuredDbPath);
+
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
 // Create database connection
 const db = new sqlite3.Database(dbPath, (err) => {

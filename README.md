@@ -165,8 +165,13 @@ http://localhost:3000
 
 ## Environment Variables
 
-##  Backen
-```
+### Backend
+
+Copy `backend/.env.example` to `backend/.env` and set production values for:
+
+- `JWT_SECRET`
+- `DB_PATH` when deploying with a persistent disk
+- `CLIENT_URL` only if the frontend is hosted on a different origin
 
 ### Frontend
 
@@ -206,11 +211,28 @@ The current app includes:
 
 ## Deployment Notes
 
-Typical deployment options:
+This repository is set up for a single-service deployment where the Express backend serves the built React frontend.
 
-- Frontend: Vercel or Netlify
-- Backend: Render, Railway, or VPS
-- Database: SQLite for lightweight deployment
+### Render Blueprint
+
+The included `render.yaml` deploys the app as one Node web service and mounts a persistent disk for SQLite.
+
+1. Push this repository to GitHub.
+2. In Render, create a new Blueprint instance from the repo.
+3. Confirm the generated `JWT_SECRET` and keep `DB_PATH=/var/data/mend.db`.
+4. Set `APP_URL` to your public Render URL after the first deploy if you want password reset links to use the deployed domain.
+5. Run `npm run db:seed` once from a Render shell only if you want demo users and sample content.
+
+### Generic Node Host
+
+Use these commands on hosts such as Render, Railway, or a VPS:
+
+```bash
+npm run deploy:prepare
+npm start
+```
+
+The backend serves `frontend/build` automatically in production, so the app can run behind a single public URL.
 
 ## Future Improvements
 

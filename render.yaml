@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: mend
+    runtime: node
+    plan: starter
+    buildCommand: npm run deploy:prepare
+    startCommand: npm run start:render
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: DB_PATH
+        value: /var/data/mend.db
+    disk:
+      name: mend-data
+      mountPath: /var/data
+      sizeGB: 1

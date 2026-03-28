@@ -5,11 +5,53 @@ const db = require('../config/database');
 const User = require('../models/User');
 const CreativePost = require('../models/CreativePost');
 
+const findPostByTitle = async (userId, title) => {
+  return db.get(
+    `SELECT id FROM creative_posts WHERE user_id = ? AND title = ? LIMIT 1`,
+    [userId, title]
+  );
+};
+
+const createPostIfMissing = async (postData) => {
+  const existingPost = await findPostByTitle(postData.userId, postData.title);
+
+  if (existingPost) {
+    console.log(`- Post "${postData.title}" already exists`);
+    return existingPost;
+  }
+
+  await CreativePost.create(postData);
+  console.log(`- Post "${postData.title}" created`);
+  return true;
+};
+
+const createCareerResourceIfMissing = async (resource) => {
+  const existingResource = await db.get(
+    `SELECT id FROM career_resources WHERE title = ? AND link = ? LIMIT 1`,
+    [resource.title, resource.link]
+  );
+
+  if (existingResource) {
+    console.log(`- Career resource "${resource.title}" already exists`);
+    return existingResource;
+  }
+
+  await db.run(
+    `
+      INSERT INTO career_resources (title, description, type, link, is_active, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+    `,
+    [resource.title, resource.description, resource.type, resource.link, resource.isActive]
+  );
+
+  console.log(`- Career resource "${resource.title}" created`);
+  return true;
+};
+
 const seedDatabase = async () => {
   try {
     console.log('Seeding database...');
 
-    // Create sample users (check if they exist first)
     let therapistUser = await User.findByEmail('therapist@mend.com');
     if (!therapistUser) {
       therapistUser = await User.create({
@@ -24,12 +66,11 @@ const seedDatabase = async () => {
         experienceYears: 8,
         licenseNumber: 'PSY12345'
       });
-      console.log('✓ Therapist user created');
+      console.log('- Therapist user created');
     } else {
-      console.log('✓ Therapist user already exists');
+      console.log('- Therapist user already exists');
     }
 
-    // Additional therapists
     const therapists = [
       {
         email: 'dr.michael.brown@mend.com',
@@ -94,12 +135,12 @@ const seedDatabase = async () => {
     ];
 
     for (const therapistData of therapists) {
-      let existingTherapist = await User.findByEmail(therapistData.email);
+      const existingTherapist = await User.findByEmail(therapistData.email);
       if (!existingTherapist) {
         await User.create(therapistData);
-        console.log(`✓ Therapist ${therapistData.firstName} ${therapistData.lastName} created`);
+        console.log(`- Therapist ${therapistData.firstName} ${therapistData.lastName} created`);
       } else {
-        console.log(`✓ Therapist ${therapistData.firstName} ${therapistData.lastName} already exists`);
+        console.log(`- Therapist ${therapistData.firstName} ${therapistData.lastName} already exists`);
       }
     }
 
@@ -112,9 +153,9 @@ const seedDatabase = async () => {
         lastName: 'Doe',
         role: 'user'
       });
-      console.log('✓ Regular user created');
+      console.log('- Regular user created');
     } else {
-      console.log('✓ Regular user already exists');
+      console.log('- Regular user already exists');
     }
 
     let mentorUser = await User.findByEmail('mentor@mend.com');
@@ -126,45 +167,66 @@ const seedDatabase = async () => {
         lastName: 'Chen',
         role: 'mentor'
       });
-      console.log('✓ Mentor user created');
+      console.log('- Mentor user created');
     } else {
-      console.log('✓ Mentor user already exists');
+      console.log('- Mentor user already exists');
     }
 
-    // Create sample posts
-    await CreativePost.create({
+    await createPostIfMissing({
       userId: regularUser.id,
       title: 'My Journey to Wellness',
       content: 'This is my personal story about overcoming anxiety and finding peace. It has been a long but rewarding journey.',
       type: 'story',
       thumbnail: 'https://via.placeholder.com/400x300'
     });
-    console.log('✓ Sample story post created');
 
-    await CreativePost.create({
+    await createPostIfMissing({
       userId: regularUser.id,
       title: 'Abstract Art Therapy',
       content: 'Art has been my form of expression and healing. This piece represents my inner peace.',
       type: 'art',
       thumbnail: 'https://via.placeholder.com/400x300'
     });
-    console.log('✓ Sample art post created');
 
-    // Create career resources
-    await db.run(`
-      INSERT INTO career_resources (title, description, type, link, is_active, created_at, updated_at)
-      VALUES
-        ('LinkedIn Learning', 'Online courses for career development', 'course', 'https://linkedin.com/learning', 1, datetime('now'), datetime('now')),
-        ('Udemy Courses', 'Affordable online education', 'course', 'https://udemy.com', 1, datetime('now'), datetime('now')),
-        ('Indeed Resume Guide', 'Guide to writing effective resumes', 'guide', 'https://indeed.com', 1, datetime('now'), datetime('now')),
-        ('Glassdoor Salary Data', 'Salary and company reviews', 'research', 'https://glassdoor.com', 1, datetime('now'), datetime('now'))
-    `);
-    console.log('✓ Career resources created');
+    const careerResources = [
+      {
+        title: 'LinkedIn Learning',
+        description: 'Online courses for career development',
+        type: 'course',
+        link: 'https://linkedin.com/learning',
+        isActive: 1
+      },
+      {
+        title: 'Udemy Courses',
+        description: 'Affordable online education',
+        type: 'course',
+        link: 'https://udemy.com',
+        isActive: 1
+      },
+      {
+        title: 'Indeed Resume Guide',
+        description: 'Guide to writing effective resumes',
+        type: 'guide',
+        link: 'https://indeed.com',
+        isActive: 1
+      },
+      {
+        title: 'Glassdoor Salary Data',
+        description: 'Salary and company reviews',
+        type: 'research',
+        link: 'https://glassdoor.com',
+        isActive: 1
+      }
+    ];
 
-    console.log('✅ Database seeding completed successfully');
+    for (const resource of careerResources) {
+      await createCareerResourceIfMissing(resource);
+    }
+
+    console.log('Database seeding completed successfully');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding database:', error.message);
+    console.error('Error seeding database:', error.message);
     process.exit(1);
   }
 };
