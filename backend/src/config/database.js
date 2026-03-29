@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const { DatabaseSync } = require('node:sqlite');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -13,64 +13,65 @@ const dbPath = path.isAbsolute(configuredDbPath)
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
 // Create database connection
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to SQLite database');
-  }
-});
+let db;
 
-// Enable foreign keys
-db.run('PRAGMA foreign_keys = ON');
+try {
+  db = new DatabaseSync(dbPath);
+  db.exec('PRAGMA foreign_keys = ON');
+  console.log('Connected to SQLite database');
+} catch (err) {
+  console.error('Error opening database:', err.message);
+  throw err;
+}
 
 // Promisify database operations for easier async/await usage
 const dbAsync = {
   run: (sql, params = []) => {
     return new Promise((resolve, reject) => {
-      db.run(sql, params, function(err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ id: this.lastID, changes: this.changes });
-        }
-      });
+      try {
+        const statement = db.prepare(sql);
+        const result = statement.run(...params);
+
+        resolve({
+          id: Number(result.lastInsertRowid),
+          changes: result.changes
+        });
+      } catch (err) {
+        reject(err);
+      }
     });
   },
 
   get: (sql, params = []) => {
     return new Promise((resolve, reject) => {
-      db.get(sql, params, (err, row) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(row);
-        }
-      });
+      try {
+        const statement = db.prepare(sql);
+        resolve(statement.get(...params));
+      } catch (err) {
+        reject(err);
+      }
     });
   },
 
   all: (sql, params = []) => {
     return new Promise((resolve, reject) => {
-      db.all(sql, params, (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      });
+      try {
+        const statement = db.prepare(sql);
+        resolve(statement.all(...params));
+      } catch (err) {
+        reject(err);
+      }
     });
   },
 
   close: () => {
     return new Promise((resolve, reject) => {
-      db.close((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
+      try {
+        db.close();
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 };

@@ -22,6 +22,7 @@ class AssessmentService {
 
     return {
       type: ASSESSMENTS.PHQ9,
+      answers,
       totalScore,
       severity,
       interpretation: this.getPHQ9Interpretation(totalScore)
@@ -45,6 +46,7 @@ class AssessmentService {
 
     return {
       type: ASSESSMENTS.GAD7,
+      answers,
       totalScore,
       severity,
       interpretation: this.getGAD7Interpretation(totalScore)

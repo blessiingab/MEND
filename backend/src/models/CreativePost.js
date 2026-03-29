@@ -6,13 +6,14 @@ const db = require('../config/database');
 class CreativePost {
   static async create(postData) {
     const { userId, title, content, type, thumbnail, status = 'published' } = postData;
+    const normalizedThumbnail = thumbnail ?? null;
 
     const query = `
       INSERT INTO creative_posts (user_id, title, content, type, thumbnail, status, likes, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'))
     `;
 
-    const result = await db.run(query, [userId, title, content, type, thumbnail, status]);
+    const result = await db.run(query, [userId, title, content, type, normalizedThumbnail, status]);
 
     // Get the created post
     const post = await db.get('SELECT id, user_id, title, content, type, status, likes, created_at FROM creative_posts WHERE id = ?', [result.id]);

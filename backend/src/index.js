@@ -24,20 +24,92 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const frontendBuildPath = path.resolve(__dirname, '../../frontend/build');
 const frontendIndexPath = path.join(frontendBuildPath, 'index.html');
-const allowedOrigins = (process.env.CLIENT_URL || '')
+const configuredOrigins = [process.env.CLIENT_URL, process.env.APP_URL, process.env.CORS_ORIGINS]
+  .filter(Boolean)
+  .join(',');
+const allowedOrigins = configuredOrigins
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
+const normalizedAllowedOrigins = new Set(
+  allowedOrigins
+    .map((origin) => {
+      try {
+        return new URL(origin).origin;
+      } catch (error) {
+        logger.warn('Ignoring invalid CORS origin configuration', { origin });
+        return null;
+      }
+    })
+    .filter(Boolean)
+);
+
+const isPrivateNetworkHost = (hostname) => {
+  if (!hostname) return false;
+
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') {
+    return true;
+  }
+
+  const octets = hostname.split('.').map((value) => Number(value));
+  if (octets.length !== 4 || octets.some((value) => Number.isNaN(value) || value < 0 || value > 255)) {
+    return false;
+  }
+
+  if (octets[0] === 10 || octets[0] === 127) {
+    return true;
+  }
+
+  if (octets[0] === 192 && octets[1] === 168) {
+    return true;
+  }
+
+  if (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) {
+    return true;
+  }
+
+  return octets[0] === 169 && octets[1] === 254;
+};
+
+const isDevelopmentOriginAllowed = (origin) => {
+  if (process.env.NODE_ENV === 'production') {
+    return false;
+  }
+
+  try {
+    const parsedOrigin = new URL(origin);
+    return ['http:', 'https:'].includes(parsedOrigin.protocol) && isPrivateNetworkHost(parsedOrigin.hostname);
+  } catch (error) {
+    return false;
+  }
+};
 
 // Middleware
 app.use(helmet());
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      if (!origin) {
         return callback(null, true);
       }
 
+      const normalizedOrigin = (() => {
+        try {
+          return new URL(origin).origin;
+        } catch (error) {
+          return origin;
+        }
+      })();
+
+      if (
+        normalizedAllowedOrigins.size === 0 ||
+        normalizedAllowedOrigins.has(normalizedOrigin) ||
+        isDevelopmentOriginAllowed(normalizedOrigin)
+      ) {
+        return callback(null, true);
+      }
+
+      logger.warn('Blocked request due to CORS origin', { origin: normalizedOrigin });
       return callback(new Error('Origin not allowed by CORS'));
     }
   })

@@ -96,7 +96,7 @@ The backend is built with:
 - Express.js
 - SQLite
 - JWT authentication
-- bcrypt password hashing
+- scrypt password hashing
 
 Main backend areas:
 
@@ -147,6 +147,8 @@ Backend default URL:
 http://localhost:5000
 ```
 
+The backend development server uses Node's built-in watch mode, so `npm run dev` works without a separate watcher dependency.
+
 ### 3. Start the frontend
 
 Open a new terminal and run:
@@ -169,15 +171,21 @@ http://localhost:3000
 
 Copy `backend/.env.example` to `backend/.env` and set production values for:
 
+- `PORT`
+- `NODE_ENV`
 - `JWT_SECRET`
 - `DB_PATH` when deploying with a persistent disk
 - `CLIENT_URL` only if the frontend is hosted on a different origin
+- `APP_URL` if you want password reset previews to use a custom origin
+- Use Node.js 22 or newer because the backend relies on the built-in `node:sqlite` module
 
 ### Frontend
 
 ```env
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_API_URL=/api
 ```
+
+The frontend now uses `/api` by default in both local development and deployed environments. In local development, `frontend/package.json` proxies `/api` requests to `http://localhost:5000`, so the browser and network behavior stay consistent.
 
 ## Available Scripts
 
@@ -219,9 +227,18 @@ The included `render.yaml` deploys the app as one Node web service and mounts a 
 
 1. Push this repository to GitHub.
 2. In Render, create a new Blueprint instance from the repo.
-3. Confirm the generated `JWT_SECRET` and keep `DB_PATH=/var/data/mend.db`.
+3. Confirm the generated `JWT_SECRET`, use Node.js 22+, and keep `DB_PATH=/var/data/mend.db`.
 4. Set `APP_URL` to your public Render URL after the first deploy if you want password reset links to use the deployed domain.
 5. Run `npm run db:seed` once from a Render shell only if you want demo users and sample content.
+
+### Seeded demo accounts
+
+If you run `npm run db:seed`, the following accounts are created for local testing:
+
+- `user@mend.com` / `UserPass123`
+- `therapist@mend.com` / `TherapistPass123`
+- `mentor@mend.com` / `MentorPass123`
+- `admin@mend.com` / `AdminPass123`
 
 ### Generic Node Host
 

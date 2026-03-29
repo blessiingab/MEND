@@ -172,6 +172,21 @@ const seedDatabase = async () => {
       console.log('- Mentor user already exists');
     }
 
+    let adminUser = await User.findByEmail('admin@mend.com');
+    if (!adminUser) {
+      adminUser = await User.create({
+        email: 'admin@mend.com',
+        password: 'AdminPass123',
+        firstName: 'MEND',
+        lastName: 'Admin',
+        role: 'admin',
+        bio: 'Platform administrator for moderation, analytics, and operational support.'
+      });
+      console.log('- Admin user created');
+    } else {
+      console.log('- Admin user already exists');
+    }
+
     await createPostIfMissing({
       userId: regularUser.id,
       title: 'My Journey to Wellness',

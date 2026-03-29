@@ -22,7 +22,6 @@ export const ProfilePage = () => {
     if (!values.lastName) errors.lastName = 'Last name is required';
     if (!values.email) errors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) errors.email = 'Email is invalid';
-    if (!values.phone) errors.phone = 'Phone is required';
     return errors;
   };
 
@@ -41,7 +40,6 @@ export const ProfilePage = () => {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      phone: user?.phone || '',
       bio: user?.bio || ''
     },
     async (values) => {
@@ -62,7 +60,7 @@ export const ProfilePage = () => {
       try {
         await changePassword(values.oldPassword, values.newPassword);
         setSuccessMessage('Password changed successfully!');
-        passwordForm.resetForm();
+        passwordForm.reset();
         setShowPasswordModal(false);
         setTimeout(() => setSuccessMessage(''), 3000);
       } catch (err) {
@@ -153,15 +151,6 @@ export const ProfilePage = () => {
                     required
                   />
 
-                  <Input
-                    label="Phone"
-                    name="phone"
-                    value={profileForm.values.phone}
-                    onChange={profileForm.handleChange}
-                    onBlur={profileForm.handleBlur}
-                    error={profileForm.touched.phone ? profileForm.errors.phone : ''}
-                  />
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Bio
@@ -187,7 +176,7 @@ export const ProfilePage = () => {
                     <Button
                       type="button"
                       variant="secondary"
-                      onClick={() => profileForm.resetForm()}
+                      onClick={() => profileForm.reset()}
                     >
                       Reset
                     </Button>

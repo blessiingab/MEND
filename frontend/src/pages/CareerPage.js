@@ -2,7 +2,20 @@
  * Career Guidance Page
  */
 import React, { useMemo, useState } from 'react';
-import { FaBriefcase, FaCompass, FaBookOpen, FaChartLine, FaBullseye, FaTasks } from 'react-icons/fa';
+import {
+  FaBookOpen,
+  FaBriefcase,
+  FaBullhorn,
+  FaBullseye,
+  FaChartLine,
+  FaChalkboardTeacher,
+  FaCode,
+  FaCompass,
+  FaHeartbeat,
+  FaPaintBrush,
+  FaPiggyBank,
+  FaTasks
+} from 'react-icons/fa';
 import { Card, CardBody, CardHeader } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge, Loading } from '../components/common/Loading';
@@ -15,7 +28,7 @@ const CAREER_PATHS = [
   {
     id: 1,
     title: 'Tech & Software',
-    icon: '??',
+    icon: <FaCode className="text-blue-600" />,
     roles: ['Software Engineer', 'Data Analyst', 'UI/UX Designer'],
     avgSalary: '$80k-$150k',
     starterGoal: 'Become a mid-level software engineer in 12 months'
@@ -23,7 +36,7 @@ const CAREER_PATHS = [
   {
     id: 2,
     title: 'Healthcare',
-    icon: '??',
+    icon: <FaHeartbeat className="text-emerald-600" />,
     roles: ['Nurse', 'Doctor', 'Therapist'],
     avgSalary: '$60k-$200k',
     starterGoal: 'Transition into a clinical healthcare role'
@@ -31,7 +44,7 @@ const CAREER_PATHS = [
   {
     id: 3,
     title: 'Business & Finance',
-    icon: '??',
+    icon: <FaPiggyBank className="text-amber-600" />,
     roles: ['Accountant', 'Financial Analyst', 'Business Manager'],
     avgSalary: '$50k-$180k',
     starterGoal: 'Move into an analyst role with stronger financial skills'
@@ -39,7 +52,7 @@ const CAREER_PATHS = [
   {
     id: 4,
     title: 'Education',
-    icon: '??',
+    icon: <FaChalkboardTeacher className="text-violet-600" />,
     roles: ['Teacher', 'Trainer', 'Counselor'],
     avgSalary: '$40k-$100k',
     starterGoal: 'Build a long-term path in teaching and training'
@@ -47,7 +60,7 @@ const CAREER_PATHS = [
   {
     id: 5,
     title: 'Creative & Arts',
-    icon: '??',
+    icon: <FaPaintBrush className="text-rose-600" />,
     roles: ['Graphic Designer', 'Copywriter', 'Content Creator'],
     avgSalary: '$35k-$120k',
     starterGoal: 'Build a professional creative portfolio and client base'
@@ -55,7 +68,7 @@ const CAREER_PATHS = [
   {
     id: 6,
     title: 'Sales & Marketing',
-    icon: '??',
+    icon: <FaBullhorn className="text-cyan-600" />,
     roles: ['Sales Manager', 'Marketing Specialist', 'Brand Manager'],
     avgSalary: '$45k-$150k',
     starterGoal: 'Progress into a strategic marketing role'

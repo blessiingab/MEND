@@ -2,7 +2,14 @@
  * Auth Controller - Handle authentication requests
  */
 const AuthService = require('../services/AuthService');
+const { USER_ROLES } = require('../config/constants');
 const { successResponse, errorResponse } = require('../utils/responseHandler');
+
+const PUBLIC_REGISTRATION_ROLES = new Set([
+  USER_ROLES.USER,
+  USER_ROLES.THERAPIST,
+  USER_ROLES.MENTOR
+]);
 
 class AuthController {
   static async register(req, res) {
@@ -23,6 +30,14 @@ class AuthController {
 
       if (!email || !password) {
         return errorResponse(res, 'Email and password are required', 400);
+      }
+
+      if (!PUBLIC_REGISTRATION_ROLES.has(role)) {
+        return errorResponse(
+          res,
+          'Invalid role selected. Public registration supports user, therapist, or mentor accounts.',
+          400
+        );
       }
 
       const result = await AuthService.register({
@@ -135,26 +150,23 @@ class AuthController {
 
   static async updateProfile(req, res) {
     try {
-      const { firstName, lastName, bio, phone } = req.body;
+      const { firstName, lastName, bio, profileImage } = req.body;
       const User = require('../models/User');
 
-      const updateData = {};
-      if (firstName) updateData.first_name = firstName;
-      if (lastName) updateData.last_name = lastName;
-      if (bio !== undefined) updateData.bio = bio;
-      if (phone !== undefined) updateData.phone = phone;
-
-      const user = await User.findById(req.user.id);
-      await user.update(updateData);
+      const user = await User.updateProfile(req.user.id, {
+        firstName,
+        lastName,
+        bio,
+        profileImage
+      });
 
       return successResponse(res, 'Profile updated successfully', {
         id: user.id,
         email: user.email,
-        firstName: updateData.first_name || user.first_name,
-        lastName: updateData.last_name || user.last_name,
+        firstName: user.first_name,
+        lastName: user.last_name,
         role: user.role,
-        bio: updateData.bio !== undefined ? updateData.bio : user.bio,
-        phone: updateData.phone !== undefined ? updateData.phone : user.phone,
+        bio: user.bio,
         profileImage: user.profile_image
       });
     } catch (error) {

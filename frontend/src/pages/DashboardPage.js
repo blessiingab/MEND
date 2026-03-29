@@ -213,6 +213,10 @@ export const DashboardPage = () => {
     }
   };
 
+  const scrollToPostComposer = () => {
+    document.getElementById('post-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   if (isTherapist) {
     return (
       <div className={pageShellClass}>
@@ -277,21 +281,21 @@ export const DashboardPage = () => {
             <Card className={softPanelClass}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-blue-900">Practice Pulse</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Practice Pulse</h2>
                     <span className={badgeClass}>Today</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-3">
                 <div className="rounded-2xl bg-blue-50 dark:bg-blue-950/40 px-4 py-3">
-                  <p className="text-xs text-gray-600">Pending Sessions</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-300">Pending Sessions</p>
                   <p className="text-2xl font-bold text-blue-700">{therapistPendingSessions}</p>
                 </div>
                 <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3">
-                  <p className="text-xs text-gray-600">Completed Sessions</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-300">Completed Sessions</p>
                   <p className="text-2xl font-bold text-emerald-700">{therapistCompletedSessions}</p>
                 </div>
                 <div className="rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 px-4 py-3">
-                  <p className="text-xs text-gray-600">Group Memberships</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-300">Group Memberships</p>
                   <p className="text-2xl font-bold text-cyan-700">{therapistGroupMembers}</p>
                 </div>
                 <Link to="/sessions">
@@ -305,7 +309,7 @@ export const DashboardPage = () => {
             <Card className={`lg:col-span-7 ${softPanelClass}`}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-indigo-900">Upcoming Schedule</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Upcoming Schedule</h2>
                     <span className={badgeClass}>Sessions</span>
                 </div>
               </CardHeader>
@@ -326,8 +330,8 @@ export const DashboardPage = () => {
                         <div key={session.id} className="rounded-2xl border border-indigo-100 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-4 py-4 shadow-sm">
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                             <div>
-                              <p className="font-semibold text-gray-900">{displayName}</p>
-                              <p className="text-sm text-gray-600 mt-1">
+                              <p className="font-semibold text-gray-900 dark:text-slate-50">{displayName}</p>
+                              <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">
                                 {sessionDate && !Number.isNaN(sessionDate.getTime())
                                   ? sessionDate.toLocaleString()
                                   : 'Session time pending'}
@@ -336,7 +340,7 @@ export const DashboardPage = () => {
                                 Status: {session.status || 'pending'}
                               </p>
                             </div>
-                            <div className="text-sm text-gray-600 md:text-right">
+                            <div className="text-sm text-gray-600 dark:text-slate-300 md:text-right">
                               <p>{session.notes ? `Notes: ${session.notes}` : 'No session notes yet.'}</p>
                             </div>
                           </div>
@@ -352,19 +356,19 @@ export const DashboardPage = () => {
               <Card className={softPanelClass}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-emerald-900">Client Network</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Client Network</h2>
                     <span className={badgeClass}>Care</span>
                   </div>
                 </CardHeader>
                 <CardBody className="space-y-4">
-                  <p className="text-sm text-gray-600">Monitor your current client load and how your care groups are distributed.</p>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">Monitor your current client load and how your care groups are distributed.</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 rounded-2xl bg-green-50 dark:bg-green-950/40">
-                      <p className="text-xs text-gray-600">Active Clients</p>
+                      <p className="text-xs text-gray-600 dark:text-slate-300">Active Clients</p>
                       <p className="text-2xl font-bold text-green-700">{therapistClients.length}</p>
                     </div>
                     <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40">
-                      <p className="text-xs text-gray-600">Care Groups</p>
+                      <p className="text-xs text-gray-600 dark:text-slate-300">Care Groups</p>
                       <p className="text-2xl font-bold text-emerald-700">{therapistGroups.length}</p>
                     </div>
                   </div>
@@ -377,7 +381,7 @@ export const DashboardPage = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-600">No care focus labels added to groups yet.</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-300">No care focus labels added to groups yet.</p>
                   )}
                   <Link to="/sessions">
                     <Button variant="outline" fullWidth>Manage Clients and Groups</Button>
@@ -437,12 +441,12 @@ export const DashboardPage = () => {
             <Card className={softPanelClass}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-purple-900">Career Guidance Workspace</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Career Guidance Workspace</h2>
                   <span className={badgeClass}>Separate Feature</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-slate-300">
                   Career guidance now lives in its own dedicated page so mentors can manage roadmaps, guidance records, and planning without mixing it into the dashboard.
                 </p>
                 <Link to="/career">
@@ -454,29 +458,29 @@ export const DashboardPage = () => {
             <Card id="talent-development-section" className={softPanelClass}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-emerald-900">Talent Development</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Talent Development</h2>
                   <span className={badgeClass}>Growth</span>
                 </div>
               </CardHeader>
               <CardBody className="space-y-4">
-                <p className="text-sm text-gray-600">Develop mentee capabilities through milestones, skills tracking, and growth outcomes.</p>
+                <p className="text-sm text-gray-600 dark:text-slate-300">Develop mentee capabilities through milestones, skills tracking, and growth outcomes.</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-3 rounded-2xl bg-green-50 dark:bg-green-950/40">
-                    <p className="text-xs text-gray-600">Tracked Milestones</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-300">Tracked Milestones</p>
                     <p className="text-2xl font-bold text-green-700">{mentorProgressCount}</p>
                   </div>
                   <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40">
-                    <p className="text-xs text-gray-600">Resource Library</p>
+                    <p className="text-xs text-gray-600 dark:text-slate-300">Resource Library</p>
                     <p className="text-2xl font-bold text-emerald-700">{mentorResources.length}</p>
                   </div>
                 </div>
-                <p className="text-sm text-emerald-800">Development Health Score: <strong>{assessmentStats?.averageScore || 0}%</strong></p>
+                <p className="text-sm text-emerald-800 dark:text-emerald-300">Development Health Score: <strong>{assessmentStats?.averageScore || 0}%</strong></p>
                 {mentorProgressItems.length > 0 ? (
-                  <p className="text-sm text-emerald-800">
+                  <p className="text-sm text-emerald-800 dark:text-emerald-300">
                     Latest Development Outcome: <strong>{mentorProgressItems[0].milestone || 'Milestone recorded'}</strong>
                   </p>
                 ) : (
-                  <p className="text-sm text-gray-600">No development milestones tracked yet.</p>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">No development milestones tracked yet.</p>
                 )}
                 <Link to="/talent-development">
                   <Button variant="outline" fullWidth>Open Talent Development Feature</Button>
@@ -518,11 +522,11 @@ export const DashboardPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2">
             <Card className={softPanelClass}>
-              <CardHeader><h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2></CardHeader>
+              <CardHeader><h2 className="text-2xl font-bold text-gray-900 dark:text-slate-50">Quick Actions</h2></CardHeader>
               <CardBody className="space-y-3">
                 <Link to="/assessments"><Button variant="primary" fullWidth>Take an Assessment</Button></Link>
                 <Link to="/sessions"><Button variant="secondary" fullWidth>Book Therapy Session</Button></Link>
-                <Button variant="outline" fullWidth>Create Post Below</Button>
+                <Button variant="outline" fullWidth onClick={scrollToPostComposer}>Create Post Below</Button>
                 <Link to="/career"><Button variant="success" fullWidth>Explore Career Path</Button></Link>
               </CardBody>
             </Card>
@@ -530,7 +534,7 @@ export const DashboardPage = () => {
 
           <div>
             <Card className={softPanelClass}>
-              <CardHeader><h2 className="text-xl font-bold text-gray-900">Upcoming Sessions</h2></CardHeader>
+              <CardHeader><h2 className="text-xl font-bold text-gray-900 dark:text-slate-50">Upcoming Sessions</h2></CardHeader>
               <CardBody>
                 {sessionsLoading ? (
                   <Loading message="Loading sessions..." />
@@ -543,8 +547,8 @@ export const DashboardPage = () => {
                       const sessionDate = sessionStart ? new Date(sessionStart) : null;
                       return (
                         <div key={session.id} className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-2xl border-l-4 border-blue-600">
-                          <p className="font-semibold text-gray-900">{`${session.first_name || ''} ${session.last_name || ''}`.trim() || 'Therapist'}</p>
-                          <p className="text-sm text-gray-600 mt-1">{sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : 'Date pending'}</p>
+                          <p className="font-semibold text-gray-900 dark:text-slate-50">{`${session.first_name || ''} ${session.last_name || ''}`.trim() || 'Therapist'}</p>
+                          <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">{sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleDateString() : 'Date pending'}</p>
                           <p className="text-sm text-blue-600 font-medium">{sessionDate && !Number.isNaN(sessionDate.getTime()) ? sessionDate.toLocaleTimeString() : 'Time pending'}</p>
                         </div>
                       );
@@ -560,7 +564,7 @@ export const DashboardPage = () => {
 
         <Card className={`mb-8 ${softPanelClass}`}>
           <CardHeader>
-            <h2 className="text-2xl font-bold text-gray-900">Career Path</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-50">Career Path</h2>
           </CardHeader>
           <CardBody>
             {careerLoading ? (
@@ -569,16 +573,16 @@ export const DashboardPage = () => {
               <Alert type="error" message={careerError} />
             ) : userCareerPath ? (
               <div className="space-y-2">
-                <p className="text-sm text-gray-700"><strong>Goal:</strong> {userCareerPath.career_goal || 'Not set'}</p>
-                <p className="text-sm text-gray-700"><strong>Current Role:</strong> {userCareerPath.current_role || 'Not set'}</p>
-                <p className="text-sm text-gray-700"><strong>Experience:</strong> {userCareerPath.experience || 'Not set'}</p>
+                <p className="text-sm text-gray-700 dark:text-slate-200"><strong>Goal:</strong> {userCareerPath.career_goal || 'Not set'}</p>
+                <p className="text-sm text-gray-700 dark:text-slate-200"><strong>Current Role:</strong> {userCareerPath.current_role || 'Not set'}</p>
+                <p className="text-sm text-gray-700 dark:text-slate-200"><strong>Experience:</strong> {userCareerPath.experience || 'Not set'}</p>
                 <div className="pt-2">
                   <Link to="/career"><Button variant="secondary">Update Career Path</Button></Link>
                 </div>
               </div>
             ) : (
               <div className="space-y-3">
-                <p className="text-sm text-gray-600">No saved career path yet.</p>
+                <p className="text-sm text-gray-600 dark:text-slate-300">No saved career path yet.</p>
                 <Link to="/career"><Button variant="success">Create Career Path</Button></Link>
               </div>
             )}
@@ -587,8 +591,8 @@ export const DashboardPage = () => {
 
         <Card className={`mb-8 ${softPanelClass}`} id="post-section">
           <CardHeader>
-            <h2 className="text-2xl font-bold text-gray-900">Post to Community</h2>
-            <p className="text-sm text-gray-600 mt-1">Posting is available directly on your dashboard once signed in.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-50">Post to Community</h2>
+            <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">Posting is available directly on your dashboard once signed in.</p>
           </CardHeader>
           <CardBody>
             {postMessage ? (
@@ -601,15 +605,15 @@ export const DashboardPage = () => {
             ) : null}
 
             <form onSubmit={handleDashboardPostSubmit} className="space-y-3">
-              <input className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3" placeholder="Post title" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
-              <select className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3" value={postType} onChange={(e) => setPostType(e.target.value)}>
+              <input className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 rounded-2xl p-3" placeholder="Post title" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
+              <select className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 rounded-2xl p-3" value={postType} onChange={(e) => setPostType(e.target.value)}>
                 <option value="story">Story</option>
                 <option value="creative">Creative</option>
                 <option value="inspiration">Inspiration</option>
                 <option value="question">Question</option>
                 <option value="art">Art</option>
               </select>
-              <textarea className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3" rows="4" placeholder="Share your thoughts..." value={postContent} onChange={(e) => setPostContent(e.target.value)} />
+              <textarea className="w-full border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 rounded-2xl p-3" rows="4" placeholder="Share your thoughts..." value={postContent} onChange={(e) => setPostContent(e.target.value)} />
               <Button type="submit" variant="primary" loading={postSubmitting}>Publish Post</Button>
             </form>
           </CardBody>
@@ -617,7 +621,7 @@ export const DashboardPage = () => {
 
         <Card className={softPanelClass}>
           <CardHeader>
-            <h2 className="text-2xl font-bold text-gray-900">Recent Posts</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-50">Recent Posts</h2>
           </CardHeader>
           <CardBody>
             {postsError ? (
@@ -633,14 +637,14 @@ export const DashboardPage = () => {
                   const comments = Math.max(backendComments, loadedComments.length);
                   return (
                     <div key={post.id} className="p-4 border border-gray-200 dark:border-slate-700 rounded-2xl bg-gray-50/90 dark:bg-slate-900/80">
-                      <p className="font-semibold text-gray-900">{post.title}</p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="font-semibold text-gray-900 dark:text-slate-50">{post.title}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">
                         by {`${post.first_name || ''} ${post.last_name || ''}`.trim() || 'User'} - {new Date(post.created_at || post.createdAt).toLocaleDateString()}
                       </p>
-                      <p className="text-sm text-gray-700 mt-2">{post.content}</p>
+                      <p className="text-sm text-gray-700 dark:text-slate-200 mt-2">{post.content}</p>
                       <div className="flex gap-5 mt-3">
-                        <button onClick={() => handleLikePost(post.id)} className="text-sm text-gray-700 hover:text-red-600">? {likes} Likes</button>
-                        <button onClick={() => toggleComments(post.id)} className="text-sm text-gray-700 hover:text-blue-600">?? {comments} Comments</button>
+                        <button onClick={() => handleLikePost(post.id)} className="text-sm text-gray-700 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400">Like {likes}</button>
+                        <button onClick={() => toggleComments(post.id)} className="text-sm text-gray-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400">Comments {comments}</button>
                       </div>
 
                       {expandedPosts.has(post.id) && (
@@ -651,8 +655,8 @@ export const DashboardPage = () => {
                             <div className="space-y-2 mb-3">
                               {loadedComments.map((comment) => (
                                 <div key={comment.id} className="border border-gray-200 dark:border-slate-700 rounded-2xl p-3 bg-white dark:bg-slate-900">
-                                  <p className="text-sm text-gray-700">{comment.content}</p>
-                                  <p className="text-xs text-gray-500 mt-1">
+                                  <p className="text-sm text-gray-700 dark:text-slate-200">{comment.content}</p>
+                                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
                                     by {`${comment.first_name || ''} ${comment.last_name || ''}`.trim() || 'User'}
                                   </p>
                                 </div>
@@ -661,7 +665,7 @@ export const DashboardPage = () => {
                           )}
                           <div className="flex gap-2">
                             <input
-                              className="flex-1 border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 rounded-2xl p-3"
+                              className="flex-1 border border-gray-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 rounded-2xl p-3"
                               placeholder="Write a comment..."
                               value={commentTextByPost[post.id] || ''}
                               onChange={(e) => handleCommentChange(post.id, e.target.value)}

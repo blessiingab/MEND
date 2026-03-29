@@ -25,6 +25,7 @@ const GAD7_SCORES = {
 const USER_ROLES = {
   USER: 'user',
   THERAPIST: 'therapist',
+  MENTOR: 'mentor',
   ADMIN: 'admin'
 };
 

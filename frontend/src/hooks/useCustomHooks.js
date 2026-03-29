@@ -1,7 +1,7 @@
 /**
  * Custom React Hooks
  */
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 /**
@@ -22,6 +22,12 @@ export const useFetch = (fetchFunction, dependencies = []) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const dependencyKey = JSON.stringify(dependencies);
+  const fetchFunctionRef = useRef(fetchFunction);
+
+  useEffect(() => {
+    fetchFunctionRef.current = fetchFunction;
+  }, [fetchFunction]);
 
   useEffect(() => {
     let isMounted = true;
@@ -29,7 +35,7 @@ export const useFetch = (fetchFunction, dependencies = []) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await fetchFunction();
+        const result = await fetchFunctionRef.current();
         if (isMounted) {
           setData(result);
           setError(null);
@@ -51,12 +57,12 @@ export const useFetch = (fetchFunction, dependencies = []) => {
     return () => {
       isMounted = false;
     };
-  }, dependencies);
+  }, [dependencyKey]);
 
   const refetch = async () => {
     try {
       setLoading(true);
-      const result = await fetchFunction();
+      const result = await fetchFunctionRef.current();
       setData(result);
       setError(null);
     } catch (err) {

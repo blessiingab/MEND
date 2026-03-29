@@ -1,12 +1,19 @@
 /**
  * Navigation Component
  */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useCustomHooks';
 import { useTheme } from '../../context/ThemeContext';
 import { Button } from './Button';
 import { Logo } from './Logo';
+
+const ROLE_LABELS = {
+  admin: 'Admin',
+  therapist: 'Therapist',
+  mentor: 'Mentor',
+  user: 'Member'
+};
 
 export const Navigation = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -15,31 +22,50 @@ export const Navigation = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const navLinks = useMemo(() => {
+    if (!isAuthenticated) {
+      return [{ label: 'Home', href: '/' }];
+    }
+
+    if (user?.role === 'admin') {
+      return [
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Admin', href: '/admin' },
+        { label: 'Profile', href: '/profile' }
+      ];
+    }
+
+    if (user?.role === 'therapist') {
+      return [
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Sessions', href: '/sessions' },
+        { label: 'Profile', href: '/profile' }
+      ];
+    }
+
+    if (user?.role === 'mentor') {
+      return [
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Career', href: '/career' },
+        { label: 'Talent Development', href: '/talent-development' },
+        { label: 'Profile', href: '/profile' }
+      ];
+    }
+
+    return [
+      { label: 'Dashboard', href: '/dashboard' },
+      { label: 'Community', href: '/community' },
+      { label: 'Assessments', href: '/assessments' },
+      { label: 'Sessions', href: '/sessions' },
+      { label: 'Career', href: '/career' },
+      { label: 'Profile', href: '/profile' }
+    ];
+  }, [isAuthenticated, user?.role]);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-
-  const navLinks = isAuthenticated
-    ? user?.role === 'therapist'
-      ? [
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Therapy', href: '/sessions' }
-        ]
-      : user?.role === 'mentor'
-        ? [
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Career Guidance', href: '/career' },
-            { label: 'Talent Development', href: '/talent-development' }
-          ]
-        : [
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Post', href: '/posts' },
-            { label: 'Assessments', href: '/assessments' },
-            { label: 'Therapy', href: '/sessions' },
-            { label: 'Career', href: '/career' }
-          ]
-    : [{ label: 'Home', href: '/' }];
 
   const isActive = (href) => {
     const [targetPath, targetHash] = href.split('#');
@@ -48,53 +74,49 @@ export const Navigation = () => {
       return pathname === targetPath && hash === `#${targetHash}`;
     }
 
-    if (targetPath === '/dashboard' && hash) {
-      return false;
-    }
-
-    return pathname === targetPath || pathname.startsWith(targetPath + '/');
+    return pathname === targetPath || pathname.startsWith(`${targetPath}/`);
   };
 
+  const initials = `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.trim() || 'M';
+
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
+    <nav className="sticky top-0 z-40 px-3 pt-3 sm:px-4">
+      <div className="mx-auto max-w-7xl rounded-[30px] border border-white/70 bg-white/82 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/72 dark:shadow-[0_18px_60px_rgba(2,6,23,0.45)]">
+        <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-5">
+          <Link to="/" className="min-w-0 shrink-0">
             <Logo size="sm" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`text-sm font-medium transition ${
-                  isActive(link.href)
-                    ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 pb-4'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 pb-4'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden flex-1 justify-center lg:flex">
+            <div className="flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-100/75 p-1.5 dark:border-slate-800 dark:bg-slate-900/80">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                    isActive(link.href)
+                      ? 'bg-white text-blue-700 shadow-sm dark:bg-slate-800 dark:text-blue-300'
+                      : 'text-slate-600 hover:text-blue-700 dark:text-slate-300 dark:hover:text-blue-300'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          {/* Right Section */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Theme Toggle */}
+          <div className="hidden items-center gap-3 md:flex">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-blue-500 dark:hover:text-blue-300"
               title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {isDarkMode ? (
-                <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 1.78a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.828 2.828a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.828 2.829a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM10 7a3 3 0 110 6 3 3 0 010-6zm-4.22-1.78a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414L5.78 5.22a1 1 0 010-1.414zm11.313 11.313a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm1.414-9.9a1 1 0 01-1.414 0l-.707-.707a1 1 0 111.414-1.414l.707.707a1 1 0 010 1.414zM17 11a1 1 0 110-2h1a1 1 0 110 2h-1zm-6 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM9 20a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zM5.64 7.64a1 1 0 01-1.414 0l-.707-.707a1 1 0 111.414-1.414l.707.707a1 1 0 010 1.414z" clipRule="evenodd" />
+                <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.95 2.636a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM17 9a1 1 0 110 2h-1a1 1 0 110-2h1zm-7 6a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.657-.343a1 1 0 011.414 0l.707.707A1 1 0 014.05 16.78l-.707-.707a1 1 0 010-1.414zM4 9a1 1 0 110 2H3a1 1 0 110-2h1zm1.05-4.95a1 1 0 010 1.414l-.707.707A1 1 0 112.93 4.757l.707-.707a1 1 0 011.414 0zM10 6a4 4 0 110 8 4 4 0 010-8zm7.07 8.757a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0z" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
               )}
@@ -102,109 +124,116 @@ export const Navigation = () => {
 
             {isAuthenticated ? (
               <>
-                <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {user?.role === 'admin' ? 'Admin' : user?.role === 'therapist' ? 'Therapist' : user?.role === 'mentor' ? 'Mentor (Talent Developer)' : 'User'}
+                <div className="hidden items-center gap-3 rounded-full border border-slate-200/90 bg-white/90 px-3 py-2 dark:border-slate-700 dark:bg-slate-900/80 xl:flex">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-teal-500 font-bold text-white shadow-[0_10px_22px_rgba(37,99,235,0.24)]">
+                    {initials}
+                  </div>
+                  <div className="pr-1">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                      {ROLE_LABELS[user?.role] || 'Member'}
                     </p>
                   </div>
-                  <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-                    {user?.firstName?.charAt(0)?.toUpperCase()}
-                  </div>
                 </div>
-                <Link to="/profile" className="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg transition">
-                  <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </Link>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleLogout}
-                >
+                <Button variant="secondary" size="sm" onClick={handleLogout} className="rounded-full px-5">
                   Logout
                 </Button>
               </>
             ) : (
-              <>
+              <div className="flex items-center gap-2">
                 <Link to="/login">
-                  <Button variant="secondary" size="sm">Login</Button>
+                  <Button variant="secondary" size="sm" className="rounded-full px-5">
+                    Login
+                  </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">Sign Up</Button>
+                  <Button size="sm" className="rounded-full px-5">
+                    Sign Up
+                  </Button>
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            <svg className="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <button
+              onClick={toggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200"
+              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkMode ? (
+                <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.95 2.636a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM17 9a1 1 0 110 2h-1a1 1 0 110-2h1zm-7 6a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.657-.343a1 1 0 011.414 0l.707.707A1 1 0 014.05 16.78l-.707-.707a1 1 0 010-1.414zM4 9a1 1 0 110 2H3a1 1 0 110-2h1zm1.05-4.95a1 1 0 010 1.414l-.707.707A1 1 0 112.93 4.757l.707-.707a1 1 0 011.414 0zM10 6a4 4 0 110 8 4 4 0 010-8zm7.07 8.757a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0z" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                </svg>
+              )}
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200"
+              aria-label="Toggle menu"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden pb-4 border-t border-gray-200 dark:border-gray-700">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`block py-2 px-4 text-sm font-medium ${
-                  isActive(link.href)
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-gray-800'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 mt-2 flex items-center gap-2">
-              {/* Mobile Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition flex-1 flex justify-center"
-                title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              >
-                {isDarkMode ? (
-                  <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 1.78a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.828 2.828a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.828 2.829a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM10 7a3 3 0 110 6 3 3 0 010-6zm-4.22-1.78a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414L5.78 5.22a1 1 0 010-1.414zm11.313 11.313a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm1.414-9.9a1 1 0 01-1.414 0l-.707-.707a1 1 0 111.414-1.414l.707.707a1 1 0 010 1.414zM17 11a1 1 0 110-2h1a1 1 0 110 2h-1zm-6 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM9 20a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zM5.64 7.64a1 1 0 01-1.414 0l-.707-.707a1 1 0 111.414-1.414l.707.707a1 1 0 010 1.414z" clipRule="evenodd" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                  </svg>
-                )}
-              </button>
-              <div className="flex-1">
-                {isAuthenticated ? (
-                  <Button
-                    variant="secondary"
-                    fullWidth
-                    size="sm"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </Button>
-                ) : (
-                  <div className="flex gap-2">
-                    <Link to="/login" className="flex-1">
-                      <Button className="w-full" variant="secondary" size="sm">Login</Button>
-                    </Link>
-                    <Link to="/register" className="flex-1">
-                      <Button className="w-full" size="sm">Sign Up</Button>
-                    </Link>
-                  </div>
-                )}
+          <div className="border-t border-slate-200/80 px-4 pb-4 pt-3 dark:border-slate-800/80 md:hidden">
+            {isAuthenticated && (
+              <div className="mb-3 rounded-[24px] border border-slate-200/80 bg-slate-50/85 p-3 dark:border-slate-800 dark:bg-slate-900/80">
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  {user?.firstName} {user?.lastName}
+                </p>
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                  {ROLE_LABELS[user?.role] || 'Member'}
+                </p>
               </div>
+            )}
+
+            <div className="flex flex-col gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                    isActive(link.href)
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-50/85 text-slate-700 dark:bg-slate-900/80 dark:text-slate-200'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-3">
+              {isAuthenticated ? (
+                <Button variant="secondary" fullWidth size="sm" onClick={handleLogout} className="rounded-2xl py-3">
+                  Logout
+                </Button>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="secondary" fullWidth size="sm" className="rounded-2xl py-3">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                    <Button fullWidth size="sm" className="rounded-2xl py-3">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}

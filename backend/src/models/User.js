@@ -2,7 +2,7 @@
  * User Model - Handles user-related database operations
  */
 const db = require('../config/database');
-const bcrypt = require('bcrypt');
+const passwordUtils = require('../utils/password');
 
 class User {
   static async create(userData) {
@@ -20,7 +20,7 @@ class User {
       experienceYears = null
     } = userData;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await passwordUtils.hashPassword(password);
 
     const query = `
       INSERT INTO users (
@@ -70,7 +70,7 @@ class User {
   }
 
   static async verifyPassword(plainPassword, hashedPassword) {
-    return await bcrypt.compare(plainPassword, hashedPassword);
+    return await passwordUtils.verifyPassword(plainPassword, hashedPassword);
   }
 
   static async updateProfile(userId, updates) {
@@ -94,7 +94,7 @@ class User {
   }
 
   static async updatePassword(userId, newPassword) {
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await passwordUtils.hashPassword(newPassword);
 
     const query = `
       UPDATE users

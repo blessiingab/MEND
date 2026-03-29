@@ -6,26 +6,27 @@ import React from 'react';
 export const Loading = ({ message = 'Loading...' }) => {
   return (
     <div className="flex flex-col items-center justify-center py-12">
-      <div className="relative w-12 h-12 mb-4">
-        <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-        <div className="absolute inset-0 border-4 border-transparent border-t-blue-600 rounded-full animate-spin"></div>
+      <div className="relative mb-4 h-14 w-14">
+        <div className="absolute inset-0 rounded-full border border-blue-100 bg-white/80 shadow-[0_12px_34px_rgba(37,99,235,0.14)] dark:border-slate-700 dark:bg-slate-950/75"></div>
+        <div className="absolute inset-[5px] rounded-full border-4 border-blue-100/80 dark:border-slate-700"></div>
+        <div className="absolute inset-[5px] animate-spin rounded-full border-4 border-transparent border-t-blue-600 border-r-teal-500"></div>
       </div>
-      <p className="text-gray-600">{message}</p>
+      <p className="text-sm font-medium text-slate-600 dark:text-slate-300">{message}</p>
     </div>
   );
 };
 
 export const Badge = ({ children, variant = 'primary', className = '' }) => {
   const variants = {
-    primary: 'bg-blue-100 text-blue-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    error: 'bg-red-100 text-red-800',
-    gray: 'bg-gray-100 text-gray-800'
+    primary: 'bg-blue-100/90 text-blue-800 dark:bg-blue-500/10 dark:text-blue-200',
+    success: 'bg-emerald-100/90 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-200',
+    warning: 'bg-amber-100/90 text-amber-800 dark:bg-amber-500/10 dark:text-amber-200',
+    error: 'bg-rose-100/90 text-rose-800 dark:bg-rose-500/10 dark:text-rose-200',
+    gray: 'bg-slate-100/90 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
   };
 
   return (
-    <span className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${variants[variant]} ${className}`}>
+    <span className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${variants[variant]} ${className}`}>
       {children}
     </span>
   );

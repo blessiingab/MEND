@@ -6,18 +6,20 @@ import React, { createContext, useState, useEffect } from 'react';
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage for saved preference
+  const getPreferredTheme = () => {
     const saved = localStorage.getItem('theme-mode');
     if (saved) {
       return saved === 'dark';
     }
-    // Default to light mode
-    return false;
+
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  };
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return getPreferredTheme();
   });
 
   useEffect(() => {
-    // Update DOM class and localStorage when theme changes
     const htmlElement = document.documentElement;
     if (isDarkMode) {
       htmlElement.classList.add('dark');
@@ -27,6 +29,40 @@ export const ThemeProvider = ({ children }) => {
       localStorage.setItem('theme-mode', 'light');
     }
   }, [isDarkMode]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    const handleSystemThemeChange = (event) => {
+      if (!localStorage.getItem('theme-mode')) {
+        setIsDarkMode(event.matches);
+      }
+    };
+
+    const handleStorageChange = (event) => {
+      if (event.key === 'theme-mode') {
+        setIsDarkMode(getPreferredTheme());
+      }
+    };
+
+    if (mediaQuery?.addEventListener) {
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+    } else if (mediaQuery?.addListener) {
+      mediaQuery.addListener(handleSystemThemeChange);
+    }
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      if (mediaQuery?.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      } else if (mediaQuery?.removeListener) {
+        mediaQuery.removeListener(handleSystemThemeChange);
+      }
+
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const toggleTheme = () => {
     setIsDarkMode(prev => !prev);

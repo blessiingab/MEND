@@ -6,19 +6,7 @@ import { clearAuth, getToken } from '../utils/auth';
 
 const resolveApiBaseUrl = () => {
   if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
-
-  if (typeof window !== 'undefined') {
-    const host = window.location.hostname;
-    const isLocalHost = host === 'localhost' || host === '127.0.0.1';
-
-    // Local development uses backend on port 5000.
-    if (isLocalHost) return 'http://localhost:5000/api';
-
-    // Deployed environments should call the same host's /api routes.
-    return `${window.location.origin}/api`;
-  }
-
-  return 'http://localhost:5000/api';
+  return '/api';
 };
 
 const API_BASE_URL = resolveApiBaseUrl();
@@ -68,8 +56,8 @@ apiClient.interceptors.response.use(
 export const authService = {
   register: (email, password, firstName, lastName, role = 'user', metadata = {}) =>
     apiClient.post('/auth/register', { email, password, firstName, lastName, role, ...metadata }),
-  login: (email, password, role = 'user') =>
-    apiClient.post('/auth/login', { email, password, role }),
+  login: (email, password) =>
+    apiClient.post('/auth/login', { email, password }),
   forgotPassword: (email, appUrl) =>
     apiClient.post('/auth/forgot-password', { email, appUrl }),
   resetPassword: (token, newPassword) =>

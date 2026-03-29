@@ -1,199 +1,173 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 /**
  * Home Page - Landing Page
  */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useCustomHooks';
+import {
+  FaArrowRight,
+  FaChartLine,
+  FaCheckCircle,
+  FaComments,
+  FaHeart,
+  FaMoon,
+  FaShieldAlt,
+  FaStethoscope,
+  FaSun,
+  FaUserMd,
+  FaUsers
+} from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
 import { Button } from '../components/common/Button';
 import { Card, CardBody } from '../components/common/Card';
 import { Logo } from '../components/common/Logo';
 
-const featureHighlights = [
-  { icon: '📊', title: 'Evidence-Based', text: 'Clinically validated assessments' },
-  { icon: '🔒', title: 'HIPAA Compliant', text: 'Your privacy is protected' },
-  { icon: '🌟', title: '24/7 Support', text: 'Access help anytime' }
-];
-
-const audiences = [
+const audienceCards = [
   {
-    icon: '👤',
     title: 'Individuals',
-    text: 'Access mental health assessments, therapy sessions, career guidance, and connect with our supportive community.',
-    accent: 'hover:border-blue-200 dark:hover:border-blue-500/60',
-    items: ['Self-assessment tools', 'Progress tracking', 'Community support', 'Career resources']
+    description: 'Get guided support across assessments, therapy, community, and career planning without stitching tools together yourself.',
+    icon: FaHeart,
+    accent: 'from-blue-600/15 via-sky-500/10 to-transparent',
+    items: ['Evidence-based check-ins', 'Visible progress history', 'Secure support journeys']
   },
   {
-    icon: '🩺',
     title: 'Therapists',
-    text: 'Licensed professionals can offer their expertise, manage sessions, and help clients on their healing journey.',
-    accent: 'hover:border-green-200 dark:hover:border-emerald-500/60',
-    items: ['Session management', 'Client progress tracking', 'Secure communication', 'Professional network']
+    description: 'Manage client sessions, group care, and follow-up notes from a workspace built to stay calm under real clinical work.',
+    icon: FaUserMd,
+    accent: 'from-emerald-600/15 via-teal-500/10 to-transparent',
+    items: ['Session coordination', 'Care group visibility', 'Protected communication']
   },
   {
-    icon: '🎓',
     title: 'Mentors',
-    text: 'Career mentors provide guidance and support to help individuals achieve their professional goals.',
-    accent: 'hover:border-purple-200 dark:hover:border-fuchsia-500/60',
-    items: ['Career counseling', 'Skill development', 'Goal setting', 'Professional networking']
+    description: 'Turn career guidance into structured growth with saved plans, milestones, and a clearer view of next steps.',
+    icon: FaChartLine,
+    accent: 'from-violet-600/15 via-fuchsia-500/10 to-transparent',
+    items: ['Career path templates', 'Actionable guidance', 'Progress milestones']
   }
 ];
 
-const platformFeatures = [
+const featureCards = [
   {
-    icon: '📊',
-    title: 'Mental Health Assessments',
-    text: 'Take evidence-based assessments like PHQ-9 and GAD-7 to understand your mental health status and track progress over time.'
+    title: 'Assess mental wellness',
+    description: 'Use PHQ-9 and GAD-7 flows with clearer scoring, fast history access, and progress that feels readable.',
+    icon: FaStethoscope
   },
   {
-    icon: '👨‍⚕️',
-    title: 'Professional Therapy',
-    text: 'Connect with licensed therapists and book personalized therapy sessions at your convenience through our secure platform.'
+    title: 'Coordinate real support',
+    description: 'Book therapy, manage schedules, and stay organized whether you are receiving care or delivering it.',
+    icon: FaUsers
   },
   {
-    icon: '🎨',
-    title: 'Creative Community',
-    text: 'Share your stories, express yourself through creative posts, and connect with others in our supportive, moderated community.'
+    title: 'Connect through community',
+    description: 'Share stories, creativity, and encouragement in a moderated space designed to feel steady and human.',
+    icon: FaComments
   },
   {
-    icon: '🚀',
-    title: 'Career Guidance',
-    text: 'Get personalized career recommendations, skill assessments, and guidance from experienced mentors to achieve your goals.'
-  },
-  {
-    icon: '📈',
-    title: 'Progress Analytics',
-    text: 'Monitor your mental health journey with detailed analytics, progress reports, and insights to celebrate your achievements.'
-  },
-  {
-    icon: '🔒',
-    title: 'Privacy & Security',
-    text: 'Your data is encrypted, HIPAA-compliant, and secure. We never share your personal information without explicit consent.'
+    title: 'Protect privacy by default',
+    description: 'Sensitive journeys need trust, so the platform emphasizes secure access and clear role-based experiences.',
+    icon: FaShieldAlt
   }
 ];
 
 const journeySteps = [
-  {
-    title: 'Create Account',
-    text: 'Sign up as a user, therapist, or mentor and complete your profile in minutes.'
-  },
-  {
-    title: 'Assess & Connect',
-    text: 'Take assessments, book therapy sessions, or start providing guidance based on your role.'
-  },
-  {
-    title: 'Track Progress',
-    text: 'Monitor your journey with detailed analytics and celebrate milestones along the way.'
-  },
-  {
-    title: 'Grow & Thrive',
-    text: 'Achieve your mental health and career goals with ongoing support from our community.'
-  }
+  'Create your account and choose the role that matches how you want to use MEND.',
+  'Start with an assessment, a therapy session, or a career guidance path.',
+  'Track your momentum over time with calmer dashboards and progress views.',
+  'Return to one place for care, insight, and community as your needs change.'
 ];
 
 const footerGroups = [
-  { title: 'Platform', items: ['Assessments', 'Therapy', 'Community', 'Career'] },
-  { title: 'Support', items: ['Help Center', 'Contact Us', 'Emergency', 'Resources'] },
-  { title: 'Legal', items: ['Privacy Policy', 'Terms of Service', 'HIPAA Compliance', 'Security'] }
+  { title: 'Platform', items: ['Assessments', 'Therapy', 'Community', 'Career Guidance'] },
+  { title: 'Experience', items: ['Secure Access', 'Role-Based Workflows', 'Progress Tracking', 'Dark Mode'] },
+  { title: 'Support', items: ['Help Center', 'Contact', 'Privacy', 'Terms'] }
 ];
 
-const socialLinks = ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'];
-
 export const HomePage = () => {
-  const { isAuthenticated } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const homeNavLinks = [
-    { label: 'Who We Serve', href: '#who-we-serve' },
-    { label: 'Features', href: '#features' },
-    { label: 'How It Works', href: '#how-it-works' }
-  ];
+  const homeNavLinks = useMemo(
+    () => [
+      { label: 'Who It Helps', href: '#audiences' },
+      { label: 'What You Get', href: '#features' },
+      { label: 'How It Flows', href: '#journey' }
+    ],
+    []
+  );
+
+  const renderCtas = () =>
+    (
+      <div className="flex flex-wrap gap-3">
+        <Link to="/register">
+          <Button size="lg" className="rounded-full px-7 py-4 text-base">
+            Start Free
+          </Button>
+        </Link>
+        <Link to="/login">
+          <Button variant="secondary" size="lg" className="rounded-full px-7 py-4 text-base">
+            Log In
+          </Button>
+        </Link>
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
-      <section className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-6 pb-16 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <nav className="sticky top-4 z-40 rounded-[28px] border border-white/60 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/75 backdrop-blur-xl shadow-[0_18px_60px_rgba(15,23,42,0.08)] dark:shadow-[0_18px_60px_rgba(2,6,23,0.45)]">
-            <div className="flex items-center justify-between px-4 sm:px-6 py-3">
-              <Link to="/" className="flex items-center min-w-0">
+    <div className="min-h-screen overflow-hidden bg-white dark:bg-slate-950">
+      <section className="relative isolate border-b border-slate-200/70 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.12),transparent_24%),radial-gradient(circle_at_top_right,rgba(20,184,166,0.1),transparent_22%),linear-gradient(180deg,#f8fbff_0%,#eef4ff_46%,#ffffff_100%)] pb-20 pt-6 dark:border-slate-800/70 dark:bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.18),transparent_24%),radial-gradient(circle_at_top_right,rgba(13,148,136,0.12),transparent_22%),linear-gradient(180deg,#07111f_0%,#0f172a_48%,#111827_100%)]">
+        <div className="mx-auto mb-12 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <nav className="sticky top-4 z-30 rounded-[30px] border border-white/70 bg-white/82 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/74 dark:shadow-[0_18px_60px_rgba(2,6,23,0.45)]">
+            <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-6">
+              <Link to="/" className="min-w-0">
                 <Logo size="sm" />
               </Link>
 
-              <div className="hidden lg:flex items-center gap-2 rounded-full bg-slate-100/80 dark:bg-slate-900/80 px-2 py-2">
+              <div className="hidden items-center gap-2 rounded-full border border-slate-200/80 bg-slate-100/75 p-1.5 lg:flex dark:border-slate-800 dark:bg-slate-900/80">
                 {homeNavLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:text-blue-700 dark:text-slate-300 dark:hover:text-blue-300"
                   >
                     {link.label}
                   </a>
                 ))}
               </div>
 
-              <div className="hidden md:flex items-center gap-3">
+              <div className="hidden items-center gap-3 md:flex">
                 <button
                   onClick={toggleTheme}
-                  className="h-11 w-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 hover:border-blue-300 dark:hover:border-blue-500 transition-colors flex items-center justify-center"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-blue-500 dark:hover:text-blue-300"
                   title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
-                  {isDarkMode ? (
-                    <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.95 2.636a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM17 9a1 1 0 110 2h-1a1 1 0 110-2h1zm-7 6a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.657-.343a1 1 0 011.414 0l.707.707A1 1 0 014.05 16.78l-.707-.707a1 1 0 010-1.414zM4 9a1 1 0 110 2H3a1 1 0 110-2h1zm1.05-4.95a1 1 0 010 1.414l-.707.707A1 1 0 112.93 4.757l.707-.707a1 1 0 011.414 0zM10 6a4 4 0 110 8 4 4 0 010-8zm7.07 8.757a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                    </svg>
-                  )}
+                  {isDarkMode ? <FaSun className="h-4 w-4 text-amber-400" /> : <FaMoon className="h-4 w-4" />}
                 </button>
-
-                {isAuthenticated ? (
-                  <Link to="/dashboard">
-                    <Button size="sm" className="rounded-full px-5 py-3 shadow-lg shadow-blue-500/20">
-                      Dashboard
+                <>
+                  <Link to="/login">
+                    <Button variant="secondary" size="sm" className="rounded-full px-5">
+                      Login
                     </Button>
                   </Link>
-                ) : (
-                  <>
-                    <Link to="/login">
-                      <Button variant="secondary" size="sm" className="rounded-full px-5 py-3 bg-white/80 dark:bg-slate-900/80">
-                        Login
-                      </Button>
-                    </Link>
-                    <Link to="/register">
-                      <Button size="sm" className="rounded-full px-5 py-3 shadow-lg shadow-blue-500/20">
-                        Sign Up
-                      </Button>
-                    </Link>
-                  </>
-                )}
+                  <Link to="/register">
+                    <Button size="sm" className="rounded-full px-5">
+                      Join MEND
+                    </Button>
+                  </Link>
+                </>
               </div>
 
-              <div className="md:hidden flex items-center gap-2">
+              <div className="flex items-center gap-2 md:hidden">
                 <button
                   onClick={toggleTheme}
-                  className="h-10 w-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200"
                   title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
-                  {isDarkMode ? (
-                    <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.95 2.636a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM17 9a1 1 0 110 2h-1a1 1 0 110-2h1zm-7 6a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.657-.343a1 1 0 011.414 0l.707.707A1 1 0 014.05 16.78l-.707-.707a1 1 0 010-1.414zM4 9a1 1 0 110 2H3a1 1 0 110-2h1zm1.05-4.95a1 1 0 010 1.414l-.707.707A1 1 0 112.93 4.757l.707-.707a1 1 0 011.414 0zM10 6a4 4 0 110 8 4 4 0 010-8zm7.07 8.757a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                    </svg>
-                  )}
+                  {isDarkMode ? <FaSun className="h-4 w-4 text-amber-400" /> : <FaMoon className="h-4 w-4" />}
                 </button>
                 <button
                   onClick={() => setMobileMenuOpen((open) => !open)}
-                  className="h-10 w-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200"
                   aria-label="Toggle menu"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7h16M4 12h16M4 17h16" />
                   </svg>
                 </button>
@@ -201,222 +175,139 @@ export const HomePage = () => {
             </div>
 
             {mobileMenuOpen && (
-              <div className="md:hidden border-t border-slate-200/80 dark:border-slate-800/80 px-4 pb-4 pt-3">
+              <div className="border-t border-slate-200/80 px-4 pb-4 pt-3 dark:border-slate-800/80 md:hidden">
                 <div className="flex flex-col gap-2">
                   {homeNavLinks.map((link) => (
                     <a
                       key={link.href}
                       href={link.href}
-                      className="rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-50/90 dark:bg-slate-900/80"
                       onClick={() => setMobileMenuOpen(false)}
+                      className="rounded-2xl bg-slate-50/90 px-4 py-3 text-sm font-semibold text-slate-700 dark:bg-slate-900/80 dark:text-slate-200"
                     >
                       {link.label}
                     </a>
                   ))}
                 </div>
-                <div className="mt-3 flex gap-2">
-                  {isAuthenticated ? (
-                    <Link to="/dashboard" className="flex-1">
-                      <Button fullWidth size="sm" className="rounded-2xl py-3">
-                        Dashboard
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <>
+                    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="secondary" fullWidth size="sm" className="rounded-2xl py-3">
+                        Login
                       </Button>
                     </Link>
-                  ) : (
-                    <>
-                      <Link to="/login" className="flex-1">
-                        <Button variant="secondary" fullWidth size="sm" className="rounded-2xl py-3 bg-white/80 dark:bg-slate-900/80">
-                          Login
-                        </Button>
-                      </Link>
-                      <Link to="/register" className="flex-1">
-                        <Button fullWidth size="sm" className="rounded-2xl py-3">
-                          Sign Up
-                        </Button>
-                      </Link>
-                    </>
-                  )}
+                    <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                      <Button fullWidth size="sm" className="rounded-2xl py-3">
+                        Join MEND
+                      </Button>
+                    </Link>
+                  </>
                 </div>
               </div>
             )}
           </nav>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-8">
-              <Logo size="lg" />
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-slate-50 mb-6 leading-tight">
-              Your Mental Health
-              <span className="text-blue-600 dark:text-blue-400 block">Journey Starts Here</span>
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+          <div className="relative z-10 pt-4">
+            <span className="eyebrow-pill">
+              <FaCheckCircle className="h-3.5 w-3.5" />
+              Care and growth in one place
+            </span>
+            <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.96] text-slate-950 dark:text-slate-50 md:text-7xl">
+              Mental wellness that keeps up with real life.
             </h1>
-            <p className="text-xl text-gray-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              MEND provides comprehensive mental health support through evidence-based assessments,
-              professional therapy sessions, career guidance, and a supportive community, all in one
-              secure platform.
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300 md:text-xl">
+              MEND brings together assessments, therapy coordination, community support, and career guidance in a calmer experience that feels built for people, not just pages.
             </p>
 
-            <div className="flex gap-4 justify-center flex-wrap mb-12">
-              {isAuthenticated ? (
-                <Link to="/dashboard">
-                  <Button variant="primary" size="lg" className="px-8 py-4 text-lg">
-                    Continue to Dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to="/register">
-                    <Button variant="primary" size="lg" className="px-8 py-4 text-lg">
-                      Start Your Journey Free
-                    </Button>
-                  </Link>
-                  <Link to="/login">
-                    <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-                      Sign In
-                    </Button>
-                  </Link>
-                </>
-              )}
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              {renderCtas()}
+              <a
+                href="#features"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 transition hover:text-blue-700 dark:text-slate-300 dark:hover:text-blue-300"
+              >
+                Explore the platform
+                <FaArrowRight className="h-3.5 w-3.5" />
+              </a>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
-              {featureHighlights.map((item) => (
+            <div className="mt-10 grid max-w-2xl gap-4 sm:grid-cols-3">
+              {[
+                ['2', 'validated assessments'],
+                ['3', 'core user journeys'],
+                ['1', 'connected support hub']
+              ].map(([value, label], index) => (
                 <div
-                  key={item.title}
-                  className="bg-white dark:bg-slate-900/80 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-800"
+                  key={label}
+                  className={`stagger-fade rounded-[24px] border border-white/70 bg-white/78 p-4 shadow-[0_16px_40px_rgba(15,23,42,0.06)] backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/70 ${index === 1 ? 'delay-1' : index === 2 ? 'delay-2' : ''}`}
                 >
-                  <div className="text-3xl mb-2">{item.icon}</div>
-                  <div className="font-semibold text-gray-900 dark:text-slate-100">{item.title}</div>
-                  <div className="text-sm text-gray-600 dark:text-slate-400">{item.text}</div>
+                  <p className="text-3xl font-black text-slate-950 dark:text-slate-50">{value}</p>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{label}</p>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      <section id="who-we-serve" className="py-16 bg-gray-50 dark:bg-slate-900 scroll-mt-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-50 mb-4">Who We Serve</h2>
-            <p className="text-lg text-gray-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Join our diverse community of individuals seeking mental wellness and professionals
-              dedicated to helping others.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {audiences.map((audience) => (
-              <Card
-                key={audience.title}
-                className={`text-center border-2 border-gray-200 dark:border-slate-800 dark:bg-slate-950 ${audience.accent} transition-colors`}
-              >
-                <CardBody className="p-8">
-                  <div className="text-5xl mb-4">{audience.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-3">
-                    {audience.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-slate-300 mb-4">{audience.text}</p>
-                  <ul className="text-left text-sm text-gray-600 dark:text-slate-400 space-y-2">
-                    {audience.items.map((item) => (
-                      <li key={item}>- {item}</li>
-                    ))}
-                  </ul>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="features" className="py-16 bg-white dark:bg-slate-950 scroll-mt-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-50 mb-4">
-              Comprehensive Mental Health Platform
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Everything you need for mental wellness in one integrated platform.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {platformFeatures.map((feature) => (
-              <Card
-                key={feature.title}
-                hoverable
-                className="h-full border border-gray-200 dark:border-slate-800 dark:bg-slate-900/80"
-              >
-                <CardBody>
-                  <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-slate-300">{feature.text}</p>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="how-it-works" className="py-16 bg-gray-50 dark:bg-slate-900 scroll-mt-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-50 mb-4">How It Works</h2>
-            <p className="text-lg text-gray-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Getting started is simple. Follow these steps to begin your mental health journey.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {journeySteps.map((step, index) => (
-              <div key={step.title} className="text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg">
-                  {index + 1}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 dark:text-slate-300">{step.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      <section className="py-20 bg-white dark:bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-[36px] border border-blue-200/70 dark:border-slate-800 bg-gradient-to-br from-blue-600 via-sky-500 to-teal-500 text-white px-8 py-10 md:px-12 md:py-14 shadow-[0_28px_80px_rgba(37,99,235,0.26)]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.14),transparent_28%)]" />
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.5fr_0.8fr] gap-10 items-center">
-              <div>
-                <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em]">
-                  Start With Confidence
-                </span>
-                <h2 className="text-4xl md:text-5xl font-black mt-5 leading-tight">Ready to Start Your Journey?</h2>
-                <p className="text-lg md:text-xl mt-5 text-blue-50 max-w-2xl leading-relaxed">
-                  Join thousands of people who have transformed their mental health and career with MEND.
-                </p>
-              </div>
-
-              <div className="rounded-[28px] border border-white/20 bg-slate-950/16 backdrop-blur-md p-6">
-                <div className="space-y-4">
+          <div className="relative">
+            <div className="absolute -left-4 top-8 hidden h-28 w-28 rounded-full bg-blue-500/15 blur-3xl lg:block" />
+            <div className="absolute -right-4 bottom-12 hidden h-32 w-32 rounded-full bg-teal-500/15 blur-3xl lg:block" />
+            <div className="relative overflow-hidden rounded-[36px] border border-white/75 bg-slate-950 p-6 text-white shadow-[0_28px_80px_rgba(15,23,42,0.22)] dark:border-slate-800/80">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(125,211,252,0.24),transparent_20%),radial-gradient(circle_at_bottom_left,rgba(20,184,166,0.22),transparent_24%)]" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.24em] text-blue-100/80">What You Get</p>
-                    <p className="text-2xl font-bold mt-2">Care, guidance, and community in one place.</p>
+                    <p className="text-xs uppercase tracking-[0.26em] text-blue-100/80">MEND workspace</p>
+                    <h2 className="mt-3 text-2xl font-bold">From first check-in to steady momentum.</h2>
                   </div>
-                  <Link to="/register">
-                    <Button
-                      variant="secondary"
-                      size="lg"
-                      className="w-full px-8 py-4 text-lg bg-white text-blue-700 hover:bg-slate-100 dark:bg-slate-100 dark:text-blue-900 dark:hover:bg-slate-200"
-                    >
-                      Create Your Free Account
-                    </Button>
-                  </Link>
-                  <p className="text-sm text-blue-50/85">No credit card required - 14-day free trial</p>
+                  <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-blue-100">
+                    Always connected
+                  </span>
+                </div>
+
+                <div className="mt-8 grid gap-4">
+                  <div className="rounded-[28px] border border-white/10 bg-white/8 p-5 backdrop-blur-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm text-slate-300">Assessment pulse</p>
+                        <p className="mt-2 text-3xl font-black">Stable check-ins</p>
+                      </div>
+                      <div className="rounded-2xl bg-emerald-400/14 p-3 text-emerald-200">
+                        <FaStethoscope className="h-5 w-5" />
+                      </div>
+                    </div>
+                    <div className="mt-4 h-2 rounded-full bg-white/10">
+                      <div className="h-2 w-2/3 rounded-full bg-gradient-to-r from-sky-400 to-emerald-300" />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-[24px] border border-white/10 bg-white/8 p-5 backdrop-blur-sm">
+                      <p className="text-sm text-slate-300">Therapy flow</p>
+                      <p className="mt-2 text-xl font-bold">Sessions, notes, and follow-up in one loop.</p>
+                    </div>
+                    <div className="rounded-[24px] border border-white/10 bg-white/8 p-5 backdrop-blur-sm">
+                      <p className="text-sm text-slate-300">Career guidance</p>
+                      <p className="mt-2 text-xl font-bold">Move from advice to milestones you can track.</p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[28px] border border-white/10 bg-white/8 p-5 backdrop-blur-sm">
+                    <p className="text-sm text-slate-300">Why this redesign matters</p>
+                    <ul className="mt-4 space-y-3 text-sm text-slate-100">
+                      {[
+                        'Stronger visual hierarchy across landing, auth, and product surfaces.',
+                        'A cleaner navigation shell for signed-in roles.',
+                        'More polished cards, alerts, and inputs across the experience.'
+                      ].map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <span className="mt-0.5 rounded-full bg-white/15 p-1">
+                            <FaCheckCircle className="h-3.5 w-3.5 text-emerald-300" />
+                          </span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -424,31 +315,159 @@ export const HomePage = () => {
         </div>
       </section>
 
-      <footer className="relative overflow-hidden bg-slate-950 text-gray-300 py-16 dark:bg-slate-950 dark:text-slate-300">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(20,184,166,0.12),transparent_24%)]" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr] gap-10 mb-10">
-            <div className="rounded-[28px] border border-white/10 bg-white/5 backdrop-blur-md p-6">
-              <Logo size="md" className="mb-5" />
-              <p className="text-gray-400 dark:text-slate-400 text-sm leading-7">
-                Mental and Emotional Nurturing Digital - Your comprehensive mental health companion.
+      <section id="audiences" className="scroll-mt-28 bg-slate-50 py-20 dark:bg-slate-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 max-w-3xl">
+            <span className="eyebrow-pill">Who MEND helps</span>
+            <h2 className="mt-5 text-4xl font-black text-slate-950 dark:text-slate-50">Built for different roles without feeling fragmented.</h2>
+            <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
+              Each workflow now feels part of the same product language while still giving users, therapists, and mentors the tools that match their work.
+            </p>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {audienceCards.map((card, index) => {
+              const Icon = card.icon;
+
+              return (
+                <Card key={card.title} hoverable className={`stagger-fade bg-gradient-to-br ${card.accent} ${index === 1 ? 'delay-1' : index === 2 ? 'delay-2' : ''}`}>
+                  <CardBody className="space-y-5">
+                    <div className="inline-flex rounded-[22px] bg-slate-950 p-3 text-white shadow-[0_14px_28px_rgba(15,23,42,0.16)] dark:bg-slate-100 dark:text-slate-950">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-slate-950 dark:text-slate-50">{card.title}</h3>
+                      <p className="mt-3 leading-7 text-slate-600 dark:text-slate-300">{card.description}</p>
+                    </div>
+                    <div className="space-y-3">
+                      {card.items.map((item) => (
+                        <div key={item} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300">
+                          <span className="mt-0.5 rounded-full bg-blue-600/10 p-1 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300">
+                            <FaCheckCircle className="h-3.5 w-3.5" />
+                          </span>
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardBody>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="scroll-mt-28 bg-white py-20 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <span className="eyebrow-pill">What you get</span>
+              <h2 className="mt-5 text-4xl font-black text-slate-950 dark:text-slate-50">A steadier interface across the full support journey.</h2>
+              <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
+                The redesign sharpens hierarchy, improves readability, and brings the whole product into one clear visual system.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-200">Assess</span>
-                <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-semibold text-teal-200">Support</span>
-                <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-xs font-semibold text-violet-200">Grow</span>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              {featureCards.map((feature, index) => {
+                const Icon = feature.icon;
+
+                return (
+                  <Card key={feature.title} hoverable className={index % 2 === 1 ? 'sm:translate-y-8' : ''}>
+                    <CardBody className="space-y-4">
+                      <div className="inline-flex rounded-[22px] bg-gradient-to-br from-blue-600 to-teal-500 p-3 text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-950 dark:text-slate-50">{feature.title}</h3>
+                      <p className="leading-7 text-slate-600 dark:text-slate-300">{feature.description}</p>
+                    </CardBody>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="journey" className="scroll-mt-28 bg-slate-50 py-20 dark:bg-slate-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <span className="eyebrow-pill">How it flows</span>
+            <h2 className="mt-5 text-4xl font-black text-slate-950 dark:text-slate-50">A simpler path from arrival to progress.</h2>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {journeySteps.map((step, index) => (
+              <div
+                key={step}
+                className="rounded-[28px] border border-white/70 bg-white/82 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.07)] backdrop-blur-sm dark:border-slate-800/80 dark:bg-slate-950/76"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-teal-500 text-lg font-bold text-white shadow-[0_12px_24px_rgba(37,99,235,0.2)]">
+                  {index + 1}
+                </div>
+                <p className="mt-5 leading-7 text-slate-700 dark:text-slate-200">{step}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-20 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-[36px] border border-blue-200/70 bg-gradient-to-br from-blue-600 via-sky-500 to-teal-500 px-8 py-10 text-white shadow-[0_28px_80px_rgba(37,99,235,0.26)] dark:border-slate-800/70 md:px-12 md:py-14">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.14),transparent_28%)]" />
+            <div className="relative z-10 grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+              <div>
+                <span className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em]">
+                  Ready when you are
+                </span>
+                <h2 className="mt-5 text-4xl font-black leading-tight md:text-5xl">A better-looking MEND is only useful if it still feels easy to use.</h2>
+                <p className="mt-5 max-w-2xl text-lg leading-8 text-blue-50">
+                  The refreshed UI keeps the product grounded in clarity, role-based navigation, and flows that stay readable on desktop and mobile.
+                </p>
+              </div>
+
+              <div className="rounded-[28px] border border-white/20 bg-slate-950/16 p-6 backdrop-blur-md">
+                <div className="space-y-4">
+                  {[
+                    'Cleaner homepage story and stronger first impression',
+                    'More polished auth pages and shared component styling',
+                    'Navigation that better supports signed-in workflows'
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-3">
+                      <span className="mt-0.5 rounded-full bg-white/15 p-1.5">
+                        <FaCheckCircle className="h-4 w-4 text-emerald-200" />
+                      </span>
+                      <span className="text-sm text-blue-50">{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6">{renderCtas()}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="relative overflow-hidden bg-slate-950 py-16 text-slate-300">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(20,184,166,0.12),transparent_24%)]" />
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr_0.9fr_0.9fr]">
+            <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+              <Logo size="md" className="mb-5" />
+              <p className="max-w-sm text-sm leading-7 text-slate-400">
+                MEND stands for Mental and Emotional Nurturing Digital. The platform is designed to keep care, connection, and growth within reach.
+              </p>
             </div>
 
             {footerGroups.map((group) => (
               <div key={group.title}>
-                <h4 className="font-semibold text-white dark:text-slate-100 mb-4 uppercase tracking-[0.2em] text-xs">{group.title}</h4>
-                <ul className="space-y-2 text-sm">
+                <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-slate-100">{group.title}</h3>
+                <ul className="space-y-2">
                   {group.items.map((item) => (
-                    <li key={item}>
-                      <a href="#" className="text-gray-400 hover:text-white dark:hover:text-slate-100 transition-colors">
-                        {item}
-                      </a>
+                    <li key={item} className="text-sm text-slate-400">
+                      {item}
                     </li>
                   ))}
                 </ul>
@@ -456,21 +475,8 @@ export const HomePage = () => {
             ))}
           </div>
 
-          <div className="border-t border-white/10 dark:border-slate-800 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <p className="text-gray-400 dark:text-slate-400 text-sm">
-              &copy; 2026 MEND - Mental and Emotional Nurturing Digital. All rights reserved.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {socialLinks.map((item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-gray-400 dark:text-slate-400 hover:text-white dark:hover:text-slate-100 hover:border-blue-400/40 transition text-sm"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
+          <div className="mt-10 border-t border-white/10 pt-8 text-sm text-slate-400">
+            Copyright 2026 MEND. All rights reserved.
           </div>
         </div>
       </footer>
