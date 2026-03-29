@@ -1,6 +1,6 @@
 # MEND
 
-**Mental and Emotional Nurturing Digital**
+Mental and Emotional Nurturing Digital
 
 MEND is a full-stack platform for mental health support, therapy workflows, community engagement, and personal growth.
 
@@ -174,7 +174,7 @@ Backend health check: `http://localhost:5000/health`
 
 ## Environment Variables
 
-### Backend
+### Backend Environment
 
 The backend reads `backend/.env` if present.
 
@@ -187,7 +187,7 @@ Common variables:
 - `CLIENT_URL` and/or `CORS_ORIGINS` when the frontend is hosted on a different origin
 - `APP_URL` if you want password reset previews to use a custom origin
 
-### Frontend
+### Frontend Environment
 
 ```env
 REACT_APP_API_URL=/api
@@ -217,7 +217,7 @@ npm run db:migrate
 npm run db:seed
 ```
 
-From `frontend/`:
+### Backend Scripts
 
 ```bash
 npm start

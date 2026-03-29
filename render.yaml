@@ -1,0 +1,17 @@
+# Exported from Render on 2026-03-29T13:02:35Z
+version: "1"
+projects:
+- name: MEND
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: MEND-4
+      runtime: node
+      repo: https://github.com/blessiingab/MEND
+      plan: free
+      region: ohio
+      buildCommand: npm run dev
+      startCommand: npm run start
+      autoDeployTrigger: commit
+      rootDir: backend  npm install
