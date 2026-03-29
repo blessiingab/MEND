@@ -131,53 +131,61 @@ git clone <your-repository-url>
 cd MEND
 ```
 
-### 2. Start the backend
+### 2. Use the correct Node.js version
 
 ```bash
-cd backend
-npm install
+node -v
+```
+
+Use **Node.js 22+** (the backend uses `node:sqlite`).
+
+### 3. Install dependencies
+
+```bash
+npm run install:all
+```
+
+### 4. Initialize the database
+
+```bash
 npm run db:migrate
+```
+
+Optional: seed demo data and accounts.
+
+```bash
 npm run db:seed
+```
+
+### 5. Run the app in development
+
+```bash
 npm run dev
 ```
 
-Backend default URL:
+This starts both services:
 
 ```text
-http://localhost:5000
+Frontend: http://localhost:3000
+Backend:  http://localhost:5000
 ```
 
-The backend development server uses Node's built-in watch mode, so `npm run dev` works without a separate watcher dependency.
-
-### 3. Start the frontend
-
-Open a new terminal and run:
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Frontend default URL:
-
-```text
-http://localhost:3000
-```
+Backend health check: `http://localhost:5000/health`
 
 ## Environment Variables
 
 ### Backend
 
-Copy `backend/.env.example` to `backend/.env` and set production values for:
+The backend reads `backend/.env` if present.
+
+Common variables:
 
 - `PORT`
 - `NODE_ENV`
 - `JWT_SECRET`
 - `DB_PATH` when deploying with a persistent disk
-- `CLIENT_URL` only if the frontend is hosted on a different origin
+- `CLIENT_URL` and/or `CORS_ORIGINS` when the frontend is hosted on a different origin
 - `APP_URL` if you want password reset previews to use a custom origin
-- Use Node.js 22 or newer because the backend relies on the built-in `node:sqlite` module
 
 ### Frontend
 
@@ -189,16 +197,27 @@ The frontend now uses `/api` by default in both local development and deployed e
 
 ## Available Scripts
 
-### Backend
+From the project root:
 
 ```bash
+npm run install:all
 npm run dev
-npm run start
+npm run build
+npm start
 npm run db:migrate
 npm run db:seed
 ```
 
-### Frontend
+From `backend/`:
+
+```bash
+npm run dev
+npm start
+npm run db:migrate
+npm run db:seed
+```
+
+From `frontend/`:
 
 ```bash
 npm start
@@ -214,22 +233,24 @@ The current app includes:
 - Role-protected routes
 - Remember Me session handling
 - Forgot Password and Reset Password flow
-- Password hashing with bcrypt
+- Password hashing with `scrypt`
 - Protected backend middleware
 
 ## Deployment Notes
 
-This repository is set up for a single-service deployment where the Express backend serves the built React frontend.
+For production, build the frontend and run the backend server:
 
-### Render Blueprint
+```bash
+npm run deploy:prepare
+npm start
+```
 
-The included `render.yaml` deploys the app as one Node web service and mounts a persistent disk for SQLite.
+Deployment requirements:
 
-1. Push this repository to GitHub.
-2. In Render, create a new Blueprint instance from the repo.
-3. Confirm the generated `JWT_SECRET`, use Node.js 22+, and keep `DB_PATH=/var/data/mend.db`.
-4. Set `APP_URL` to your public Render URL after the first deploy if you want password reset links to use the deployed domain.
-5. Run `npm run db:seed` once from a Render shell only if you want demo users and sample content.
+1. Use Node.js 22+.
+2. Set a strong `JWT_SECRET`.
+3. Configure `DB_PATH` to a persistent location (for example `/var/data/mend.db`).
+4. Set `APP_URL` to your public app URL for password reset links.
 
 ### Seeded demo accounts
 
@@ -239,17 +260,6 @@ If you run `npm run db:seed`, the following accounts are created for local testi
 - `therapist@mend.com` / `TherapistPass123`
 - `mentor@mend.com` / `MentorPass123`
 - `admin@mend.com` / `AdminPass123`
-
-### Generic Node Host
-
-Use these commands on hosts such as Render, Railway, or a VPS:
-
-```bash
-npm run deploy:prepare
-npm start
-```
-
-The backend serves `frontend/build` automatically in production, so the app can run behind a single public URL.
 
 ## Future Improvements
 
